@@ -17,6 +17,7 @@ function ShareBtn() {
   return (
     <button
       onClick={handleCopyProfileLinkToClipboard}
+      aria-label="share profile url link"
       className="flex justify-center items-center gap-2 relative hover:bg-secondary p-2 rounded-md duration-150"
     >
       <span

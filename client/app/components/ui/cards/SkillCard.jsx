@@ -23,7 +23,7 @@ function SkillCard({ skillName, skillLogo, layoutStyle }) {
         `}
       >
         <Image
-          className={`object-cover rounded-md overflow-hidden
+          className={`w-10 h-10 object-cover rounded-md ml-4
               ${layoutStyle === "3" && "block"}
               ${layoutStyle === "5" && "hidden"}
               `}

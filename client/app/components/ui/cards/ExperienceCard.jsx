@@ -60,9 +60,10 @@ function ExperienceCard({
       </div>
 
       <div className="experience_body">
-        <summary className="text-wrap overflow-hidden max-w-full">
+        <summary className="manage_content_lines text-wrap overflow-hidden max-w-full">
           {role}
         </summary>
+        {/* <button>read more</button> */}
 
         <div
           className="flex justify-start items-center gap-2

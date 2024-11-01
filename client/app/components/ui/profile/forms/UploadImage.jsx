@@ -5,10 +5,12 @@ import { cn } from "../../../../../lib/utils";
 import { useToast } from "../../../../../components/ui/use-toast";
 import Loader from "../../../loaders/Loader";
 import { LuImagePlus } from "react-icons/lu";
+import Image from "next/image";
 
 function UploadImage({ id, url, className, fileFormName, acceptedTypes }) {
   const uploadFileRef = useRef(null);
   const [file, setFile] = useState(null);
+  const [urlImg, setUrlImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successUpload, setSuccessUpload] = useState(null);
@@ -79,35 +81,49 @@ function UploadImage({ id, url, className, fileFormName, acceptedTypes }) {
         ${loading && "opacity-1"}`
       )}
     >
-      <label
-        className="cursor-pointer hover:bg-secondary  duration-150 w-full border-2 border-dashed bg-primary-foreground rounded-md p-4 flex flex-col justify-center items-center gap-4p"
-        htmlFor="upload"
-      >
-        <span className="text-muted-foreground">
-          <LuImagePlus size={20} />
-        </span>
-        <p className="text-center text-sm w-3/4 max-md:w-full p-2 flex flex-col justify-center items-center gap-1">
-          upload your resume here <br /> supported formats, pdf | docx | word
-          (4MB).
-        </p>
-      </label>
-      <input
-        id="upload"
-        className={
-          file
-            ? "p-2 bg-secondary w-full rounded-md flex justify-center items-center flex-col"
-            : "hidden"
-        }
-        type="file"
-        required
-        accept={
-          acceptedTypes === "image"
-            ? "image/png, image/jpeg, image/jpg, image/gif"
-            : `application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document,
+      {urlImg ? (
+        <Image
+          src={urlImg}
+          width={100}
+          height={100}
+          alt="uploaded bio image "
+        />
+      ) : (
+        <>
+          <label
+            className="cursor-pointer hover:bg-secondary  duration-150 w-full border-2 border-dashed bg-primary-foreground rounded-md p-4 flex flex-col justify-center items-center gap-4p"
+            htmlFor="upload"
+          >
+            <span className="text-muted-foreground">
+              <LuImagePlus size={20} />
+            </span>
+            <p className="text-center text-sm w-3/4 max-md:w-full p-2 flex flex-col justify-center items-center gap-1">
+              upload your resume here <br /> supported formats, pdf | docx |
+              word (4MB).
+            </p>
+          </label>
+          <input
+            id="upload"
+            className={
+              file
+                ? "p-2 bg-secondary w-full rounded-md flex justify-center items-center flex-col"
+                : "hidden"
+            }
+            type="file"
+            required
+            accept={
+              acceptedTypes === "image"
+                ? "image/png, image/jpeg, image/jpg, image/gif"
+                : `application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document,
     application/msword `
-        }
-        onChange={(e) => setFile(e.target.files[0])}
-      />
+            }
+            onChange={(e) => {
+              setUrlImage(URL.createObjectURL(e.target.files[0]));
+              setFile(e.target.files[0]);
+            }}
+          />
+        </>
+      )}
       {loading && (
         <div className="w-full flex flex-col justify-start items-start gap-2">
           <div className="rounded-md flex justify-start items-start gap-4  p-2">

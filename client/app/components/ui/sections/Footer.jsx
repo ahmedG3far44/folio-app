@@ -29,15 +29,16 @@ async function Footer({ picture, username, userId }) {
           <ContactsCard contacts={contacts} />
         </div>
 
-        <div className="">
-          <span> all &copy; rights are reserved, designed & created by </span>
+        <div>
+          <span>designed & created by</span>
           <Link
-            className="bg-gradient-to-br text-lg from-purple-500 via-sky-600 text-transparent bg-clip-text hover:text-purple-500 duration-150"
+            className="bg-gradient-to-br font-bold text-lg mx-2 from-purple-500 via-sky-600 text-transparent bg-clip-text hover:text-purple-500 duration-150"
             target="_blank"
             href="https://www.linkedin.com/in/ahmed-gaafar-5a3478201/"
           >
-            ahmedG3far44
+            @ahmedG3far44
           </Link>
+          <span>all &copy; rights are reserved, {year}.</span>
         </div>
       </Container>
     </footer>

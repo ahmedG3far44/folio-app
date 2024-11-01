@@ -1,8 +1,4 @@
-// import Image from "next/image";
 import Link from "next/link";
-// import { AiOutlineLike } from "react-icons/ai";
-// import { AiFillLike } from "react-icons/ai";
-// import { MdRemoveRedEye } from "react-icons/md";
 
 function ProjectCard({
   id,
@@ -13,37 +9,11 @@ function ProjectCard({
   likes,
   userId,
   state,
-  layoutStyle,
 }) {
-  // const isLike = false;
   return (
-    <div
-      className={`p-4 w-full rounded-md  bg-card border   
-      ${layoutStyle === "1" && "flex flex-col justify-start items-start gap-4"}
-      ${layoutStyle === "2" && ""}
-      ${
-        layoutStyle === "3" &&
-        "flex w-full  flex-row-reverse justify-center items-center gap-4"
-      }
-      ${
-        layoutStyle === "4" &&
-        "flex flex-col   justify-center items-start gap-2"
-      }`}
-    >
+    <div className="flex flex-col justify-start items-start gap-0 bg-card p-4 rounded-md border">
       <div
-        className={` border
-          ${
-            layoutStyle === "1"
-              ? "w-full  overflow-hidden rounded-md mb-4"
-              : layoutStyle === "2"
-              ? "flex flex-col justify-center items-center gap-4"
-              : layoutStyle === "3"
-              ? "flex-1 h-full rounded-xl "
-              : layoutStyle === "4"
-              ? "w-full  max-w-3/4 h-full rounded-xl "
-              : null
-          }
-        `}
+        className={"w-full h-3/4 object-cover overflow-hidden p-2 rounded-md "}
       >
         <img
           priority="true"
@@ -54,8 +24,8 @@ function ProjectCard({
               ? thumbnail
               : "https://www.its.ac.id/tmesin/wp-content/uploads/sites/22/2022/07/no-image.png"
           }
-          alt="thumbnail image"
-          className="max-w-full max-h-1/2 max-h-full w-full h-full object-cover rounded-md"
+          alt="user project thumbnail image"
+          className="w-full h-full object-cover"
         />
       </div>
       <div className="flex-1 flex flex-col justify-start items-start gap-2 mt-4">
@@ -72,9 +42,7 @@ function ProjectCard({
               {title || "Project Title"}
             </Link>
           )}
-          <p className=" max-h-10 overflow-y-hidden text-sm text-muted">
-            {description || "project description"}
-          </p>
+          <p>{description || "project description"}</p>
         </div>
 
         {/* {!state && (

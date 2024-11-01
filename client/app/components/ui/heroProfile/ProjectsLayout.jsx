@@ -19,25 +19,9 @@ function ProjectsLayout({ ProjectsList, layouts, setLayouts, isLogged }) {
             />
           )}
           <ProjectsLayoutWrapper
-            className={"gap-4"}
             projectLayoutStyle={layouts?.projectsLayout}
-          >
-            {ProjectsList?.map((project) => {
-              return (
-                <ProjectCard
-                  key={project.id}
-                  id={project.id}
-                  layoutStyle={layouts?.projectsLayout}
-                  title={project.title}
-                  thumbnail={project.thumbnail}
-                  description={project.description}
-                  views={project.views}
-                  likes={project.likes}
-                  userId={layouts?.usersId}
-                />
-              );
-            })}
-          </ProjectsLayoutWrapper>
+            projects={ProjectsList}
+          />
         </section>
       ) : (
         <>

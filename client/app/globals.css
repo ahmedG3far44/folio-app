@@ -286,3 +286,27 @@ admin dashboard
 .github_button {
   @apply rounded-md px-4 py-2 text-center border bg-card hover:bg-secondary duration-150;
 }
+
+.manage_content_lines {
+  --max-lines: 3;
+  --line-height: 1.6;
+  max-height: calc(var(--max-lines) * 1em * var(--line-height));
+  overflow: hidden;
+}
+
+#read_more {
+  appearance: none;
+  /* display: none; */
+}
+#read_more:checked ~ .manage_content_lines {
+  overflow: visible;
+  max-height: auto;
+}
+.label {
+  color: #777;
+  cursor: pointer;
+  transition: 0.4s ease-in-out;
+}
+.label:hover {
+  color: #000;
+}

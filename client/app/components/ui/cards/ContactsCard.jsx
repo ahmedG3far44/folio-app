@@ -15,7 +15,11 @@ function ContactsCard({ contacts }) {
             "flex hover:bg-card bg-secondary justify-center items-center p-1 rounded-md border   duration-150"
           }
         >
-          <Link target="_blank" href={contacts?.twitter}>
+          <Link
+            rel={"user twitter profile link"}
+            target="_blank"
+            href={contacts?.twitter}
+          >
             <span>
               <RiTwitterXFill size={20} />
             </span>
@@ -28,7 +32,11 @@ function ContactsCard({ contacts }) {
             "flex hover:bg-card bg-secondary justify-center items-center p-1 rounded-md border   duration-150"
           }
         >
-          <Link target="_blank" href={contacts?.linkedin}>
+          <Link
+            rel={"user linkedin profile link"}
+            target="_blank"
+            href={contacts?.linkedin}
+          >
             <span>
               <AiOutlineLinkedin size={20} />
             </span>
@@ -41,7 +49,11 @@ function ContactsCard({ contacts }) {
             "flex hover:bg-card bg-secondary justify-center items-center p-1 rounded-md border   duration-150"
           }
         >
-          <Link target="_blank" href={contacts?.youtube}>
+          <Link
+            rel={"user youtube link"}
+            target="_blank"
+            href={contacts?.youtube}
+          >
             <span>
               <AiOutlineYoutube size={20} />
             </span>
@@ -54,7 +66,11 @@ function ContactsCard({ contacts }) {
             "flex hover:bg-card bg-secondary justify-center items-center p-1 rounded-md border   duration-150"
           }
         >
-          <Link target="_blank" href={contacts?.github}>
+          <Link
+            rel={"user github profile link"}
+            target="_blank"
+            href={contacts?.github}
+          >
             <span>
               <AiOutlineGithub size={20} />
             </span>

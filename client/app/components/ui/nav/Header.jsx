@@ -8,7 +8,7 @@ import { HiOutlineLogout } from "react-icons/hi";
 import { LuSettings } from "react-icons/lu";
 
 async function Header({ picture, username, userId }) {
-  const { isLogged, user, isAdmin } = await credentials();
+  const { isLogged, isAdmin } = await credentials();
 
   return (
     <header className="w-3/4 m-auto p-4 flex justify-center items-center   max-sm:w-full ">
@@ -63,12 +63,15 @@ async function Header({ picture, username, userId }) {
               </>
             )}
             <LogoutLink className="hover:bg-secondary p-2 rounded-md duration-150">
-              <HiOutlineLogout size={20} />
+              <HiOutlineLogout aria-label="logout button" size={20} />
             </LogoutLink>
             <ShareBtn />
           </div>
         ) : (
-          <ShareBtn />
+          <div className="flex justify-center items-center gap-4">
+            <ModeToggle theme={"none"} />
+            <ShareBtn />
+          </div>
         )}
       </div>
     </header>
