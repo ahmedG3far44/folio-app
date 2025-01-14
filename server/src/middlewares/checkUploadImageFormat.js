@@ -1,5 +1,11 @@
 export default function checkUploadImageFormat(req, res, next) {
-  const fileTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+  const fileTypes = [
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "image/gif",
+    "image/webp",
+  ];
 
   if (!req.files) {
     const image = req.file;

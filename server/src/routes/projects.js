@@ -7,7 +7,7 @@ import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import { upload } from "./skills.js";
 import s3Client from "../s3/s3Client.js";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import sharp from "sharp";
+// import sharp from "sharp";
 // import resizedImage from "../handlers/resizeImage.js";
 import dotenv from "dotenv";
 dotenv.config();
@@ -344,7 +344,7 @@ export async function uploadToS3(image, path) {
   }
 }
 
-function splitImageUrl(url) {
-  let key = url.split(".com/")[1];
-  return key;
-}
+// function splitImageUrl(url) {
+//   let key = url.split(".com/")[1];
+//   return key;
+// }

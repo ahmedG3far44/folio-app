@@ -201,7 +201,7 @@ html {
   @apply p-4 w-full  bg-rose-500 text-rose-950 rounded-md my-4;
 }
 .success_message {
-  @apply p-4 w-full  bg-green-500 text-green-950 rounded-md my-4;
+  @apply p-4 w-full min-w-full  bg-green-500 text-green-950 rounded-md my-4;
 }
 
 .change_layout_input {
