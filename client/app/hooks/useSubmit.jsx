@@ -1,22 +1,20 @@
 "use client";
 import { useState } from "react";
 
-export default function GetData(url) {
+async function QueryHook(url) {
   const [pending, setPending] = useState(false);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
-
+  const [data, setData] = useState(null);
   try {
     setPending(true);
-    const request = fetch(`${url}`);
-    const data = request.then((res) => {
-      if (!res.status === 200) {
-        throw new Error("request failed error 404");
-      }
-      const response = request.json();
-      setSuccess(response.message);
-      return response;
-    });
+    const request = await fetch(`${url}`);
+    const data = await  request.json();
+    if(!request.ok) {
+      throw new Error(data.message);
+    } 
+    setSuccess(data.message);
+    setData(data);
   } catch (error) {
     setError(error.message);
   } finally {
@@ -26,4 +24,5 @@ export default function GetData(url) {
   return [pending, success, error, data];
 }
 
-useSubmit;
+
+export default QueryHook;

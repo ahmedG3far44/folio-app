@@ -22,8 +22,7 @@ function ProjectsLayoutWrapper({ projects, projectLayoutStyle }) {
                 title={project.title}
                 thumbnail={project.thumbnail}
                 description={project.description}
-                views={project.views}
-                likes={project.likes}
+                tags={project.tags}
                 userId={project?.usersId}
               />
             ) : projectLayoutStyle === "2" ? (
@@ -33,8 +32,7 @@ function ProjectsLayoutWrapper({ projects, projectLayoutStyle }) {
                 title={project.title}
                 thumbnail={project.thumbnail}
                 description={project.description}
-                views={project.views}
-                likes={project.likes}
+                tags={project.tags}
                 userId={project?.usersId}
               />
             ) : projectLayoutStyle === "3" ? (
@@ -44,10 +42,9 @@ function ProjectsLayoutWrapper({ projects, projectLayoutStyle }) {
                 title={project.title}
                 thumbnail={project.thumbnail}
                 description={project.description}
-                views={project.views}
-                likes={project.likes}
+                tags={project.tags}
                 userId={project?.usersId}
-                tags={project?.tags}
+                
               />
             ) : projectLayoutStyle === "4" ? (
               <ProjectCardFour
@@ -56,8 +53,7 @@ function ProjectsLayoutWrapper({ projects, projectLayoutStyle }) {
                 title={project.title}
                 thumbnail={project.thumbnail}
                 description={project.description}
-                views={project.views}
-                likes={project.likes}
+                tags={project.tags}
                 userId={project?.usersId}
               />
             ) : projectLayoutStyle === "5" ? (
@@ -67,8 +63,7 @@ function ProjectsLayoutWrapper({ projects, projectLayoutStyle }) {
                 title={project.title}
                 thumbnail={project.thumbnail}
                 description={project.description}
-                views={project.views}
-                likes={project.likes}
+                tags={project.tags}
                 userId={project?.usersId}
               />
             ) : null}

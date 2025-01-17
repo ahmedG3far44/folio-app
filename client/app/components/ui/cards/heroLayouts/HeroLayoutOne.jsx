@@ -1,8 +1,8 @@
 import ContactsCard from "../ContactsCard";
 import Image from "next/image";
-import GradientText from "./GradientText";
 import ResumeDownloadBtn from "../ResumeDownloadBtn";
 import UploadImage from "../../profile/forms/UploadImage";
+
 
 function HeroLayoutOne({
   id,
@@ -14,7 +14,7 @@ function HeroLayoutOne({
   isLogged,
 }) {
   return (
-    <section className="flex justify-center items-start gap-4 w-full">
+    <section className="flex justify-center items-start gap-4 w-full max-sm:flex-col max-md:flex-col max-sm:items-center max-md:items-center max-sm:justify-center max-md:justify-center">  
       <div className={"hero_info"}>
         <h1 className="hero_heading_text">
           {!!name ? name : "change your name...."}
@@ -26,18 +26,19 @@ function HeroLayoutOne({
         <ResumeDownloadBtn />
       </div>
       <div className={"hero_img"}>
-        <Image
-          priority
-          height={320}
-          width={320}
-          src={
-            !!img
-              ? img
-              : "https://th.bing.com/th/id/OIP.AkKR5-4AJhHTNNDMp0NxvQAAAA?rs=1&pid=ImgDetMain"
-          }
-          alt="hero section image"
-          className="img"
-        />
+        {img && (
+          <Image priority height={320} width={320} src={img} className="img" />
+        )}
+        {!img && (
+          <Image
+            priority
+            height={320}
+            width={320}
+            src={"/images/th.jpeg"}
+            className="img"
+          />)
+        }
+        
         {isLogged && (
           <UploadImage
             id={id}

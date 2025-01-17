@@ -5,15 +5,13 @@ function ProjectCard({
   title,
   description,
   thumbnail,
-  views,
-  likes,
   userId,
   state,
 }) {
   return (
     <div className="flex flex-col justify-start items-start gap-0 bg-card p-4 rounded-md border">
       <div
-        className={"w-full h-3/4 object-cover overflow-hidden p-2 rounded-md "}
+        className={"w-full min-h-3/4 object-cover overflow-hidden p-2 rounded-md "}
       >
         <img
           priority="true"
@@ -42,21 +40,8 @@ function ProjectCard({
               {title || "Project Title"}
             </Link>
           )}
-          <p>{description || "project description"}</p>
+          <p className={`line-clamp-3`}>{description || "project description"}</p>
         </div>
-
-        {/* {!state && (
-          <div className="w-full flex justify-start items-center gap-4  pt-2">
-            <span  className="flex justify-center items-center gap-2 text-muted">
-              {isLike ? <AiFillLike size={20} /> : <AiOutlineLike size={20} />}
-              {likes}
-            </span>
-            <span className="flex justify-center items-center gap-2 text-muted">
-              <MdRemoveRedEye size={20} />
-              {parseInt(views / 10000000000000) || 0.0}K
-            </span>
-          </div>
-        )} */}
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 
 FROM node:alpine
 
-WORKDIR '/app/client'
-COPY ./package*.json ./app/client/
+WORKDIR '/client'
+
+COPY ./package*.json .
 
 RUN npm install
 
@@ -10,7 +11,9 @@ COPY . .
 
 RUN npm run build
 
-CMD ["npm", "start"]
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
 
 # FROM nginx:alpine
 # COPY --from=builder /app/build /usr/share/nginx/html

@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import NoImage from "@/public/noImage.png";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -52,7 +51,7 @@ function ItemsList({ list, sectionName }) {
   return (
     <div className="flex flex-col justify-start items-start gpa-4 ">
       <div className="w-full  rounded-md py-4   flex flex-col justify-start items-start gap-2">
-        <h1>List Of {sectionName.toUpperCase()}</h1>
+        <h1>List of {sectionName.toUpperCase()}</h1>
         <label
           htmlFor="search"
           className="w-1/2 max-sm:w-full max-md:w-full flex justify-start items-center relative "
@@ -87,7 +86,7 @@ function ItemsList({ list, sectionName }) {
                       <div className="ml-4 w-10 h-10 min-w-10 min-h-10 mr-4 overflow-hidden rounded-md flex justify-center items-center border  max-sm:flex-wrap max-md:flex-wrap ">
                         <Image
                           priority
-                          src={!!item?.cLogo ? item.cLogo : NoImage}
+                          src={!!item?.cLogo ? item.cLogo : "/images/th.jpeg"}
                           className="object-cover rounded-md"
                           width={40}
                           height={40}
@@ -112,7 +111,11 @@ function ItemsList({ list, sectionName }) {
                       <div className="w-10 h-10 min-w-10 min-h-10 mx-4 overflow-hidden rounded-md flex justify-center items-center border  max-sm:flex-wrap max-md:flex-wrap ">
                         <Image
                           priority
-                          src={!!item?.thumbnail ? item.thumbnail : NoImage}
+                          src={
+                            !!item?.thumbnail
+                              ? item.thumbnail
+                              : "/images/th.jpeg"
+                          }
                           className="object-cover w-full h-full rounded-md"
                           width={40}
                           height={40}
@@ -126,22 +129,6 @@ function ItemsList({ list, sectionName }) {
                       >
                         {item?.title}
                       </Link>
-
-                      {/* <div className="ml-5 flex justify-center items-center gap-2">
-                        <span>
-                          <AiFillLike size={20} color="gray" />
-                        </span>
-                        {parseInt(item?.likes) || 10}K
-                      </div>
-
-                      <div className="ml-5 flex justify-center items-center gap-2">
-                        <span>
-                          <LuEye size={20} color="gray" />
-                        </span>
-                      </div>
-                      <div className="ml-5 flex justify-center items-center gap-2">
-                        {item?.createdAt}
-                      </div> */}
                     </div>
                   )}
                   {sectionName === "skills" && (

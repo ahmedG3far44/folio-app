@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import NoImage from "@/public/noImage.png";
 import { MdOutlineLocationOn } from "react-icons/md";
 
 function ExperienceCard({
@@ -31,7 +30,7 @@ function ExperienceCard({
           width={40}
           height={40}
           alt={"experience company logo image"}
-          src={!!cLogo ? cLogo : NoImage}
+          src={!!cLogo ? cLogo : "/images/th.jpeg"}
           className={"experience_cLogo"}
         />
 

@@ -1,6 +1,6 @@
 import ContactsCard from "../ContactsCard";
 import Image from "next/image";
-import GradientText from "./GradientText";
+// import notValidImg from "../../../../../public/th.jpeg";
 import ResumeDownloadBtn from "../ResumeDownloadBtn";
 import UploadImage from "../../profile/forms/UploadImage";
 function HeroLayoutFive({
@@ -15,18 +15,18 @@ function HeroLayoutFive({
   return (
     <section className={"hero_section"}>
       <div className="hero_img">
-        <Image
-          priority
-          height={320}
-          width={320}
-          src={
-            !!img
-              ? img
-              : "https://th.bing.com/th/id/OIP.AkKR5-4AJhHTNNDMp0NxvQAAAA?rs=1&pid=ImgDetMain"
-          }
-          alt="hero section image"
-          className="img"
-        />
+        {img && (
+          <Image priority height={320} width={320} src={img} className="img" />
+        )}
+        {!img && (
+          <Image
+            priority
+            height={320}
+            width={320}
+            src={"/images/th.jpeg"}
+            className="img"
+          />
+        )}
         {isLogged && (
           <UploadImage
             id={id}

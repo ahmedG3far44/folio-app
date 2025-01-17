@@ -1,5 +1,5 @@
 import Link from "next/link";
-import React from "react";
+import "../../../../globals.css";
 
 function ProjectCardTwo({
   id,
@@ -14,7 +14,7 @@ function ProjectCardTwo({
 }) {
   return (
     <>
-      <div className="border rounded-md p-4 bg-card overflow-hidden relative">
+      <div className="border rounded-md p-4 bg-card relative">
         <img
           loading="lazy"
           src={thumbnail}
@@ -28,8 +28,14 @@ function ProjectCardTwo({
           >
             {title}
           </Link>
-          <p>{description}</p>
+          <p className={"group line-clamp-4"}>{description}</p>
         </div>
+        {/* <p className="transition-all hover:scale-110 cursor-pointer group-hover:flex min-w-80 absolute top-0 left-[350px] p-4 rounded-md border-1 bg-secondary border-gray-100">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias,
+          nesciunt illo asperiores facere ipsum fugit libero quam, nostrum
+          veritatis exercitationem possimus natus assumenda dolores architecto
+          harum quaerat hic ab atque.
+        </p> */}
       </div>
     </>
   );

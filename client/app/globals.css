@@ -125,7 +125,7 @@ html {
 }
 
 .hero_img {
-  @apply flex-1 overflow-hidden  flex justify-center items-center rounded-xl h-full min-w-72 min-h-72  max-w-80 max-h-80 relative;
+  @apply flex-1 overflow-hidden bg-secondary flex justify-center items-center rounded-xl h-full min-w-72 min-h-72  max-w-80 max-h-80 relative;
 }
 
 .hero_section {
@@ -309,4 +309,10 @@ admin dashboard
 }
 .label:hover {
   color: #000;
+}
+
+.project_description_text {
+  --line-height: 1.2;
+  min-height: calc(var(--line-height) * 2);
+  overflow-y: hidden;
 }
