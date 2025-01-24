@@ -8,6 +8,7 @@ import { bioSchema } from "../schemas/validationSchemas.js";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import sharp from "sharp";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 dotenv.config();
 
 const router = express.Router();
@@ -36,7 +37,7 @@ router.get("/:userId/bio", async (req, res) => {
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });
-router.put("/:userId/bio/:bioId", async (req, res) => {
+router.put("/:userId/bio/:bioId", verifyAccessToken, async (req, res) => {
   const { userId, bioId } = req.params;
   const payload = req.body;
   try {

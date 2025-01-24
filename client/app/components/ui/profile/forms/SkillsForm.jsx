@@ -1,9 +1,8 @@
 "use client";
 import { useRef, useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@shadcn/use-toast";
 import { useParams, useRouter } from "next/navigation";
-import { FiFilePlus } from "react-icons/fi";
-import Loader from "@/app/components/loaders/Loader";
+import Loader from "@loaders/Loader";
 import { LuImagePlus } from "react-icons/lu";
 
 function SkillsForm({ skillState, setSkill }) {

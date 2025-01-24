@@ -2,7 +2,16 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@components/*": ["./app/components/*"],
+      "@lib/*": ["./lib/*"],
+      "@shadcn/*": ["./app/components/ui/shadcn/*"],
+      "@themes/*": ["./app/components/ui/themes/*"],
+      "@credentials": ["./app/credentials/credentials.js"],
+      "@cards/*": ["./app/components/ui/cards/*"],
+      "@actions/*": ["./app/actions/*"],
+      "@loaders/*": ["./app/components/loaders/*"],
+      "@profileForms/*": ["./app/components/ui/profile/forms/*"],
     }
   }
 }

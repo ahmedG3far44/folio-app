@@ -1,7 +1,7 @@
 "use server";
-import credentials from "@/app/credentials/credentials";
+import credentials from "@credentials";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/dist/server/api-utils";
+import { redirect } from "next/navigation";
 
 export async function deleteExperience(id) {
   const { user, isLogged } = await credentials();

@@ -96,9 +96,7 @@ router.post(
     }
   }
 );
-// router.put("/", async (req, res) => {
-//   return res.status(200).json({ success: "true" });
-// });
+
 router.get("/:userId/feedback", async (req, res) => {
   const { userId } = req.params;
   try {

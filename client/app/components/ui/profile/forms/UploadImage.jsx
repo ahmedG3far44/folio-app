@@ -1,9 +1,9 @@
 "use client";
 import { useRouter, useParams } from "next/navigation";
 import { useState, useRef } from "react";
-import { cn } from "../../../../../lib/utils";
-import { useToast } from "../../../../../components/ui/use-toast";
-import Loader from "../../../loaders/Loader";
+import { cn } from "@/lib/utils";
+import { useToast } from "@shadcn/use-toast";
+import Loader from "@loaders/Loader";
 import { LuImagePlus } from "react-icons/lu";
 import Image from "next/image";
 

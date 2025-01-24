@@ -1,6 +1,6 @@
-import credentials from "@/app/credentials/credentials";
-import ProjectsSection from "@/app/components/ui/sections/ProjectsSection";
-import ItemsList from "@/app/components/ui/nav/ItemsList";
+import credentials from "@credentials";
+import ProjectsSection from "@components/ui/sections/ProjectsSection";
+import ItemsList from "@components/ui/nav/ItemsList";
 
 async function ProjectsPage() {
   const { user } = await credentials();

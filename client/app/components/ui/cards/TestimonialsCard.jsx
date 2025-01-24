@@ -1,8 +1,8 @@
 "use client";
 import { useParams, useRouter } from "next/navigation";
 import { LuTrash } from "react-icons/lu";
-import { useToast } from "../../../../components/ui/use-toast";
-import { useRef } from "react";
+import { useToast } from "@shadcn/use-toast";
+
 function TestimonialsCard({
   id,
   profile,

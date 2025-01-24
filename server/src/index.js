@@ -7,15 +7,18 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 
+
 const app = express();
+
+
 
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "development"
       ? "http://localhost:3000"
-      : process.env.HOST, // Allow only requests from this origin
-  methods: "GET,POST, PUT, DELETE", // Allow only these methods
-  allowedHeaders: ["Content-Type", "Authorization"], // Allow only these headers
+      : process.env.HOST_DOMAIN_URL, 
+  methods: "GET,POST, PUT, DELETE", 
+  allowedHeaders: ["Content-Type", "Authorization"]
 };
 
 prisma

@@ -1,16 +1,15 @@
 "use server";
 import {
-  bioSchema,
   experienceSchema,
   projectSchema,
   skillsSchema,
-} from "../../../lib/schema";
-import credentials from "../../credentials/credentials";
+} from "@lib/schema";
+import credentials from "@credentials";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/dist/server/api-utils";
+import { redirect } from "next/navigation";
 
 export async function addExperience(newExperience) {
-  const { user, isLogged } = await credentials();
+  const { user, isLogged, accessToken } = await credentials();
   const result = experienceSchema.safeParse(newExperience);
   if (isLogged) {
     if (!result.success) {
@@ -22,11 +21,16 @@ export async function addExperience(newExperience) {
     }
     try {
       const response = await fetch(
-        `http://localhost:4000/api/${user?.id}/experiences`,
+        `${
+          process.env.NODE_ENV === "development"
+            ? process.env.LOCAL_DOMAIN_URL
+            : process.env.DOMAIN_URL
+        }/${user?.id}/experiences`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}}`,
           },
           body: JSON.stringify(result?.data),
         }
@@ -72,7 +76,6 @@ export async function addProject(formData, tags) {
       );
     }
     if (!validProjectData?.success) {
-      // console.log(validProjectData.error.flatten().fieldErrors);
       validProjectData.error.errors.push((error) => {
         console.log(error);
         throw new Error(error);
@@ -106,8 +109,6 @@ export async function addProject(formData, tags) {
 export async function addSkill(formData) {
   const { user, isLogged } = await credentials();
   const data = new FormData();
-  // data.append("file", file )
-  // data.append("skillName", formData.get("skillName") )
   try {
     if (isLogged) {
       const validPayload = skillsSchema.safeParse(newSkillInfo);
@@ -150,7 +151,6 @@ function validateImages(thumbnail, images) {
     "image/gif",
     "image/webp",
   ];
-
   images?.forEach((img) => {
     if (img.size > 1011868 || !validImagesTypes.includes(img.type)) {
       return false;

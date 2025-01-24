@@ -95,6 +95,9 @@ router.put(
     const payload = req.body;
     const skillLogoImage = req.file;
 
+    
+    console.log(payload)
+
     const updateSkill = await prisma.skills.findUnique({
       where: {
         id: skillId,

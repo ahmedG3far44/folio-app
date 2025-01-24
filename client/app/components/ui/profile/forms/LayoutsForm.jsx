@@ -1,7 +1,7 @@
 "use client";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@shadcn/use-toast";
 import { useFormStatus } from "react-dom";
-import { updateLayoutsAction } from "../../../../actions/update/actions";
+import { updateLayoutsAction } from "@actions/update/actions";
 import { LuSave } from "react-icons/lu";
 
 export function ChangeExperiencesLayoutForm({ layouts, setLayouts }) {

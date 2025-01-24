@@ -51,7 +51,7 @@ function HeroLayoutTwo({
         </>
       </div>
 
-      <div className="about_text max-w-3/4">
+      <div className="about_text">
         <summary className="overflow-hidden ">
           {!!summary
             ? summary

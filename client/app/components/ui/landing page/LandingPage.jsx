@@ -3,12 +3,11 @@ import {
   LogoutLink,
   RegisterLink,
 } from "@kinde-oss/kinde-auth-nextjs/components";
-import credentials from "../../../credentials/credentials";
+import credentials from "@credentials";
 import Image from "next/image";
 import Link from "next/link";
-import { ModeToggle } from "../../../../components/dark-mode-toggle";
+import { ModeToggle } from "@themes/dark-mode-toggle";
 import { LuDribbble, LuGithub, LuLinkedin, LuWand2 } from "react-icons/lu";
-import { LuSparkles } from "react-icons/lu";
 import { TbCubePlus } from "react-icons/tb";
 import { PiExcludeSquareDuotone } from "react-icons/pi";
 import { PiStackPlusDuotone } from "react-icons/pi";
@@ -49,30 +48,13 @@ async function LandingPage() {
       text: "Easily customize and reorder sections like About Me, Work Experience, and Projects.",
     },
   ];
-  //   ### 1. **Personalized Tech Portfolio**
-  // Create a fully customizable portfolio showcasing personal details and expertise for professional presentation.
-
-  // ### 2. **Work Experience Highlights**
-  // Add and highlight key work experiences and career progress in the tech industry.
-
-  // ### 3. **Project Showcases**
-  // Display projects with descriptions, links, and visuals to demonstrate impactful work.
-
-  // ### 4. **Skills Breakdown**
-  // List and categorize technical skills, tools, and programming languages for easy understanding.
-
-  // ### 5. **Dynamic Layout Customization**
-  // Choose from multiple layouts to tailor portfolio design to personal preferences.
-
-  // ### 6. **Interactive Section Management**
-  // Easily customize and reorder sections like About Me, Work Experience, and Projects.
   const year = new Date().getFullYear();
 
   return (
     <>
       <main className="w-3/4 max-md:w-full m-auto flex flex-col justify-center items-center gap-4 relative p-4">
         <header className="flex justify-between items-center w-full p-4">
-          <h1 className={"text-3xl font-mono font-bold"}>PRESENTO.io</h1>
+          <h1 className={"text-3xl font-mono font-bold"}>PRESENTO.cloud</h1>
           <div className="flex-1 ml-auto flex justify-end items-center gap-4">
             <ModeToggle theme={"none"} />
             {isLogged ? (
@@ -150,7 +132,6 @@ async function LandingPage() {
           <span className={"gradient_shape_one  "}></span>
           <span className={"gradient_shape_two  "}></span>
         </section>
-        {/* <span className="h-24 bg-card w-screen"></span> */}
         <section className={"vertical gap-8 w-full"}>
           <h1 className="heading_text text-center">What you will got ?? </h1>
           <div
@@ -173,12 +154,11 @@ async function LandingPage() {
         <section className={"vertical gap-8 my-8"}>
           <h1 className="heading_text">Showcasing our features</h1>
           <video
-            className="rounded-2xl "
-            src="https://cdn.dribbble.com/userupload/14312388/file/original-c2e734f2d13d5bc3b2766cd6034d90e3.mp4"
+            className="video-animation rounded-2xl "
+            src="./images/video.mp4"
             loop
             muted
             autoPlay
-            //   playsInline
             preload={"true"}
             width={800}
           ></video>

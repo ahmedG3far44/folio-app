@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import ContactsCard from "../cards/ContactsCard";
-import Container from "../containers/Container";
+import ContactsCard from "@cards/ContactsCard";
+import Container from "@components/ui/containers/Container";
 async function Footer({ picture, username, userId }) {
   const year = new Date().getFullYear();
   const contacts = await (

@@ -1,14 +1,14 @@
-import credentials from "@/app/credentials/credentials";
+import credentials from "@credentials";
 import { redirect } from "next/navigation";
 async function Dashboard() {
-  const { user, isAdmin, isLogged } = await credentials();
+  const { user, isAdmin } = await credentials();
   {
-    isAdmin && isLogged ? (
+    !isAdmin ? (
+      redirect(`/${user?.id}`)
+    ) : (
       <div className="max-w-screen max-h-screen">
         <h1>Dashboard</h1>
       </div>
-    ) : (
-      redirect(`/${user?.id}`)
     );
   }
 }

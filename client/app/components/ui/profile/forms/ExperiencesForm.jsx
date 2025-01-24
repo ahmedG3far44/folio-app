@@ -1,10 +1,10 @@
 "use client";
 
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@shadcn/use-toast";
 import { useRef, useState } from "react";
-import { experienceSchema } from "@/lib/schema";
+import { experienceSchema } from "@lib/schema";
 import { useParams, useRouter } from "next/navigation";
-import Loader from "@/app/components/loaders/Loader";
+import Loader from "@loaders/Loader";
 import { LuImagePlus } from "react-icons/lu";
 
 function ExperiencesForm({ experiencesObject, setExperiencesObject }) {
@@ -62,9 +62,12 @@ function ExperiencesForm({ experiencesObject, setExperiencesObject }) {
     } else {
       try {
         const request = await fetch(
-          `http://localhost:4000/api/${userId}/experiences`,
+          `${process.env.NODE_ENV === "development" ? process.env.LOCAL_DOMAIN_URL : process.env.DOMAIN_URL}/${userId}/experiences`,
           {
             method: "POST",
+            headers:{
+              "Authorization": `Bearer`,
+            },
             body: formData,
           }
         );

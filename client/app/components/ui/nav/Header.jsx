@@ -1,9 +1,9 @@
 import Link from "next/link";
-import credentials from "../../../credentials/credentials";
-import ShareBtn from "../cards/ShareBtn";
+import credentials from "@credentials";
+import ShareBtn from "@cards/ShareBtn";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import Image from "next/image";
-import { ModeToggle } from "../../../../components/dark-mode-toggle";
+import { ModeToggle } from "@themes/dark-mode-toggle";
 import { HiOutlineLogout } from "react-icons/hi";
 import { LuSettings } from "react-icons/lu";
 

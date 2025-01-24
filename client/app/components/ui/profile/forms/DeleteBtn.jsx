@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@shadcn/use-toast";
 import { Loader2 } from "lucide-react";
 
 function DeleteBtn({ deleteFunction, id }) {

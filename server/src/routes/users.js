@@ -2,6 +2,7 @@ import express from "express";
 import prisma from "../database/db.js";
 import checkUser from "../middlewares/checkUser.js";
 import Exceptions from "../handlers/Exceptions.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -36,7 +37,11 @@ router.post("/user", checkUser, async (req, res) => {
         usersId: payload.id,
       },
     });
-    // console.log(userInfo);
+    const newToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
+      expiresIn: "7d",
+    });
+    res.cookie("accessToken", newToken, { maxAge: 604800000 }); // expires in 7 days
+
     return res.status(200).json({ ...userInfo, bio, layouts, contacts });
   } catch (error) {
     return res.status(500).json(new Exceptions(500, error.message));
@@ -88,6 +93,12 @@ router.get("/:userId/user", async (req, res) => {
         ...bioInfo,
         heroImage: `${process.env.AWS_S3_BUCKET_DOMAIN}/${bioInfo.heroImage}`,
       };
+
+      const newToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
+        expiresIn: "7d",
+      });
+
+      res.cookie("accessToken", newToken, { maxAge: 604800000 }); // expires in 7 days
 
       return res.status(200).json({ ...user, bio, contacts, layouts });
     }

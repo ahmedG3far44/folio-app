@@ -6,131 +6,133 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@shadcn/dialog";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@shadcn/use-toast";
+// import {
+//   experienceSchema,
+//   projectSchema,
+//   skillsSchema,
+// } from "@lib/schema";
+
 import {
-  experienceSchema,
-  projectSchema,
-  skillsSchema,
-} from "../../../../../lib/schema";
-import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom";
+  handleUpdateExperience,
+  handleUpdateProject,
+  handleUpdateSkill,
+} from "@actions/update/actions";
+// import { useRouter } from "next/navigation";
 import { LuFileEdit } from "react-icons/lu";
 
 function UpdateBtn({ initialUpdate, sectionName }) {
   const [updateItem, setUpdatedItem] = useState(initialUpdate);
-  const status = useFormStatus();
+  const [updatedImg, setExpUpdatedImg] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { toast } = useToast();
-  const router = useRouter();
-  const handleUpdateExperience = async (e) => {
+  // const router = useRouter();
+  const handelUpdate = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const validPayload = experienceSchema.safeParse(updateItem);
-
-      if (!validPayload.success) {
-        toast({
-          title: "field action",
-          description: "data is not valid",
-        });
-        return validPayload.error.flatten().fieldErrors;
+      switch (sectionName) {
+        case "experiences":
+          const experienceUpdateResult = await handleUpdateExperience(
+            updateItem
+          );
+          experienceUpdateResult.success
+            ? toast({
+                title: "success",
+                description: "experience info was updated successfully",
+              })
+            : toast({
+                variant: "destructive",
+                title: "error",
+                description: experienceUpdateResult.message,
+              });
+          break;
+        case "projects":
+          const projectUpdateResult = await handleUpdateProject(updateItem);
+          projectUpdateResult.success
+            ? toast({
+                title: "success",
+                description: "project info was updated successfully",
+              })
+            : toast({
+                variant: "destructive",
+                title: "error",
+                description: projectUpdateResult.message,
+              });
+          break;
+        case "skills":
+          const skillUpdateResult = await handleUpdateSkill(updateItem);
+          skillUpdateResult.success
+            ? toast({
+                title: "success",
+                description: "skill info was updated successfully",
+              })
+            : toast({
+                variant: "destructive",
+                title: "error",
+                description: skillUpdateResult.message,
+              });
+          break;
+        default:
+          break;
       }
-      const request = await fetch(
-        `http://localhost:4000/api/${initialUpdate?.usersId}/experiences/${initialUpdate?.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(validPayload.data),
-        }
-      );
-      const data = request.json();
-      console.log("the experiences updated");
-      toast({
-        title: "success action",
-        description: "experience updated done",
-      });
-      router.refresh("/experiences");
-      return data;
+      switch (sectionName) {
+        case "experiences":
+          const experienceUpdateResult = await handleUpdateExperience(
+            updateItem
+          );
+          experienceUpdateResult.success
+            ? toast({
+                title: "success",
+                description: "experience info was updated successfully",
+              })
+            : toast({
+                variant: "destructive",
+                title: "error",
+                description: experienceUpdateResult.message,
+              });
+          break;
+        case "projects":
+          const projectUpdateResult = await handleUpdateProject(updateItem);
+          projectUpdateResult.success
+            ? toast({
+                title: "success",
+                description: "project info was updated successfully",
+              })
+            : toast({
+                variant: "destructive",
+                title: "error",
+                description: projectUpdateResult.message,
+              });
+          break;
+        case "skills":
+          const skillUpdateResult = await handleUpdateSkill(updateItem);
+          skillUpdateResult.success
+            ? toast({
+                title: "success",
+                description: "skill info was updated successfully",
+              })
+            : toast({
+                variant: "destructive",
+                title: "error",
+                description: skillUpdateResult.message,
+              });
+          break;
+        default:
+          break;
+      }
     } catch (error) {
       toast({
-        title: "connection error can't update",
+        variant: "destructive",
+        title: "error",
         description: error.message,
       });
-    }
-  };
-  const handleUpdateProject = async (e) => {
-    e.preventDefault();
-    try {
-      const validPayload = projectSchema.safeParse(updateItem);
-
-      if (!validPayload.success) {
-        toast({
-          title: "field action",
-          description: "data is not valid",
-        });
-        return validPayload.error.flatten().fieldErrors;
-      }
-      const request = await fetch(
-        `http://localhost:4000/api/${initialUpdate?.usersId}/projects/${initialUpdate?.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(validPayload.data),
-        }
-      );
-      const data = request.json();
-      console.log("the project updated");
-      toast({
-        title: "success action",
-        description: "project updated done",
-      });
-      router.refresh("/projects");
-      return data;
-    } catch (error) {
-      toast({
-        title: "connection error can't update",
-        description: error.message,
-      });
-    }
-  };
-  const handleUpdateSkill = async (e) => {
-    e.preventDefault();
-    try {
-      const validPayload = skillsSchema.safeParse(updateItem);
-      if (!validPayload.success) {
-        toast({
-          title: "field action",
-          description: "data is not valid",
-        });
-        return validPayload.error.flatten().fieldErrors;
-      }
-      const request = await fetch(
-        `http://localhost:4000/api/${initialUpdate?.usersId}/skills/${initialUpdate?.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(validPayload.data),
-        }
-      );
-      const data = request.json();
-      console.log("the skill updated");
-      toast({
-        title: "success action",
-        description: "skill updated done",
-      });
-      router.refresh();
-      return data;
-    } catch (error) {
-      toast({
-        title: "connection error can't update",
-        description: error.message,
-      });
+      return;
+    } finally {
+      setLoading(false);
+      return;
     }
   };
   return (
@@ -151,7 +153,7 @@ function UpdateBtn({ initialUpdate, sectionName }) {
 
           {sectionName === "experiences" && (
             <form
-              onSubmit={handleUpdateExperience}
+              onSubmit={handelUpdate}
               className="w-full sm:w-full flex flex-col justify-start items-start gap-2 p-4 rounded-md border"
             >
               <input
@@ -164,15 +166,27 @@ function UpdateBtn({ initialUpdate, sectionName }) {
                   setUpdatedItem({ ...updateItem, cName: e.target.value })
                 }
               />
+              <img
+                src={
+                  updatedImg === null
+                    ? updateItem.cLogo
+                    : URL.createObjectURL(updatedImg)
+                }
+                width={40}
+                height={40}
+                alt="new updated Img form"
+              />
               <input
                 className="p-2 w-full rounded-md "
-                type="url"
-                name="cLogo"
+                type="file"
+                accept="image/*"
+                name="file"
                 placeholder="company logo url"
-                defaultValue={initialUpdate.cLogo}
-                onChange={(e) =>
-                  setUpdatedItem({ ...updateItem, cLogo: e.target.value })
-                }
+                // defaultValue={initialUpdate.cLogo}
+                onChange={(e) => {
+                  setExpUpdatedImg(e.target.files[0]);
+                  setUpdatedItem({ ...updateItem, file: e.target.value });
+                }}
               />
               <input
                 className="p-2 w-full rounded-md"
@@ -235,14 +249,14 @@ function UpdateBtn({ initialUpdate, sectionName }) {
               <input
                 type="submit"
                 className="w-full py-2 rounded-md border  hover:bg-zinc-900 duration-150 cursor-pointer disabled:bg-zinc-600 disabled:cursor-not-allowed"
-                value={status.pending ? "updating..." : "update"}
-                disabled={status.pending}
+                value={loading ? "updating..." : "update"}
+                disabled={loading}
               />
             </form>
           )}
           {sectionName === "projects" && (
             <form
-              onSubmit={handleUpdateProject}
+              onSubmit={handelUpdate}
               className="w-full sm:w-full flex flex-col justify-start items-start gap-2 p-4 rounded-md border"
             >
               <input
@@ -278,14 +292,14 @@ function UpdateBtn({ initialUpdate, sectionName }) {
               <input
                 type="submit"
                 className="w-full py-4 rounded-md border hover:bg-zinc-900 duration-150 cursor-pointer disabled:bg-zinc-600 disabled:cursor-not-allowed"
-                value={status.pending ? "updating..." : "update"}
-                disabled={status.pending}
+                value={loading ? "updating..." : "update"}
+                disabled={loading}
               />
             </form>
           )}
           {sectionName === "skills" && (
             <form
-              onSubmit={handleUpdateSkill}
+              onSubmit={handelUpdate}
               className="w-full sm:w-full flex flex-col justify-start items-start gap-2 p-4 rounded-md"
             >
               <input
@@ -294,25 +308,37 @@ function UpdateBtn({ initialUpdate, sectionName }) {
                 name="skillName"
                 placeholder="skill name"
                 defaultValue={initialUpdate.skillName}
-                onChange={(e) =>
-                  setUpdatedItem({ ...updateItem, skillName: e.target.value })
+                // onChange={(e) =>
+                //   setUpdatedItem({ ...updateItem, skillName: e.target.value })
+                // }
+              />
+              <img
+                width={40}
+                height={40}
+                src={
+                  !updatedImg
+                    ? initialUpdate.skillLogo
+                    : URL.createObjectURL(updatedImg)
                 }
+                alt="new updated skill img"
               />
               <input
                 className="p-2 w-full rounded-md "
-                type="url"
-                name="skill logo"
-                placeholder="skill logo url"
-                defaultValue={initialUpdate.skillLogo}
-                onChange={(e) =>
-                  setUpdatedItem({ ...updateItem, skillLogo: e.target.value })
-                }
+                type="file"
+                name="file"
+                accept="image/*"
+                // placeholder="skill logo url"
+                // defaultValue={initialUpdate.skillLogo}
+                onChange={(e) => {
+                  setExpUpdatedImg(e.target.files[0]);
+                  setUpdatedItem({ ...updateItem, skillLogo: e.target.value });
+                }}
               />
               <input
                 type="submit"
                 className="w-full py-2 rounded-md border  hover:bg-zinc-900 duration-150 cursor-pointer disabled:bg-zinc-600 disabled:cursor-not-allowed"
-                value={status.pending ? "updating..." : "update"}
-                disabled={status.pending}
+                value={loading ? "updating..." : "update"}
+                disabled={loading}
               />
             </form>
           )}

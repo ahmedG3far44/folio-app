@@ -1,6 +1,6 @@
-import credentials from "../../../credentials/credentials";
-import ItemsList from "../../../components/ui/nav/ItemsList";
-import ExperienceSection from "../../../components/ui/sections/ExperienceSection";
+import credentials from "@credentials";
+import ItemsList from "@components/ui/nav/ItemsList";
+import ExperienceSection from "@components/ui/sections/ExperienceSection";
 
 async function ExperiencesPage() {
   const { user } = await credentials();

@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import credentials from "@/app/credentials/credentials";
+import credentials from "@credentials";
 
 async function Profile() {
   const { isAdmin, isLogged } = await credentials();

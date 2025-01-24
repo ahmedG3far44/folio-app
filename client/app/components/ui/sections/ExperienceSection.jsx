@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import ExperiencesForm from "../profile/forms/ExperiencesForm";
-import ExperienceCard from "../cards/ExperienceCard";
+import ExperiencesForm from "@profileForms/ExperiencesForm";
+import ExperienceCard from "@cards/ExperienceCard";
 
 function ExperienceSection() {
   const [experiencesObject, setExperiencesObject] = useState({

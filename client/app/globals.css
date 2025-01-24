@@ -125,11 +125,11 @@ html {
 }
 
 .hero_img {
-  @apply flex-1 overflow-hidden bg-secondary flex justify-center items-center rounded-xl h-full min-w-72 min-h-72  max-w-80 max-h-80 relative;
+  @apply flex-1 overflow-hidden  bg-secondary flex justify-center items-center rounded-xl h-full min-w-72 min-h-72  max-w-80 max-h-80 relative;
 }
 
 .hero_section {
-  @apply w-4/5 m-auto  flex justify-center  items-center gap-4  max-w-full border-0  rounded-md  max-sm:flex-wrap max-md:flex-wrap;
+  @apply w-4/5 m-auto flex-wrap flex justify-center  items-center gap-4  max-w-full border-0  rounded-md  max-sm:flex-wrap max-md:flex-wrap;
 }
 .hero_info {
   @apply flex-1 h-full  flex flex-col justify-start items-start max-sm:justify-center max-md:justify-center max-sm:items-center max-md:items-center  gap-2 flex-wrap;
@@ -151,8 +151,6 @@ html {
 .about_text {
   @apply p-4 flex-1  border appearance-none bg-card text-primary rounded-xl text-wrap text-start;
 }
-
-/* experiences card  ////////////////////// */
 
 .experience_card {
   @apply w-full min-w-72 flex flex-col justify-around items-start flex-wrap gap-4 bg-card border rounded-md p-4 max-sm:flex-col max-sm:justify-start;
@@ -315,4 +313,20 @@ admin dashboard
   --line-height: 1.2;
   min-height: calc(var(--line-height) * 2);
   overflow-y: hidden;
+}
+
+.video-animation {
+  animation: video_animation 0.4s ease-in-out forwards;
+  transition: 0.5s ease-in-out;
+}
+
+@keyframes video_animation {
+  0% {
+    scale: 0.4;
+    transform: translateY(20px);
+  }
+  100% {
+    scale: 1;
+    transform: translateY(0px);
+  }
 }

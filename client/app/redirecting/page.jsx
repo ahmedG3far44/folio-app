@@ -11,7 +11,7 @@ const verifyUser = async (user) => {
       },
       body: JSON.stringify(user),
     });
-    const data = request.json();
+    const data = await request.json();
     return data;
   } catch (error) {
     console.log(error.message);
@@ -32,6 +32,7 @@ async function RedirectingPage() {
     picture: user?.picture,
     role: "user",
   };
+  
   await verifyUser(payload);
 
   return isAdmin

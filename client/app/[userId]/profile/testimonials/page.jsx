@@ -3,7 +3,7 @@ import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { LuCopy } from "react-icons/lu";
 import { LuCheckCheck } from "react-icons/lu";
-import TestimonialsCard from "@/app/components/ui/cards/TestimonialsCard";
+import TestimonialsCard from "@cards/TestimonialsCard";
 function Testimonials() {
   const { userId } = useParams();
   const [copyState, setCopy] = useState(false);

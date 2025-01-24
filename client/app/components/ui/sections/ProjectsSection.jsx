@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import ProjectsForm from "../profile/forms/ProjectsForm";
-import ProjectCard from "../cards/ProjectCard";
+import ProjectsForm from "@profileForms/ProjectsForm";
+import ProjectCard from "@cards/ProjectCard";
 
 function ProjectsSection() {
   const [project, setProject] = useState({

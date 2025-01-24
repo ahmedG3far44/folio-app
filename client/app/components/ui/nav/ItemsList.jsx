@@ -10,20 +10,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+} from "@shadcn/alert-dialog";
 import {
   deleteExperience,
   deleteProject,
   deleteSkill,
-} from "@/app/actions/delete/actions";
+} from "@actions/delete/actions";
 import { useState } from "react";
-import DeleteBtn from "../profile/forms/DeleteBtn";
-import UpdateBtn from "../profile/forms/UpdateBtn";
+import DeleteBtn from "@profileForms/DeleteBtn";
+import UpdateBtn from "@profileForms/UpdateBtn";
 import { LuTrash, LuSearch } from "react-icons/lu";
 import { MdOutlineSearchOff } from "react-icons/md";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import SkillCard from "../cards/SkillCard";
+import SkillCard from "@cards/SkillCard";
 
 function ItemsList({ list, sectionName }) {
   const [search, setSearch] = useState("");

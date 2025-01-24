@@ -1,4 +1,4 @@
-import express, { response } from "express";
+import express from "express";
 import prisma from "../database/db.js";
 import Exceptions from "../handlers/Exceptions.js";
 import checkAccessUser from "../middlewares/checkAccessUser.js";
@@ -9,6 +9,7 @@ import { upload } from "./skills.js";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import resizedImage from "../handlers/resizeImage.js";
 import getImageKey from "../handlers/getImageKey.js";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
 const router = express.Router();
 
@@ -31,6 +32,7 @@ router.get("/:userId/experiences", async (req, res) => {
 
 router.post(
   "/:userId/experiences",
+  verifyAccessToken,
   upload.single("file"),
   checkUploadImageFormat,
   async (req, res) => {
@@ -40,11 +42,14 @@ router.post(
       const payload = req.body;
       const companyLogoImage = req.file;
       console.log(companyLogoImage);
-      console.log(payload);
+      // console.log(payload);
 
       const validExperiencePayload = experienceSchema.safeParse(payload);
+      console.log(validExperiencePayload.data);
       if (!validExperiencePayload.success) {
-        return res.status(400).json(new Exceptions(400, "not valid data"));
+        const error = validExperiencePayload.error.flatten().fieldErrors;
+        console.log(error);
+        return res.status(400).json(new Exceptions(400, error));
       }
       uploadImgPath = `${userId}/experiences/${crypto.randomUUID()}`;
 
@@ -112,12 +117,12 @@ router.put(
           .status(404)
           .json(new Exceptions(404, "This experience not exist"));
       }
-
+      console.log(payload);
       const validExperiencePayload = experienceSchema.safeParse(payload);
       if (!validExperiencePayload.success) {
-        return res
-          .status(400)
-          .json(new Exceptions(400, "Bad request not a valid data."));
+        console.log(validExperiencePayload.error.issues)
+        // validExperiencePayload.error.message.flatten().fieldErrors;
+        throw new Error("not a valid experience data");
       }
 
       const experienceImageKey = getImageKey(experience.cLogo);

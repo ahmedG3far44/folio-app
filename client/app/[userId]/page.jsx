@@ -1,9 +1,10 @@
-import Container from "../components/ui/containers/Container";
-import Header from "../components/ui/nav/Header";
+import Container from "@components/ui/containers/Container";
+import Header from "@components/ui/nav/Header";
 import { revalidatePath } from "next/cache";
-import credentials from "../credentials/credentials";
-import Footer from "../components/ui/sections/Footer";
-import MainProfilePreviewSection from "../components/ui/heroProfile/MainProfilePreviewSection";
+import credentials from "@credentials";
+import Footer from "@components/ui/sections/Footer";
+import MainProfilePreviewSection from "@components/ui/heroProfile/MainProfilePreviewSection";
+
 
 const getUserLayouts = async (userId) => {
   try {
@@ -19,7 +20,7 @@ const getUserLayouts = async (userId) => {
 const getUserInfo = async (userId) => {
   try {
     const request = await fetch(`http://localhost:4000/api/${userId}/user`);
-    const data = request.json();
+    const data = await request.json();
     revalidatePath(`/${userId}`);
     return data;
   } catch (error) {
@@ -29,8 +30,7 @@ const getUserInfo = async (userId) => {
 
 async function UserPage({ params }) {
   const { userId } = params;
-  const { user } = await credentials();
-  const { isLogged } = await credentials();
+  const { user, isLogged } = await credentials();
   const userInfo = await getUserInfo(user?.id || userId);
   const layouts = await getUserLayouts(user?.id || userId);
   const {
@@ -43,7 +43,6 @@ async function UserPage({ params }) {
     contacts,
     Testimonials,
   } = userInfo;
-
   return (
     <div
       className="

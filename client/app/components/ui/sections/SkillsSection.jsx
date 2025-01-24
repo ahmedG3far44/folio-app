@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import SkillsForm from "../profile/forms/SkillsForm";
-import SkillCard from "../cards/SkillCard";
+import SkillsForm from "@profileForms/SkillsForm";
+import SkillCard from "@cards/SkillCard";
 
 function SkillsSection() {
   const [skillState, setSkill] = useState({

@@ -3,11 +3,10 @@ import { MdOutlineInsights } from "react-icons/md";
 import { LuUsers2 } from "react-icons/lu";
 import { LuLogOut } from "react-icons/lu";
 import { TbSmartHome } from "react-icons/tb";
-import { GrTechnology } from "react-icons/gr";
 import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import User from "../../components/ui/cards/User";
-import credentials from "../../credentials/credentials";
-import { ModeToggle } from "../../../components/dark-mode-toggle";
+import User from "@cards/User";
+import credentials from "@credentials";
+import { ModeToggle } from "@themes/dark-mode-toggle";
 
 async function layout({ children }) {
   const { user, isAdmin } = await credentials();
@@ -26,11 +25,6 @@ async function layout({ children }) {
       path: `/${user?.id}/dashboard/analysis`,
       name: "Analysis",
       icon: <MdOutlineInsights size={20} />,
-    },
-    {
-      path: `/${user?.id}/dashboard/skills`,
-      name: "Skills",
-      icon: <GrTechnology size={20} />,
     },
   ];
   return (

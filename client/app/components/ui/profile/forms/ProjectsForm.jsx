@@ -3,9 +3,9 @@ import { useRef, useState } from "react";
 import { LuImage } from "react-icons/lu";
 import { PiImagesSquare } from "react-icons/pi";
 import { Plus } from "lucide-react";
-import Loader from "@/app/components/loaders/Loader";
-import { useToast } from "@/components/ui/use-toast";
-import { addProject } from "@/app/actions/create/actions";
+import Loader from "@loaders/Loader";
+import { useToast } from "@shadcn/use-toast";
+import { addProject } from "@actions/create/actions";
 
 function ProjectsForm({ project, setProject }) {
   const { toast } = useToast();

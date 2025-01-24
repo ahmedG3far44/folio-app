@@ -1,11 +1,10 @@
 "use client";
 import { useParams } from "next/navigation";
-import { feedBackSchema } from "../../../lib/schema";
+import { feedBackSchema } from "@lib/schema";
 import { useState, useRef } from "react";
-import { useToast } from "../../../components/ui/use-toast";
-import Loader from "../../components/loaders/Loader";
-import TestimonialsCard from "@/app/components/ui/cards/TestimonialsCard";
-// import { MdOutlineCelebration } from "react-icons/md";
+import { useToast } from "@shadcn/use-toast";
+import Loader from "@loaders/Loader";
+import TestimonialsCard from "@cards/TestimonialsCard";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
 
 function FeedBackPage() {
