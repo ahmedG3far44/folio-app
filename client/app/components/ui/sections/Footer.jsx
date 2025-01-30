@@ -4,9 +4,11 @@ import ContactsCard from "@cards/ContactsCard";
 import Container from "@components/ui/containers/Container";
 async function Footer({ picture, username, userId }) {
   const year = new Date().getFullYear();
-  const contacts = await (
-    await fetch(`http://localhost:4000/api/${userId}/contacts`)
-  ).json();
+  const contacts = await fetch(`http://localhost:4000/api/${userId}/contacts`)
+    .then((res) => res.json())
+    .catch((err) => console.log(err.message));
+  // const contacts = await request.json();
+
   return (
     <footer className="footer">
       <Container className="w-full flex justify-start  flex-wrap  gap-4 items-center">

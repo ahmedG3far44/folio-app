@@ -2,6 +2,8 @@
 import { useParams, useRouter } from "next/navigation";
 import { LuTrash } from "react-icons/lu";
 import { useToast } from "@shadcn/use-toast";
+import { useState } from "react";
+import Loader from "@components/loaders/Loader";
 
 function TestimonialsCard({
   id,
@@ -16,9 +18,11 @@ function TestimonialsCard({
   const { userId } = useParams();
   const { toast } = useToast();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-  const handleDeleteFeedback = async () => {
+  const handleDeleteFeedback = async (id) => {
     try {
+      setLoading(true);
       const request = await fetch(
         `http://localhost:4000/api/${userId}/feedback/${id}`,
         {
@@ -30,12 +34,13 @@ function TestimonialsCard({
       }
       const data = await request.json();
 
-      router.prefetch(`http://localhost:4000/api/${userId}/feedback`);
+      // router.refresh("/testimonials");
 
       toast({
         title: "delete  success",
         description: "the feedback is deleted successful",
       });
+      router.refresh();
       return data;
     } catch (error) {
       toast({
@@ -44,53 +49,64 @@ function TestimonialsCard({
         description: error.message,
       });
       return;
+    } finally {
+      setLoading(false);
     }
   };
   return (
     <div
       className={
-        "w-full flex flex-col justify-start items-start gap-4 p-4 rounded-md border bg-card"
+        "w-full max-w-1/3  flex flex-col justify-start items-start gap-2 p-4 rounded-md border bg-card"
       }
     >
       <div className={"flex justify-between items-center w-full"}>
         <div
           className={
-            "w-full flex  justify-start items-start gap-2 max-md:flex-wrap "
+            "w-full flex  justify-start items-center gap-4 max-md:flex-wrap "
           }
         >
-          <img
-            className="rounded-full min-w-10 min-h-10 overflow-hidden object-cover border p-1"
-            src={profile}
-            width={40}
-            height={40}
-            alt="client profile picture"
-          />
+          <div className="w-10 h-10 max-w-10 max-h-10 rounded-full overflow-hidden">
+            <img
+              className="max-w-full max-h-full w-full h-full object-cover "
+              src={profile}
+              width={40}
+              height={40}
+              alt="client profile picture"
+            />
+          </div>
           <div className={"flex flex-col justify-start items-start gap-0"}>
-            <h2 className="font-semibold">{name}</h2>
-            <h5 className="text-sm">{position}</h5>
+            <h2 className="font-semibold text-lg">{name}</h2>
+            <h5 className="text-sm text-muted">{position}</h5>
           </div>
 
-          {isLogged && (
-            <button
-              onClick={handleDeleteFeedback}
-              className={"ml-auto p-2 hover:text-rose-500 duration-150"}
-            >
-              <LuTrash size={20} />
-            </button>
-          )}
+          {isLogged &&
+            (loading ? (
+              <span className="ml-auto ">
+                <Loader />
+              </span>
+            ) : (
+              <button
+                onClick={() => handleDeleteFeedback(id)}
+                className="text-rose-500 hover:text-rose-700 ml-auto"
+              >
+                {" "}
+                <LuTrash size={20} />
+              </button>
+            ))}
         </div>
       </div>
 
       <div className={"w-full p-2 rounded-md overflow-hidden"}>
         {feedback ? (
-          <p className="text-start text-md">{feedback}</p>
+          <p className="text-start text-md line-clamp-5">{feedback}</p>
         ) : (
           <video
-            controls
-            width={200}
-            height={200}
-            className="rounded-lg m-auto "
+            className="w-full rounded-lg m-auto "
             src={video}
+            autoPlay={true}
+            controls
+            controlsList="download"
+            contentEditable={false}
           />
         )}
       </div>

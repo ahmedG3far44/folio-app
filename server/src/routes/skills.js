@@ -10,6 +10,7 @@ import dotenv from "dotenv";
 import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import resizedImage from "../handlers/resizeImage.js";
 import getImageKey from "../handlers/getImageKey.js";
+import { protectRoute } from "@kinde-oss/kinde-node-express";
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ router.get("/:userId/skills", checkAccessUser, async (req, res) => {
 
 router.post(
   "/:userId/skills",
+  protectRoute,
   checkAccessUser,
   upload.single("file"),
   checkUploadImageFormat,

@@ -8,39 +8,39 @@ import TestimonialsCard from "@cards/TestimonialsCard";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
 
 function FeedBackPage() {
-  const [success, setSuccess] = useState(null);
   const { userId } = useParams();
-  const [loading, setLoading] = useState(false);
-  const [feedbackState, setFeedbackState] = useState("text");
   const { toast } = useToast();
+  const [success, setSuccess] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const [pending, setLoading] = useState(false);
+  const [feedbackState, setFeedbackState] = useState("text");
   const feedbackFormRef = useRef(null);
   const [clientFeedbackCard, setClientFeedbackCard] = useState({
-    profile: "https://uploads.concordia.net/2016/09/12124923/profile-icon.jpg",
+    profile: "/images/th.jpeg",
     clientName: "client name....",
     position: "client position...",
     video: "",
-    feedback: "add your feedback pls...",
+    feedback: "lorem ipsum dolor sit amet consectetur adipisicing elit ...",
   });
 
   const handleFeedbacks = async (formData) => {
-    setLoading(true);
-    const profileImage = formData.get("profile");
-    const videoFeedback = formData.get("video");
-    if (!videoFeedback) {
-      formData.delete("video");
-      const text = formData.get("feedback");
-      if (text.length > 300) {
-        throw new Error("feedback text is too long ");
-      }
-    } else {
-      formData.delete("feedback");
-    }
-    console.log(formData);
-    const feedback = {
-      name: formData.get("name"),
-      position: formData.get("position"),
-    };
     try {
+      const profileImage = formData.get("profile");
+      const videoFeedback = formData.get("video");
+      if (!videoFeedback) {
+        formData.delete("video");
+        const text = formData.get("feedback");
+        if (text.length > 300) {
+          throw new Error("feedback text is too long ");
+        }
+      } else {
+        formData.delete("feedback");
+      }
+      console.log(formData);
+      const feedback = {
+        name: formData.get("name"),
+        position: formData.get("position"),
+      };
       if (profileImage.size > 10000000) {
         throw new Error(
           `this file size is too large ${profileImage.size / 1024 / 1024}MB`
@@ -49,7 +49,7 @@ function FeedBackPage() {
 
       const validData = feedBackSchema.safeParse(feedback);
       if (!validData.success) {
-        console.log(validData.error.flatten().fieldErrors);
+        // console.log(validData.error.flatten().fieldErrors);
         throw new Error("not valid data");
       }
       const request = await fetch(
@@ -65,55 +65,66 @@ function FeedBackPage() {
       const data = await request.json();
 
       feedbackFormRef?.current.reset();
-      toast({
-        title: "added success",
-        description: "Your feedback was added successfully",
-      });
       setSuccess("Your feedback was added successfully");
-      setTimeout(() => {
-        setTimeout(null);
-      }, 3000);
-      setLoading(false);
       return data;
     } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "can't add feedback",
-        description: error.message,
-      });
-      setLoading(false);
+      setErrorMsg(error.message);
       return error;
     }
   };
   return (
     <section
       className={
-        "w-screen h-screen p-4 rounded-md flex flex-col justify-center items-center "
+        "w-screen h-screen p-4 rounded-md flex flex-col justify-start items-center gap-4 "
       }
     >
       {success === null ? (
         <>
           <h1 className={"p-4 my-8 text-2xl font-bold"}>Add Your Feedback</h1>
-          <div className="w-1/2 grid grid-cols-2 grid-rows-1 grid-flow-row  gap-4 bg-card p-4 border rounded-md">
+          <div className="w-1/3 max-md:w-full max-sm:w-full">
+            <TestimonialsCard
+              profile={clientFeedbackCard.profile}
+              feedback={clientFeedbackCard.feedback}
+              position={clientFeedbackCard.position}
+              name={clientFeedbackCard.clientName}
+              video={clientFeedbackCard.video}
+              isLogged={false}
+              feedbackState={feedbackState}
+            />
+          </div>
+          <div className="w-1/3 max-md:w-full max-sm:w-full">
             <form
               ref={feedbackFormRef}
               action={async (formData) => {
+                setLoading(true);
                 await handleFeedbacks(formData)
                   .then((data) => {
                     console.log(data);
+                    toast({
+                      title: "added success",
+                      description: "Your feedback was added successfully",
+                    });
                   })
                   .catch((error) => {
                     toast({
                       variant: "destructive",
-                      title: "can't add feedback",
+                      title: "can't add feedback check your connection",
                       description: error.message,
                     });
+                  })
+                  .finally(() => {
+                    setLoading(false);
                   });
               }}
               className={
                 "flex-1  p-4 rounded-md border flex flex-col justify-start items-start gap-4"
               }
             >
+              {errorMsg && (
+                <div className="w-full p-2 rounded-md bg-red-500 text-white">
+                  {errorMsg}
+                </div>
+              )}
               <input
                 onChange={(e) => {
                   setClientFeedbackCard({
@@ -125,9 +136,8 @@ function FeedBackPage() {
                 type="file"
                 name={"profile"}
                 placeholder={"enter your title"}
-                accept={
-                  "image/png , image/jpeg, image/jpg, image/gif, video/mp4"
-                }
+                accept={"image/*, video/mp4"}
+                required
               />
 
               <input
@@ -141,6 +151,7 @@ function FeedBackPage() {
                 type="text"
                 name={"name"}
                 placeholder={"enter your name"}
+                required
               />
               <input
                 onChange={(e) => {
@@ -153,11 +164,12 @@ function FeedBackPage() {
                 type="text"
                 name={"position"}
                 placeholder={"enter your position "}
+                required
               />
               <div className="w-full p-2 flex justify-start items-center gap-4">
                 <button
                   type="button"
-                  className={`min-w-24 border px-4 py-2 rounded-md hover:bg-secondary duration-150 ${
+                  className={`w-full border px-4 py-2 rounded-md hover:bg-secondary duration-150 ${
                     feedbackState === "video" ? "bg-secondary" : "bg-card "
                   }`}
                   onClick={() => setFeedbackState("video")}
@@ -166,7 +178,7 @@ function FeedBackPage() {
                 </button>
                 <button
                   type="button"
-                  className={`min-w-24 border px-4 py-2 rounded-md hover:bg-secondary duration-150 ${
+                  className={`w-full border px-4 py-2 rounded-md hover:bg-secondary duration-150 ${
                     feedbackState === "text" ? "bg-secondary" : "bg-card "
                   }`}
                   onClick={() => setFeedbackState("text")}
@@ -202,7 +214,7 @@ function FeedBackPage() {
                       });
                     }}
                     className={
-                      "w-full h-full p-2 rounded-md bg-secondary border"
+                      "w-full h-full min-h-[100px] p-2 rounded-md bg-secondary border"
                     }
                     name="feedback"
                     id="clientFeedback"
@@ -211,37 +223,26 @@ function FeedBackPage() {
                 )}
               </div>
               <>
-                {loading && (
+                {pending && (
                   <div className="flex justify-start items-center gap-4 p-2 w-full">
-                    {" "}
                     <Loader /> uploading...
                   </div>
                 )}
               </>
-              <input
+              <button
                 type="submit"
                 className={
                   "w-full px-4 py-2 rounded-md border hover:bg-secondary cursor-pointer disabled:bg-secondary disabled:cursor-not-allowed"
                 }
-                disabled={loading}
-                value={loading ? "adding..." : "Add Feedback"}
-              />
+                disabled={pending}
+              >
+                {pending ? "adding..." : "add feedback"}
+              </button>
             </form>
-            <div className="flex-1 rounded-md min-h-full">
-              <TestimonialsCard
-                profile={clientFeedbackCard.profile}
-                name={clientFeedbackCard.clientName}
-                video={clientFeedbackCard.video}
-                position={clientFeedbackCard.position}
-                feedback={clientFeedbackCard.feedback}
-                feedbackState={feedbackState}
-                isLogged={false}
-              />
-            </div>
           </div>
         </>
       ) : (
-        <div className="flex justify-center items-center flex-col gap-2">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center flex-col gap-2 mt-20">
           <span>
             <LiaBirthdayCakeSolid size={50} color="green" />
           </span>

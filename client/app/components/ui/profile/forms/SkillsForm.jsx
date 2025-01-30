@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Loader from "@loaders/Loader";
 import { LuImagePlus } from "react-icons/lu";
 
+
 function SkillsForm({ skillState, setSkill }) {
   const router = useRouter();
   const { userId } = useParams();
@@ -14,6 +15,7 @@ function SkillsForm({ skillState, setSkill }) {
   const [skillLogoImage, setUploadedSkillLogo] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const skillFormRef = useRef(null);
+
   const handleAddNewSkill = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -21,10 +23,6 @@ function SkillsForm({ skillState, setSkill }) {
 
     formData.append("file", skillLogoImage);
     formData.append("skillName", skillState.skillName);
-
-    // console.log(formData.get("skillLogo"));
-    // console.log(formData.get("skillName"));
-
     try {
       const file = formData.get("file");
       if (!file) {
@@ -51,6 +49,9 @@ function SkillsForm({ skillState, setSkill }) {
         `http://localhost:4000/api/${userId}/skills`,
         {
           method: "POST",
+          headers: {
+            Authorization: `Bearer ${"token"}`,
+          },
           body: formData,
         }
       );
@@ -117,11 +118,11 @@ function SkillsForm({ skillState, setSkill }) {
         accept="image/png, image/jpeg, image/jpg, image/gif"
         required
       />
-      <div>
+      <div className="w-full">
         {successMessage && (
-          <div className="success_message w-full">{successMessage}</div>
+          <div className="success_message">{successMessage}</div>
         )}
-        {error && <div className="error_message w-full">{error}</div>}
+        {error && <div className="error_message">{error}</div>}
         {loading && (
           <div
             className={
@@ -135,7 +136,6 @@ function SkillsForm({ skillState, setSkill }) {
           </div>
         )}
       </div>
-
       <input
         value={skillState.skillName}
         onChange={(e) => setSkill({ ...skillState, skillName: e.target.value })}

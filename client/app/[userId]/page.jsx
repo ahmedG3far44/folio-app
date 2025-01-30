@@ -47,7 +47,7 @@ async function UserPage({ params }) {
     <div
       className="
      flex flex-col justify-start items-center gap-10 m-auto w-full max-w-full overflow-x-hidden overflow-y-auto no-scrollbar"
-    >
+    > 
       <Header userId={userId} picture={picture} username={name} />
       <Container className="w-full m-auto flex flex-col gap-16">
         <MainProfilePreviewSection

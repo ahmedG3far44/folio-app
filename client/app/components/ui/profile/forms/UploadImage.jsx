@@ -48,7 +48,7 @@ function UploadImage({ id, url, className, fileFormName, acceptedTypes }) {
         throw new Error("connection error");
       }
       const data = await uploadFile.json();
-
+      setSuccessUpload("uploaded successfully done");
       toast({
         title: "success upload",
         description: "image uploaded success",
@@ -68,6 +68,11 @@ function UploadImage({ id, url, className, fileFormName, acceptedTypes }) {
       return { success: false, message: error.message };
     } finally {
       setLoading(false);
+      uploadFileRef?.current.reset();
+      setTimeout(() => {
+        setError("");
+        setSuccessUpload("");
+      }, 3000);
     }
   };
 
@@ -81,7 +86,9 @@ function UploadImage({ id, url, className, fileFormName, acceptedTypes }) {
         ${loading && "opacity-1"}`
       )}
     >
-      {urlImg ? (
+      {/* fileFormName={"cv-file"}
+      fileFormName={"hero-image"} */}
+      { urlImg && fileFormName=="hero-image"? (
         <Image
           src={urlImg}
           width={100}
