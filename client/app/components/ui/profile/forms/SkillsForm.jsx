@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import Loader from "@loaders/Loader";
 import { LuImagePlus } from "react-icons/lu";
 
-
 function SkillsForm({ skillState, setSkill }) {
   const router = useRouter();
   const { userId } = useParams();
@@ -19,8 +18,8 @@ function SkillsForm({ skillState, setSkill }) {
   const handleAddNewSkill = async (e) => {
     e.preventDefault();
     setLoading(true);
-    const formData = new FormData();
 
+    const formData = new FormData();
     formData.append("file", skillLogoImage);
     formData.append("skillName", skillState.skillName);
     try {
@@ -49,15 +48,11 @@ function SkillsForm({ skillState, setSkill }) {
         `http://localhost:4000/api/${userId}/skills`,
         {
           method: "POST",
-          headers: {
-            Authorization: `Bearer ${"token"}`,
-          },
           body: formData,
         }
       );
       const data = await request.json();
       if (request.status === 201) {
-        setLoading(false);
         toast({
           title: "a new skill was added",
           description: data.message,
@@ -72,7 +67,6 @@ function SkillsForm({ skillState, setSkill }) {
         return;
       }
     } catch (error) {
-      setLoading(false);
       toast({
         variant: "destructive",
         title: "can't add a new skill",
@@ -80,6 +74,8 @@ function SkillsForm({ skillState, setSkill }) {
       });
       setErrorMessage(error.message);
       return;
+    } finally {
+      setLoading(false);
     }
   };
   return (

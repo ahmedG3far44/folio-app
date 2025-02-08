@@ -38,7 +38,6 @@ router.get("/:userId/skills", checkAccessUser, async (req, res) => {
 
 router.post(
   "/:userId/skills",
-  protectRoute,
   checkAccessUser,
   upload.single("file"),
   checkUploadImageFormat,

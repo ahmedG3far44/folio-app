@@ -62,12 +62,9 @@ function ExperiencesForm({ experiencesObject, setExperiencesObject }) {
     } else {
       try {
         const request = await fetch(
-          `${process.env.NODE_ENV === "development" ? process.env.LOCAL_DOMAIN_URL : process.env.DOMAIN_URL}/${userId}/experiences`,
+          `http://localhost:4000/api/${userId}/experiences`,
           {
             method: "POST",
-            headers:{
-              "Authorization": `Bearer`,
-            },
             body: formData,
           }
         );

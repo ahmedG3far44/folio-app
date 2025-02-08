@@ -1,4 +1,4 @@
-import Image from "next/image";
+
 import GradientText from "./heroLayouts/GradientText";
 
 function SkillCard({ skillName, skillLogo, layoutStyle }) {
@@ -11,10 +11,7 @@ function SkillCard({ skillName, skillLogo, layoutStyle }) {
             layoutStyle === "2" &&
             "flex flex-col rounded-md  justify-center bg-primary-foreground items-center gap-2 border p-4 hover:bg-primary-foreground"
           }
-          ${
-            layoutStyle === "3" &&
-            "flex justify-between items-center  px-4 max-sm:justify-center max-sm:gap-4 m-auto "
-          }
+          ${layoutStyle === "3" && "flex justify-center flex-wrap items-center gap-4"}
           ${
             layoutStyle === "4" &&
             "w-full flex justify-start items-center gap-4"
@@ -22,14 +19,12 @@ function SkillCard({ skillName, skillLogo, layoutStyle }) {
             ${layoutStyle === "5" && "flex justify-start items-center gap-8"}
         `}
       >
-        <Image
-          className={`w-10 h-10 object-cover rounded-md ml-4
-              ${layoutStyle === "3" && "block"}
+        <img
+          className={`rounded-md ml-4 p-2 w-14 h-14 min-w-14 min-h-14 
+              ${layoutStyle === "3" && "flex  object-cover "}
               ${layoutStyle === "5" && "hidden"}
               `}
           src={skillLogo}
-          width={40}
-          height={40}
           alt="skill logo"
         />
         {layoutStyle === "5" ? (
@@ -38,7 +33,7 @@ function SkillCard({ skillName, skillLogo, layoutStyle }) {
           </GradientText>
         ) : (
           <h1
-            className={` w-fit text-xl  text-nowrap font-semibold
+            className={`w-fit text-xl  text-nowrap font-semibold
           
             ${layoutStyle === "3" && "hidden"}
             ${layoutStyle === "4" && "text-2xl text-muted-foreground"}

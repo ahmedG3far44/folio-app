@@ -9,7 +9,7 @@ import { upload } from "./skills.js";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import resizedImage from "../handlers/resizeImage.js";
 import getImageKey from "../handlers/getImageKey.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+// import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
 const router = express.Router();
 
@@ -32,7 +32,6 @@ router.get("/:userId/experiences", async (req, res) => {
 
 router.post(
   "/:userId/experiences",
-  verifyAccessToken,
   upload.single("file"),
   checkUploadImageFormat,
   async (req, res) => {
@@ -120,7 +119,7 @@ router.put(
       console.log(payload);
       const validExperiencePayload = experienceSchema.safeParse(payload);
       if (!validExperiencePayload.success) {
-        console.log(validExperiencePayload.error.issues)
+        console.log(validExperiencePayload.error.issues);
         // validExperiencePayload.error.message.flatten().fieldErrors;
         throw new Error("not a valid experience data");
       }

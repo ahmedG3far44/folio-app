@@ -4,22 +4,25 @@ import prisma from "./database/db.js";
 import rootRouter from "./routes/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import {setupKinde, protectRoute, getUser, GrantType } from "@kinde-oss/kinde-node-express";
-import https from "https";
-import fs from "fs";  
-import http from "http";
+import {
+  setupKinde,
+  protectRoute,
+  getUser,
+  GrantType,
+} from "@kinde-oss/kinde-node-express";
+// import https from "https";
+// import fs from "fs";
 
-
-
-
-
-const ENV =  process.env.ENV ;
+const ENV = process.env.ENV;
 dotenv.config();
 
 const app = express();
 
 const corsOptions = {
-  origin:ENV === "development" ? "http://localhost:3000" : "https://presentoapp.kinde.com",
+  origin:
+    ENV === "development"
+      ? "http://localhost:3000"
+      : "https://presentoapp.kinde.com",
   methods: "GET,POST, PUT, DELETE",
   allowedHeaders: ["Content-Type", "Authorization"],
 };
@@ -33,9 +36,8 @@ const config = {
   scope: "openid profile email",
   grantType: GrantType.AUTHORIZATION_CODE,
   unAuthorisedUrl: "http://localhost:3000/unauthorised",
-  postLogoutRedirectUrl: "http://localhost:3000"
+  postLogoutRedirectUrl: "http://localhost:3000",
 };
-
 
 setupKinde(config, app);
 
@@ -54,18 +56,12 @@ app.use(express.json());
 app.use("/api", rootRouter);
 
 app.get("/", async (req, res) => {
-  res.send("APP is working....");
+  return res.send("APP is working....");
 });
 
-if (ENV === "development"){
-  http.createServer(app).listen(80, () => {
-    console.log("Server running on port 80");
-  });
-}else{
-  https.createServer({
-    key: fs.readFileSync(process.env.SSL_KEY_PATH),
-    cert: fs.readFileSync(process.env.SSL_CERT_PATH)
-  }, app).listen(443, () => {
-    console.log("Server running on port 443 https");
-  });
-}
+
+app.listen(process.env.PORT || 4000, () => {
+  console.log(`Server running on port ${process.env.PORT || 4000}`);
+});
+
+

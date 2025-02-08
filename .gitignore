@@ -37,3 +37,9 @@ client/next-env.d.ts
 
 server/node_modules
 server/.env
+
+
+docker-compose.yaml
+
+client/Dockerfile
+server/Dockerfile
