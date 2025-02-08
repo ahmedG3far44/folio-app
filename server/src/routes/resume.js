@@ -4,7 +4,7 @@ import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import prisma from "../database/db.js";
 import s3Client from "../s3/s3Client.js";
 import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
-import { changeToSlug, upload } from "./skills.js";
+import { upload } from "./skills.js";
 import dotenv from "dotenv";
 import Exceptions from "../handlers/Exceptions.js";
 dotenv.config();
