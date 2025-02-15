@@ -1,15 +1,11 @@
 import credentials from "@credentials";
 import { redirect } from "next/navigation";
+import { checkIsAdmin } from "@/lib/utils";
+
 async function Dashboard() {
-  const { user, isAdmin } = await credentials();
-  {
-    !isAdmin ? (
-      redirect(`/${user?.id}`)
-    ) : (
-      <div className="max-w-screen max-h-screen">
-        <h1>Dashboard</h1>
-      </div>
-    );
-  }
+  const { user, isLogged } = await credentials();
+  const isAdmin = await checkIsAdmin(user?.id);
+  if (!isAdmin && isLogged)
+    return redirect(`http://localhost:3000/${user?.id}/profile/bio`);
 }
 export default Dashboard;

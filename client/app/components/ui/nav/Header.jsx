@@ -6,6 +6,7 @@ import Image from "next/image";
 import { ModeToggle } from "@themes/dark-mode-toggle";
 import { HiOutlineLogout } from "react-icons/hi";
 import { LuSettings } from "react-icons/lu";
+import noneUserImage from '@/public/images/unUser.png'
 
 async function Header({ picture, username, userId }) {
   const { isLogged, isAdmin } = await credentials();
@@ -19,7 +20,7 @@ async function Header({ picture, username, userId }) {
             src={
               picture
                 ? picture
-                : "https://superstarsculture.com/wp-content/uploads/2023/10/unknown-1-3.jpg"
+                : noneUserImage
             }
             width={40}
             height={40}

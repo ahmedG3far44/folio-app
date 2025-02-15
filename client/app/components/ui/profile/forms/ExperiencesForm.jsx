@@ -134,7 +134,7 @@ function ExperiencesForm({ experiencesObject, setExperiencesObject }) {
         className={
           expCompanyLogo ? "w-full p-2 bg-secondary rounded-md" : "hidden"
         }
-        accept="image/png, image/jpeg, image/jpg, image/gif"
+        accept="image/*"
         required
       />
 

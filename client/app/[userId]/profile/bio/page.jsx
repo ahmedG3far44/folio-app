@@ -6,16 +6,17 @@ import UploadCvForm from "@profileForms/UploadCvForm";
 import ContactsForm from "@profileForms/ContactsForm";
 import BioForm from "@profileForms/BioForm";
 import HeroLayout from "@cards/HeroLayout";
+import Skeleton from "@/app/components/ui/cards/Skeleton";
 
 function BioPage() {
-  const router = useRouter();
+  // const router = useRouter();
   const { userId } = useParams();
   const [bio, setBio] = useState();
   const [contacts, setContacts] = useState();
   const [switcher, setSwitcher] = useState("bio");
-  const [isLoading, setLoading] = useState(false);
+  const [pending, setPending] = useState(false);
   useEffect(() => {
-    setLoading(true);
+
     async function getUserBio(userId) {
       const request = await fetch(`http://localhost:4000/api/${userId}/bio`);
       const userBio = await request.json();
@@ -28,17 +29,22 @@ function BioPage() {
       const userContacts = await request.json();
       setContacts(userContacts);
     }
-    getUserBio(userId);
-    getUserContacts(userId);
-    setLoading(false);
-    router.refresh();
+    try {
+      setPending(true);
+      getUserBio(userId);
+      getUserContacts(userId);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setPending(false);
+    }
   }, []);
   return (
     <div className="w-full flex flex-col justify-start items-start gap-4 overflow-x-hidden overflow-y-scroll no-scrollbar p-4">
       <div className="bg-card border-2 border-dashed border-secondary w-full max-sm:w-full max-md:w-full  m-auto mt-4  rounded-md p-8 ">
-        {isLoading ? (
-          <div className="w-full h-full min-w-full min-h-1/2 flex justify-center items-center p-8">
-            <h1 className="text-4xl">Loading...</h1>
+        {pending ? (
+          <div className="min-h-full min-w-full w-full h-full p-4 flex justify-center items-center">
+            <Skeleton />
           </div>
         ) : (
           <HeroLayout

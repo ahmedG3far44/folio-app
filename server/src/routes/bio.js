@@ -31,7 +31,9 @@ router.get("/:userId/bio", async (req, res) => {
 
     return res.status(200).json({
       ...bio,
-      heroImage: `${process.env.AWS_S3_BUCKET_DOMAIN}/${bio.heroImage}`,
+      heroImage: bio.heroImage
+        ? `${process.env.AWS_S3_BUCKET_DOMAIN}/${bio.heroImage}`
+        : null,
     });
   } catch (error) {
     return res.status(500).json(new Exceptions(500, error.message));
@@ -76,7 +78,7 @@ router.post(
     const { userId, bioId } = req.params;
     const image = req.file;
     let fileKeyPath;
-    const bio = await prisma.bio.findUnique({
+    const bio = await prisma.bio.findFirst({
       where: {
         usersId: userId,
         id: bioId,

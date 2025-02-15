@@ -20,7 +20,7 @@ const verifyUser = async (user) => {
 };
 async function RedirectingPage() {
   const { getUser, getPermission } = await getKindeServerSession();
-  const isAdmin = await getPermission("admin:create");
+  const isAdmin = await getPermission("admin:access");
 
   const user = await getUser();
 
@@ -30,7 +30,7 @@ async function RedirectingPage() {
     family_name: user?.family_name,
     email: user?.email,
     picture: user?.picture,
-    role: "user",
+    role: "USER",
   };
   
   await verifyUser(payload);

@@ -10,7 +10,7 @@ router.post("/user", checkUser, async (req, res) => {
   try {
     const payload = req.body;
     console.log(payload);
-    const userInfo = await prisma.users.findUnique({
+    const userInfo = await prisma.users.findFirst({
       where: { id: payload.id },
       select: {
         id: true,
@@ -91,14 +91,16 @@ router.get("/:userId/user", async (req, res) => {
 
       const bio = {
         ...bioInfo,
-        heroImage: `${process.env.AWS_S3_BUCKET_DOMAIN}/${bioInfo.heroImage}`,
+        heroImage: bioInfo.heroImage
+          ? `${process.env.AWS_S3_BUCKET_DOMAIN}/${bioInfo.heroImage}`
+          : null,
       };
 
-      const newToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "7d",
-      });
+      // const newToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
+      //   expiresIn: "7d",
+      // });
 
-      res.cookie("accessToken", newToken, { maxAge: 604800000 }); // expires in 7 days
+      // res.cookie("accessToken", newToken, { maxAge: 604800000 }); // expires in 7 days
 
       return res.status(200).json({ ...user, bio, contacts, layouts });
     }

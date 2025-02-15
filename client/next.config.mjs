@@ -20,11 +20,6 @@ const nextConfig = {
         hostname: "presento-app.s3.amazonaws.com",
         pathname: "/*",
       },
-      {
-        protocol: "https",
-        hostname: "presento-app.s3.amazonaws.com",
-        pathname: "/*",
-      },
     ],
   },
 };

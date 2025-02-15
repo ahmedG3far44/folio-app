@@ -6,13 +6,13 @@ import { Plus } from "lucide-react";
 import Loader from "@loaders/Loader";
 import { useToast } from "@shadcn/use-toast";
 import { addProject } from "@actions/create/actions";
+import SubmitBtn from "./SubmitBtn";
 
 function ProjectsForm({ project, setProject }) {
   const { toast } = useToast();
   const addProjectRef = useRef(null);
   const tagRef = useRef(null);
   const [error, setErrorMessage] = useState(null);
-  const [pending, setPending] = useState(false);
   const [successMessage, setSuccessAddMessage] = useState(null);
   const [tag, setTag] = useState("");
   const [tagList, setTagsList] = useState([]);
@@ -22,30 +22,19 @@ function ProjectsForm({ project, setProject }) {
     <form
       ref={addProjectRef}
       action={async (formData) => {
-        setPending(true);
-
-        const result = await addProject(formData, tagList);
-
-        if (!result?.success) {
-          setErrorMessage(result?.message);
+        try {
+          await addProject(formData, tagList);
+          toast({
+            title: "a new project was added successful",
+          });
+          addProjectRef?.current.reset();
+        } catch (error) {
           toast({
             variant: "destructive",
             title: "can't add a new project",
-            description: result?.message,
+            description: error.message,
           });
-          setPending(false);
         }
-
-        setSuccessAddMessage(result?.message);
-        setTimeout(() => {
-          setSuccessAddMessage("");
-        }, 1000);
-        toast({
-          title: "a new project was added successful",
-        });
-        setPending(false);
-        setErrorMessage("");
-        addProjectRef?.current.reset();
       }}
       className="bg-card flex-1 max-h-auto  rounded-md flex flex-col justify-start items-start gap-2 p-4 border"
     >
@@ -99,12 +88,12 @@ function ProjectsForm({ project, setProject }) {
         multiple
       />
 
-      {pending && (
+      {/* {pending && (
         <div className="flex justify-start items-center gap-2 w-full p-2 bg-secondary rounded-md">
           <Loader />
           <h1>uploading...</h1>
         </div>
-      )}
+      )} */}
       <input
         type="text"
         name="title"
@@ -177,11 +166,10 @@ function ProjectsForm({ project, setProject }) {
         <div className="success_message">{successMessage}</div>
       )}
       {error && <div className="error_message">{error}</div>}
-      <input
-        type="submit"
-        aria-disabled={pending}
-        value={pending ? "creating..." : "Add"}
-        className="submit_button"
+      <SubmitBtn
+        variant={"outline"}
+        loadingText={"adding project..."}
+        defaultBtnText={"create project"}
       />
     </form>
   );

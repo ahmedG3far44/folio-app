@@ -60,7 +60,7 @@ function HeroLayoutThree({
           </div>
         </div>
       </div>
-      <div className="about_text w-full m-auto">
+      <div className="about_text w-3/4 m-auto">
         <summary className="overflow-hidden">
           {!!summary
             ? summary

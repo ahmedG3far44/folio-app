@@ -2,10 +2,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// prod db
+// datasource db {
+//   provider  = "postgresql"
+//   url       = env("POSTGRES_PRISMA_URL")
+//   directUrl = env("POSTGRES_URL_NON_POOLING")
+// }
+
+//local db
 datasource db {
-  provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Users {
@@ -13,7 +20,7 @@ model Users {
   name            String
   email           String         @unique
   picture         String?
-  role            String         @default("user")
+  role            Role           @default(USER)
   resume          String?
   ExperiencesList Experiences[]
   ProjectsList    Projects[]
@@ -26,11 +33,16 @@ model Users {
   updatedAt       DateTime       @updatedAt
 }
 
+enum Role {
+  USER
+  ADMIN
+}
+
 model Bio {
   id        String  @id @default(uuid())
   heroImage String? @default("")
   bio       String? @db.Text
-  jobTitle  String? @default("change your currrent job title.... ")
+  jobTitle  String? @default("change your current job title.... ")
   bioName   String? @default("change your name....")
   userId    Users   @relation(fields: [usersId], references: [id])
   usersId   String

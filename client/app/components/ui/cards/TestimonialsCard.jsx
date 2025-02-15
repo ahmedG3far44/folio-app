@@ -4,6 +4,7 @@ import { LuTrash } from "react-icons/lu";
 import { useToast } from "@shadcn/use-toast";
 import { useState } from "react";
 import Loader from "@components/loaders/Loader";
+import Image from "next/image";
 
 function TestimonialsCard({
   id,
@@ -18,11 +19,11 @@ function TestimonialsCard({
   const { userId } = useParams();
   const { toast } = useToast();
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [pending, setPending] = useState(false);
 
   const handleDeleteFeedback = async (id) => {
     try {
-      setLoading(true);
+      setPending(true);
       const request = await fetch(
         `http://localhost:4000/api/${userId}/feedback/${id}`,
         {
@@ -40,7 +41,7 @@ function TestimonialsCard({
         title: "delete  success",
         description: "the feedback is deleted successful",
       });
-      router.refresh();
+      router.prefetch("/testimonials");
       return data;
     } catch (error) {
       toast({
@@ -48,9 +49,8 @@ function TestimonialsCard({
         title: "can't delete feedback",
         description: error.message,
       });
-      return;
     } finally {
-      setLoading(false);
+      setPending(false);
     }
   };
   return (
@@ -65,14 +65,8 @@ function TestimonialsCard({
             "w-full flex  justify-start items-center gap-4 max-md:flex-wrap "
           }
         >
-          <div className="w-10 h-10 max-w-10 max-h-10 rounded-full overflow-hidden">
-            <img
-              className="max-w-full max-h-full w-full h-full object-cover "
-              src={profile}
-              width={40}
-              height={40}
-              alt="client profile picture"
-            />
+          <div className="w-10 h-10 min-h-10 min-w-10   max-h-10 max-w-10 rounded-full flex justify-center items-center overflow-hidden object-cover">
+            <Image src={profile} width={40} height={40} alt="" />
           </div>
           <div className={"flex flex-col justify-start items-start gap-0"}>
             <h2 className="font-semibold text-lg">{name}</h2>
@@ -80,7 +74,7 @@ function TestimonialsCard({
           </div>
 
           {isLogged &&
-            (loading ? (
+            (pending ? (
               <span className="ml-auto ">
                 <Loader />
               </span>

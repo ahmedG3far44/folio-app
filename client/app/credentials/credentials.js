@@ -7,7 +7,7 @@ export default async function credentials() {
     await getKindeServerSession();
   const user = await getUser();
   const accessToken = await getAccessToken();
-  const permission = await getPermission("admin:create");
+  const permission = await getPermission("admin:access");
   const isLogged = await isAuthenticated();
   return {
     user,

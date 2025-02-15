@@ -90,7 +90,7 @@ function ProjectDetailsPage() {
               Back Home
             </Link>
           </div>
-          <div className="max-md:w-full w-[40%] min-w-[30%] flex flex-col justify-start items-start gap-4  bg-card p-4 rounded-md border max-md:static sticky top-0 right-0 ">
+          <div className="max-md:w-full w-[40%] min-w-[30%] flex flex-col justify-start items-start gap-4  bg-card p-4 py-8 rounded-md border max-md:static sticky top-0 right-0 ">
             <h1 className={"text-2xl font-bold"}>{project?.title}</h1>
             <div className="border rounded-md w-full overflow-hidden bg-secondary">
               <img
@@ -134,16 +134,6 @@ function ProjectDetailsPage() {
                 <></>
               )}
             </>
-            <div className="flex justify-start items-center gap-4  w-full border rounded-md p-4">
-              <LoveBtn likes={project?.likes} />
-              <div className="flex justify-start items-center gap-2">
-                <span>
-                  {" "}
-                  <LuEye size={20} />
-                </span>
-                <span>{project?.views}</span>
-              </div>
-            </div>
           </div>
         </>
       )}

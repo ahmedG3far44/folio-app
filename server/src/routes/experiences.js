@@ -66,28 +66,23 @@ router.post(
         ContentType: "image/webp",
       });
 
-      await s3Client
-        .send(command)
-        .then(async (response) => {
-          if (response.$metadata.httpStatusCode === 200) {
-            console.log("upload company logo success");
-            await prisma.experiences.create({
-              data: {
-                ...validExperiencePayload.data,
-                cLogo: `https://presento-app.s3.amazonaws.com/${uploadImgPath}`,
-                usersId: userId,
-              },
-            });
-            console.log("a new experience was added to db");
-            return res
-              .status(201)
-              .json(new Exceptions(201, "a new experiences was added."));
-          }
-        })
-        .catch((error) => {
-          console.log("upload cLogo error");
-          return res.status(500).json(new Exceptions(500, error.message));
-        });
+      const uploadCompanyLogoResult = await s3Client.send(command);
+
+      if (!uploadCompanyLogoResult.$metadata.httpStatusCode === 200) {
+        throw new Error("upload company logo error!!");
+      }
+      console.log("upload company logo success");
+      await prisma.experiences.create({
+        data: {
+          ...validExperiencePayload.data,
+          cLogo: `https://presento-app.s3.amazonaws.com/${uploadImgPath}`,
+          usersId: userId,
+        },
+      });
+      console.log("a new experience was added to db");
+      return res
+        .status(201)
+        .json(new Exceptions(201, "a new experiences was added."));
     } catch (error) {
       return res.status(500).json(new Exceptions(500, error.message));
     }

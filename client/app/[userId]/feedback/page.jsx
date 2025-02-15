@@ -6,17 +6,18 @@ import { useToast } from "@shadcn/use-toast";
 import Loader from "@loaders/Loader";
 import TestimonialsCard from "@cards/TestimonialsCard";
 import { LiaBirthdayCakeSolid } from "react-icons/lia";
+import SubmitBtn from "@/app/components/ui/profile/forms/SubmitBtn";
 
 function FeedBackPage() {
   const { userId } = useParams();
   const { toast } = useToast();
   const [success, setSuccess] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
-  const [pending, setLoading] = useState(false);
+  const [pending, setPending] = useState(false);
   const [feedbackState, setFeedbackState] = useState("text");
   const feedbackFormRef = useRef(null);
   const [clientFeedbackCard, setClientFeedbackCard] = useState({
-    profile: "/images/th.jpeg",
+    profile: "/images/unUser.png",
     clientName: "client name....",
     position: "client position...",
     video: "",
@@ -75,7 +76,7 @@ function FeedBackPage() {
   return (
     <section
       className={
-        "w-screen h-screen p-4 rounded-md flex flex-col justify-start items-center gap-4 "
+        "min-h-screen w-screen p-4 rounded-md flex flex-col justify-center items-center gap-4 "
       }
     >
       {success === null ? (
@@ -96,25 +97,22 @@ function FeedBackPage() {
             <form
               ref={feedbackFormRef}
               action={async (formData) => {
-                setLoading(true);
-                await handleFeedbacks(formData)
-                  .then((data) => {
-                    console.log(data);
-                    toast({
-                      title: "added success",
-                      description: "Your feedback was added successfully",
-                    });
-                  })
-                  .catch((error) => {
-                    toast({
-                      variant: "destructive",
-                      title: "can't add feedback check your connection",
-                      description: error.message,
-                    });
-                  })
-                  .finally(() => {
-                    setLoading(false);
+                try {
+                  setPending(true);
+                  await handleFeedbacks(formData);
+                  toast({
+                    title: "added success",
+                    description: "Your feedback was added successfully",
                   });
+                } catch (error) {
+                  toast({
+                    variant: "destructive",
+                    title: "can't add feedback check your connection",
+                    description: error.message,
+                  });
+                } finally {
+                  setPending(false);
+                }
               }}
               className={
                 "flex-1  p-4 rounded-md border flex flex-col justify-start items-start gap-4"
@@ -229,22 +227,17 @@ function FeedBackPage() {
                   </div>
                 )}
               </>
-              <button
-                type="submit"
-                className={
-                  "w-full px-4 py-2 rounded-md border hover:bg-secondary cursor-pointer disabled:bg-secondary disabled:cursor-not-allowed"
-                }
-                disabled={pending}
-              >
-                {pending ? "adding..." : "add feedback"}
-              </button>
+              <SubmitBtn
+                defaultBtnText={"Create Feedback"}
+                loadingText={"Feedback creating..."}
+              />
             </form>
           </div>
         </>
       ) : (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-center items-center flex-col gap-2 mt-20">
+        <div className="flex flex-col justify-center items-center mt-20">
           <span>
-            <LiaBirthdayCakeSolid size={50} color="green" />
+            <LiaBirthdayCakeSolid size={50} color="text-green-500" />
           </span>
           <p className="p-2 rounded-md  text-green-500 text-xl">{success}</p>
         </div>

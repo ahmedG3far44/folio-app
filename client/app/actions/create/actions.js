@@ -1,9 +1,5 @@
 "use server";
-import {
-  experienceSchema,
-  projectSchema,
-  skillsSchema,
-} from "@lib/schema";
+import { experienceSchema, projectSchema, skillsSchema } from "@lib/schema";
 import credentials from "@credentials";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -54,6 +50,9 @@ export async function addExperience(newExperience) {
 }
 export async function addProject(formData, tags) {
   const { user } = await credentials();
+  if (!user) {
+    throw new Error("Unauthorized user");
+  }
   tags.map((tag) => {
     formData.append("tags", tag);
   });
@@ -76,10 +75,8 @@ export async function addProject(formData, tags) {
       );
     }
     if (!validProjectData?.success) {
-      validProjectData.error.errors.push((error) => {
-        console.log(error);
-        throw new Error(error);
-      });
+      console.log(validProjectData.error.formErrors.fieldErrors);
+      throw new Error(validProjectData.error.message);
     }
     const request = await fetch(
       `http://localhost:4000/api/${user?.id}/project`,
@@ -91,18 +88,12 @@ export async function addProject(formData, tags) {
     if (!request.status === 201) {
       throw new Error("connection error failed to add project");
     }
-
-    const data = await request.json();
-    revalidatePath("/projects");
-    return {
-      success: true,
-      message: data.message,
-    };
+    return revalidatePath("/projects");
   } catch (error) {
-    return {
-      success: false,
-      message: error.message,
-    };
+    if(error instanceof Error){
+      return error
+    }
+    
   }
 }
 

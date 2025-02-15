@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import credentials from "@credentials";
 import Footer from "@components/ui/sections/Footer";
 import MainProfilePreviewSection from "@components/ui/heroProfile/MainProfilePreviewSection";
-
+import { redirect } from "next/navigation";
+import { checkIsAdmin } from "@/lib/utils";
 
 const getUserLayouts = async (userId) => {
   try {
@@ -31,11 +32,15 @@ const getUserInfo = async (userId) => {
 async function UserPage({ params }) {
   const { userId } = params;
   const { user, isLogged } = await credentials();
+
+  const isAdmin = await checkIsAdmin(user?.id || userId);
+
+  if (isAdmin && isLogged) return redirect(`/dashboard/users`);
+
   const userInfo = await getUserInfo(user?.id || userId);
   const layouts = await getUserLayouts(user?.id || userId);
   const {
     name,
-    picture,
     bio,
     ExperiencesList,
     ProjectsList,
@@ -47,8 +52,8 @@ async function UserPage({ params }) {
     <div
       className="
      flex flex-col justify-start items-center gap-10 m-auto w-full max-w-full overflow-x-hidden overflow-y-auto no-scrollbar"
-    > 
-      <Header userId={userId} picture={picture} username={name} />
+    >
+      <Header userId={user.id} picture={user.picture} username={name} />
       <Container className="w-full m-auto flex flex-col gap-16">
         <MainProfilePreviewSection
           layouts={layouts}
@@ -61,7 +66,11 @@ async function UserPage({ params }) {
           isLogged={isLogged}
         />
       </Container>
-      <Footer userId={userId} picture={picture} username={name} />
+      <Footer
+        userId={user.id}
+        picture={user.picture}
+        username={name}
+      />
     </div>
   );
 }

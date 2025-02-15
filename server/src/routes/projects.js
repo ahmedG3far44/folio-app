@@ -46,6 +46,7 @@ router.post(
       const validProjectData = projectSchema.safeParse(payload);
 
       if (!validProjectData?.success) {
+        console.log(validProjectData.error.flatten().fieldErrors)
         return res
           .status(400)
           .json(new Exceptions(400, "not valid project data."));
@@ -59,6 +60,7 @@ router.post(
 
       let thumbnailKey;
       let imageKey;
+      console.log("valid ")
       projectImages.map(async (image, index) => {
         if (image.fieldname === "images") {
           imageKey = `${userId}/projects/${projectId}/photo-${index + 1}`;
@@ -72,7 +74,7 @@ router.post(
         );
       });
 
-      const project = await prisma.projects.create({
+      await prisma.projects.create({
         data: {
           title,
           description,
@@ -100,7 +102,7 @@ router.post(
         },
       });
       console.log("project basic info was created ");
-      console.log(keysArray);
+      
       return res
         .status(201)
         .json(new Exceptions(201, "a new project was created"));
@@ -326,19 +328,12 @@ export async function uploadToS3(image, path) {
   };
   try {
     const command = new PutObjectCommand(params);
-    const uploadProjectImages = await s3Client
-      .send(command)
-      .then(() => {
-        console.log(
-          "image uploaded success",
-          image.originalname,
-          image.fieldname
-        );
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-    return uploadProjectImages;
+    const uploadProjectImages = await s3Client.send(command);
+    if (uploadProjectImages.$metadata.httpStatusCode !== 200) {
+      throw new Error("failed to upload img");
+    }
+    let imgURL = `${process.env.AWS_S3_BUCKET_DOMAIN}/${path}`;
+    return imgURL;
   } catch (error) {
     return console.log(error.message);
   }

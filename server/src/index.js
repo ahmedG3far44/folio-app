@@ -4,12 +4,6 @@ import prisma from "./database/db.js";
 import rootRouter from "./routes/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import {
-  setupKinde,
-  protectRoute,
-  getUser,
-  GrantType,
-} from "@kinde-oss/kinde-node-express";
 // import https from "https";
 // import fs from "fs";
 
@@ -27,19 +21,7 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-const config = {
-  clientId: "6faed2bb9ba54138869c3543a2b53ad5",
-  issuerBaseUrl: "https://presentoapp.kinde.com",
-  siteUrl: "http://localhost:3000",
-  secret: "316DsdF1CI6UzWxUYQhzvnKgSzIk3eTem580FYYOi2efADMnZi",
-  redirectUrl: "http://localhost:3000/callback",
-  scope: "openid profile email",
-  grantType: GrantType.AUTHORIZATION_CODE,
-  unAuthorisedUrl: "http://localhost:3000/unauthorised",
-  postLogoutRedirectUrl: "http://localhost:3000",
-};
 
-setupKinde(config, app);
 
 prisma
   .$connect()

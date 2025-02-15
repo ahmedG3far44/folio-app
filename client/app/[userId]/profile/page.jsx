@@ -2,16 +2,10 @@ import { redirect } from "next/navigation";
 import credentials from "@credentials";
 
 async function Profile() {
-  const { isAdmin, isLogged } = await credentials();
-  {
-    !isAdmin && isLogged ? (
-      <div className="max-w-screen max-h-screen">
-        <h1>profile</h1>
-      </div>
-    ) : (
-      redirect("/api/auth/login")
-    );
-  }
+  const { user, isLogged } = await credentials();
+  const isAdmin = await checkIsAdmin(user?.id || userId);
+  if (isAdmin && isLogged)
+    return redirect(`http://localhost:3000/${user.id}/dashboard/users`);
 }
 
 export default Profile;

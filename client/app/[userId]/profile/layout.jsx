@@ -16,9 +16,9 @@ import { LuWand2 } from "react-icons/lu";
 import { VscFeedback } from "react-icons/vsc";
 import { LuBox } from "react-icons/lu";
 function layout({ children }) {
-  const { getUser, getPermission } = useKindeBrowserClient();
+  const { getUser, getPermission, isLoading } = useKindeBrowserClient();
   const user = getUser();
-  const isAdmin = getPermission("admin:create").isGranted;
+  const isAdmin = getPermission("admin:access").isGranted;
 
   const pathName = usePathname();
   const { userId } = useParams();
@@ -67,6 +67,7 @@ function layout({ children }) {
               name={`${user?.given_name} ${user?.family_name}`}
               picture={user?.picture}
               isAdmin={isAdmin}
+              isLoading={isLoading}
             />
           </div>
 
