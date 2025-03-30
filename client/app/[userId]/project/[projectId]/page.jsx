@@ -4,8 +4,6 @@ import Link from "next/link";
 import { LiaLongArrowAltLeftSolid } from "react-icons/lia";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { LuEye } from "react-icons/lu";
-import LoveBtn from "@/app/components/ui/cards/LoveBtn";
 import Loader from "@/app/components/loaders/Loader";
 
 function ProjectDetailsPage() {
@@ -47,7 +45,7 @@ function ProjectDetailsPage() {
   return (
     <section
       className={
-        "w-3/4 flex justify-center items-start max-md:flex-wrap  gap-4 m-auto my-20 max-md:my-4 relative max-md:flex-col-reverse max-md:w-full p-8"
+        "w-3/4 flex justify-center items-start max-md:flex-wrap   gap-4 m-auto my-20 max-md:my-4 relative max-md:flex-col-reverse max-md:w-full p-8"
       }
     >
       <Link
@@ -90,7 +88,7 @@ function ProjectDetailsPage() {
               Back Home
             </Link>
           </div>
-          <div className="max-md:w-full w-[40%] min-w-[30%] flex flex-col justify-start items-start gap-4  bg-card p-4 py-8 rounded-md border max-md:static sticky top-0 right-0 ">
+          <div className="max-md:w-full w-[40%] min-w-[30%] flex flex-col justify-start items-start gap-4  bg-card p-4 py-8 rounded-md border max-md:static sticky top-0 right-0">
             <h1 className={"text-2xl font-bold"}>{project?.title}</h1>
             <div className="border rounded-md w-full overflow-hidden bg-secondary">
               <img
@@ -103,14 +101,14 @@ function ProjectDetailsPage() {
                 className={"w-full h-full object-cover"}
               />
             </div>
-            <div>
+            <div className="text-sm text-start text-muted-foreground">
               <p>{project?.description}</p>
             </div>
             <>
               {!!project?.tags.length ? (
                 <div
                   className={
-                    "w-full flex justify-start items-center gap-4 flex-wrap"
+                    "w-full flex justify-start items-start gap-x-2 gap-y-4 flex-wrap mt-4"
                   }
                 >
                   {project?.tags.map((tag) => {
@@ -119,7 +117,7 @@ function ProjectDetailsPage() {
                         {tag.tagName !== "" && (
                           <span
                             className={
-                              "px-4 py-1 rounded-3xl border bg-secondary"
+                              "px-3 py-1 rounded-3xl border bg-secondary"
                             }
                             key={tag.id}
                           >

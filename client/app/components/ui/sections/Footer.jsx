@@ -10,7 +10,7 @@ async function Footer({ picture, username, userId }) {
   // const contacts = await request.json();
 
   return (
-    <footer className="footer">
+    <footer className="footer text-sm ">
       <Container className="w-full flex justify-start  flex-wrap  gap-4 items-center">
         <div className="flex  justify-center items-center gap-2 ">
           <Image
@@ -32,15 +32,21 @@ async function Footer({ picture, username, userId }) {
         </div>
 
         <div>
-          <span>designed & created by</span>
+          <span>Designed & Developed by</span>
           <Link
             className="bg-gradient-to-br font-bold text-lg mx-2 from-purple-500 via-sky-600 text-transparent bg-clip-text hover:text-purple-500 duration-150"
             target="_blank"
             href="https://www.linkedin.com/in/ahmed-gaafar-5a3478201/"
           >
-            @ahmedG3far44
+            Ahmed Gaafar
           </Link>
-          <span>all &copy; rights are reserved, {year}.</span>
+          <span>&copy; {year} All Rights Reserved </span>
+          <Link
+            className="underline hover:text-purple-500 transition-all duration-150"
+            href="mailto:ahmedjaaafarbadri@gmail.com"
+          >
+            Contact Me.
+          </Link>
         </div>
       </Container>
     </footer>
