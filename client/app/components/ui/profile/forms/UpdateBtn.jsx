@@ -9,19 +9,14 @@ import {
 } from "@shadcn/dialog";
 import { useState } from "react";
 import { useToast } from "@shadcn/use-toast";
-// import {
-//   experienceSchema,
-//   projectSchema,
-//   skillsSchema,
-// } from "@lib/schema";
+
 
 import {
   handleUpdateExperience,
   handleUpdateProject,
   handleUpdateSkill,
 } from "@actions/update/actions";
-// import { useRouter } from "next/navigation";
-import { LuFileEdit } from "react-icons/lu";
+import { Pencil } from 'lucide-react';
 
 function UpdateBtn({ initialUpdate, sectionName }) {
   const [updateItem, setUpdatedItem] = useState(initialUpdate);
@@ -140,7 +135,7 @@ function UpdateBtn({ initialUpdate, sectionName }) {
       <Dialog>
         <DialogTrigger>
           <span className=" hover:text-zinc-800 duration-150">
-            <LuFileEdit size={20} />
+            <Pencil size={20} />
           </span>
         </DialogTrigger>
         <DialogContent>

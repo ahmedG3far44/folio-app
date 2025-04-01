@@ -79,7 +79,9 @@ export async function addProject(formData, tags) {
       throw new Error(validProjectData.error.message);
     }
     const request = await fetch(
-      `http://localhost:4000/api/${user?.id}/project`,
+      `${process.env.NODE_ENV === "development"
+        ? process.env.LOCAL_DOMAIN_URL
+        : process.env.DOMAIN_URL}/${user?.id}/project`,
       {
         method: "POST",
         body: formData,
@@ -108,7 +110,9 @@ export async function addSkill(formData) {
       }
 
       const response = await fetch(
-        `http://localhost:4000/api/${user.id}/skills`,
+        `${process.env.NODE_ENV === "development"
+          ? process.env.LOCAL_DOMAIN_URL
+          : process.env.DOMAIN_URL}/${user.id}/skills`,
         {
           method: "POST",
           headers: {

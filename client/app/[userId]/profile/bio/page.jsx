@@ -1,33 +1,55 @@
 "use client";
 import { useState, useEffect } from "react";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import UploadCvForm from "@profileForms/UploadCvForm";
 import ContactsForm from "@profileForms/ContactsForm";
 import BioForm from "@profileForms/BioForm";
 import HeroLayout from "@cards/HeroLayout";
 import Skeleton from "@/app/components/ui/cards/Skeleton";
 
+
 function BioPage() {
-  // const router = useRouter();
+  const localUrl = "http://localhost:4000/api";
+  const productionUrl = "";
   const { userId } = useParams();
   const [bio, setBio] = useState();
   const [contacts, setContacts] = useState();
   const [switcher, setSwitcher] = useState("bio");
   const [pending, setPending] = useState(false);
   useEffect(() => {
-
     async function getUserBio(userId) {
-      const request = await fetch(`http://localhost:4000/api/${userId}/bio`);
-      const userBio = await request.json();
-      setBio({ ...userBio, layoutStyle: "4" });
+      console.log("URL:", localUrl);
+      console.log("URL:", productionUrl);
+      try {
+        const request = await fetch(
+          `${
+            process.env.NODE_ENV === "development" ? localUrl : productionUrl
+          }/${userId}/bio`
+        );
+
+        if (!request.ok) throw new Error("can't get user bio");
+
+        const userBio = await request.json();
+        setBio({ ...userBio, layoutStyle: "4" });
+      } catch (error) {
+        console.log(error.message);
+      }
     }
     async function getUserContacts(userId) {
-      const request = await fetch(
-        `http://localhost:4000/api/${userId}/contacts`
-      );
-      const userContacts = await request.json();
-      setContacts(userContacts);
+      try {
+        const request = await fetch(
+          `${
+            process.env.NODE_ENV === "development" ? localUrl : productionUrl
+          }/${userId}/contacts`
+        );
+        if (!request.ok) throw new Error("can't get user contacts");
+        const userContacts = await request.json();
+        console.log(userContacts);
+        setContacts(userContacts);
+      } catch (error) {
+        console.log(error.message);
+      }
     }
     try {
       setPending(true);

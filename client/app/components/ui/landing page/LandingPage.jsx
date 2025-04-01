@@ -7,43 +7,51 @@ import credentials from "@credentials";
 import Image from "next/image";
 import Link from "next/link";
 import { ModeToggle } from "@themes/dark-mode-toggle";
-import { LuDribbble, LuGithub, LuLinkedin, LuWand2 } from "react-icons/lu";
-import { TbCubePlus } from "react-icons/tb";
-import { PiExcludeSquareDuotone } from "react-icons/pi";
-import { PiStackPlusDuotone } from "react-icons/pi";
-import { LuNewspaper } from "react-icons/lu";
+
 import { HiOutlineLogout } from "react-icons/hi";
+import {
+  LogOut,
+  FilePen,
+  CircleUserRound,
+  AppWindow,
+  Box,
+  BookOpenCheck,
+  Atom,
+  Crop,
+} from "lucide-react";
 
 async function LandingPage() {
   const { isLogged, user, isAdmin } = await credentials();
+  // const IconComponent = <LuWand2 /> || <LuWand /> || (() => <span>🪄</span>);
+  // Then use <IconComponent /> in your JSX
   const featuresCard = [
     {
-      icon: <LuWand2 size={20} />,
+      icon: <CircleUserRound size={25} />,
       title: "Personalized Tech Portfolio",
       text: "Create a fully customizable portfolio showcasing personal details and expertise for professional presentation.",
     },
     {
-      icon: <LuNewspaper size={20} />,
+      icon: <BookOpenCheck size={25} />,
       title: "Work Experience Highlights",
       text: "Add and highlight key work experiences and career progress in the tech industry.",
     },
     {
-      icon: <TbCubePlus size={20} />,
+      icon: <Box size={25} />,
       title: "Project Showcases",
       text: "Display projects with descriptions, links, and visuals to demonstrate impactful work.",
     },
     {
-      icon: <PiExcludeSquareDuotone size={20} />,
+      icon: <Atom size={25} />,
       title: "Skills Breakdown",
       text: "List and categorize technical skills, tools, and programming languages for easy understanding",
     },
     {
-      icon: <PiStackPlusDuotone size={20} />,
+      icon: <Crop size={25} />,
       title: "Dynamic Layout Customization",
       text: "Choose from multiple layouts to tailor portfolio design to personal preferences.",
     },
     {
-      icon: <TbCubePlus size={20} />,
+      icon: <FilePen size={25} />,
       title: "Interactive Section Management",
       text: "Easily customize and reorder sections like About Me, Work Experience, and Projects.",
     },
@@ -52,7 +60,7 @@ async function LandingPage() {
 
   return (
     <>
-      <main className="w-3/4 max-md:w-full m-auto flex flex-col justify-center items-center gap-4 relative p-4">
+      <main className="w-3/4 max-md:w-full m-auto flex flex-col justify-center items-center gap-8 relative p-4">
         <header className="flex justify-between items-center w-full p-4">
           <h1 className={"text-3xl font-mono font-bold"}>PRESENTO.cloud</h1>
           <div className="flex-1 ml-auto flex justify-end items-center gap-4">
@@ -99,38 +107,31 @@ async function LandingPage() {
         </header>
         <section className={"w-full p-8 vertical gap-4 mt-10 relative"}>
           <div className="vertical gap-4 z-30">
-            <h1 className={"heading_text"}>
-              Build your dream portfolio, Our platform lets you showcase your
-              projects and experiences in a stunning, customizable way.
+            <h1 className={"text-4xl text-center font-bold"}>
+              <span className="text-purple-500">
+                Build your dream portfolio
+              </span>
+              , Our platform lets you showcase your projects and experiences in
+              a stunning, <span className="text-purple-500">customizable</span>{" "}
+              way.
             </h1>
-            <h2 className={"secondary_text"}>
+            <h2 className={"text-sm text-zinc-400"}>
               Our user-friendly interface makes it a breeze to create and
               customize your portfolio.
             </h2>
-            <div className="flex justify-center items-center gap-4 my-4">
-              <div className="flex justify-center items-center gap-2">
-                <span>
-                  <LuGithub size={20} />
-                </span>
-                <h1>Github</h1>
-              </div>
-              <div className="flex justify-center items-center gap-2">
-                <span>
-                  <LuLinkedin size={20} />
-                </span>
-                <h1>Linkedin</h1>
-              </div>
-              <div className="flex justify-center items-center gap-2">
-                <span>
-                  <LuDribbble size={20} />
-                </span>
-                <h1>Instagram</h1>
-              </div>
-            </div>
-            <button className={"cta_button text-white"}>Get Started Now</button>
+
+            <button className={"cta_button text-white duration-150"}>
+              {isLogged ? (
+                <Link href={isLogged && !isAdmin ? `/${user.id}` : `/`}>
+                  Get Started Now
+                </Link>
+              ) : (
+                <LoginLink>Get Started Now</LoginLink>
+              )}
+            </button>
           </div>
-          <span className={"gradient_shape_one  "}></span>
-          <span className={"gradient_shape_two  "}></span>
+          <span className={"gradient_shape_one"}></span>
+          <span className={"gradient_shape_two"}></span>
         </section>
         <section className={"vertical gap-8 w-full"}>
           <h1 className="heading_text text-center">What you will got ?? </h1>
@@ -174,9 +175,7 @@ async function LandingPage() {
           <h1 className="text-3xl font-bold">Presento.io</h1>
         </div>
         <button className="github_button horizontal gap-2">
-          <span>
-            <LuGithub size={18} />
-          </span>
+          <span>{/* <LuGithub size={18} /> */}</span>
           <Link href={"/"}>Open Source</Link>
         </button>
         <p>
@@ -198,7 +197,7 @@ async function LandingPage() {
 export function FeatureCard({ icon, title, text }) {
   return (
     <div className="p-4 bg-card rounded-md border flex flex-col justify-start items-start gap-2 max-md:justify-center max-md:items-center">
-      <span>{icon}</span>
+      <span className="text-purple-500">{icon}</span>
       <h1 className="text-lg font-semibold">{title}</h1>
       <p>{text}</p>
     </div>

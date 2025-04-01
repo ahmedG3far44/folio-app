@@ -5,16 +5,19 @@ import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import { ModeToggle } from "@themes/dark-mode-toggle";
-import { LuLogOut } from "react-icons/lu";
 import AsideProfile from "@components/ui/nav/AsideProfile";
 import MobileMenuBar from "@components/ui/nav/MobileMenuBar";
 import User from "@cards/User";
-import { BiHomeSmile } from "react-icons/bi";
-import { LuUser } from "react-icons/lu";
-import { LuNewspaper } from "react-icons/lu";
-import { LuWand2 } from "react-icons/lu";
-import { VscFeedback } from "react-icons/vsc";
-import { LuBox } from "react-icons/lu";
+import {
+  LucideLogOut,
+  Box,
+  ChartColumnBig,
+  Atom,
+  BrainCircuit,
+  ClipboardList,
+  MessageSquareText,
+  House,
+} from "lucide-react";
 function layout({ children }) {
   const { getUser, getPermission, isLoading } = useKindeBrowserClient();
   const user = getUser();
@@ -26,32 +29,32 @@ function layout({ children }) {
     {
       path: `/${userId}`,
       name: "Home",
-      icon: <BiHomeSmile size={20} />,
+      icon: <House size={20} />,
     },
     {
       path: `/${userId}/profile/bio`,
       name: "Bio",
-      icon: <LuUser size={20} />,
+      icon: <BrainCircuit size={20} />,
     },
     {
       path: `/${userId}/profile/experiences`,
       name: "Experiences",
-      icon: <LuNewspaper size={20} />,
+      icon: <ClipboardList size={20} />,
     },
     {
       path: `/${userId}/profile/projects`,
       name: "Projects",
-      icon: <LuBox size={20} />,
+      icon: <Box size={20} />,
     },
     {
       path: `/${userId}/profile/skills`,
       name: "Skills",
-      icon: <LuWand2 size={20} />,
+      icon: <Atom size={20} />,
     },
     {
       path: `/${userId}/profile/testimonials`,
       name: "Testimonials",
-      icon: <VscFeedback size={20} />,
+      icon: <MessageSquareText size={20} />,
     },
   ];
   return (
@@ -115,7 +118,7 @@ function layout({ children }) {
           <ModeToggle theme={"show"} />
           <LogoutLink className="w-full flex gap-2 hover:text-purple-500 duration-150 p-2">
             <span>
-              <LuLogOut size={20} />
+              <LucideLogOut size={20} />
             </span>
             logout
           </LogoutLink>
@@ -166,7 +169,7 @@ function layout({ children }) {
           <li className="w-full flex flex-col justify-center items-center  gap-8 p-2  mt-16">
             <LogoutLink className="w-full flex justify-center items-center gap-2 hover:text-muted-foreground duration-150 p-2">
               <span>
-                <LuLogOut size={20} />
+                <LucideLogOut size={20} />
               </span>
               logout
             </LogoutLink>

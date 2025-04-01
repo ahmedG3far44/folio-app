@@ -28,7 +28,11 @@ export async function updateExperience(id) {
         return validPayload.error.flatten().fieldErrors;
       }
       const response = await fetch(
-        `http://localhost:4000/api/${user.id}/experiences/${id}`,
+        `${
+          process.env.NODE_ENV === "development"
+            ? process.env.LOCAL_DOMAIN_URL
+            : process.env.DOMAIN_URL
+        }/${user.id}/experiences/${id}`,
         {
           method: "PUT",
           headers: {
@@ -69,7 +73,11 @@ export async function updateSkill(id) {
         return validPayload.error.flatten().fieldErrors;
       }
       const response = await fetch(
-        `http://localhost:4000/api/${user?.id}/skills/${id}`,
+        `${
+          process.env.NODE_ENV === "development"
+            ? process.env.LOCAL_DOMAIN_URL
+            : process.env.DOMAIN_URL
+        }/${user?.id}/skills/${id}`,
         {
           method: "PUT",
           headers: {
@@ -110,7 +118,11 @@ export const updateLayoutsAction = async (layouts) => {
   }
   try {
     const request = await fetch(
-      `http://localhost:4000/api/${layouts?.usersId}/layouts/${layouts?.id}`,
+      `${
+        process.env.NODE_ENV === "development"
+          ? process.env.LOCAL_DOMAIN_URL
+          : process.env.DOMAIN_URL
+      }/${layouts?.usersId}/layouts/${layouts?.id}`,
       {
         method: "PUT",
         headers: {
@@ -160,7 +172,11 @@ export const handleUpdateExperience = async (updatedExperience, formData) => {
       return actionState;
     }
     const request = await fetch(
-      `http://localhost:4000/api/${updatedExperience.usersId}/experiences/${updatedExperience?.id}`,
+      `${
+        process.env.NODE_ENV === "development"
+          ? process.env.LOCAL_DOMAIN_URL
+          : process.env.DOMAIN_URL
+      }/${updatedExperience.usersId}/experiences/${updatedExperience?.id}`,
       {
         method: "PUT",
         headers: {
@@ -199,7 +215,11 @@ export const handleUpdateProject = async (updatedProject) => {
       return validPayload.error.flatten().fieldErrors;
     }
     const request = await fetch(
-      `http://localhost:4000/api/${initialUpdate?.usersId}/projects/${initialUpdate?.id}`,
+      `${
+        process.env.NODE_ENV === "development"
+          ? process.env.LOCAL_DOMAIN_URL
+          : process.env.DOMAIN_URL
+      }/${initialUpdate?.usersId}/projects/${initialUpdate?.id}`,
       {
         method: "PUT",
         headers: {
@@ -231,7 +251,11 @@ export const handleUpdateSkill = async (updatedSkill, formData) => {
       throw new Error("data is not valid");
     }
     const request = await fetch(
-      `http://localhost:4000/api/${updatedSkill?.usersId}/skills/${updatedSkill?.id}`,
+      `${
+        process.env.NODE_ENV === "development"
+          ? process.env.LOCAL_DOMAIN_URL
+          : process.env.DOMAIN_URL
+      }/${updatedSkill?.usersId}/skills/${updatedSkill?.id}`,
       {
         method: "PUT",
         headers: {
@@ -273,7 +297,9 @@ export const handleUpdateLayout = async (layouts) => {
       return validPayload.error.flatten().fieldErrors;
     }
     const request = await fetch(
-      `http://localhost:4000/api/${initialUpdate?.usersId}/experiences/${initialUpdate?.id}`,
+      `${process.env.NODE_ENV === "development"
+        ? process.env.LOCAL_DOMAIN_URL
+        : process.env.DOMAIN_URL}/${initialUpdate?.usersId}/experiences/${initialUpdate?.id}`,
       {
         method: "PUT",
         headers: {

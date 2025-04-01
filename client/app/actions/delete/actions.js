@@ -8,7 +8,11 @@ export async function deleteExperience(id) {
   try {
     if (isLogged) {
       const requestDelete = await fetch(
-        `http://localhost:4000/api/${user?.id}/experiences/${id}`,
+        `${
+          process.env.NODE_ENV === "development"
+            ? process.env.LOCAL_DOMAIN_URL
+            : process.env.DOMAIN_URL
+        }/${user?.id}/experiences/${id}`,
         {
           method: "DELETE",
         }
@@ -31,7 +35,11 @@ export async function deleteProject(id) {
   try {
     if (isLogged) {
       const requestDelete = await fetch(
-        `http://localhost:4000/api/${user.id}/project/${id}`,
+        `${
+          process.env.NODE_ENV === "development"
+            ? process.env.LOCAL_DOMAIN_URL
+            : process.env.DOMAIN_URL
+        }/${user.id}/project/${id}`,
         {
           method: "DELETE",
         }
@@ -54,7 +62,11 @@ export async function deleteSkill(id) {
   try {
     if (isLogged) {
       const requestDelete = await fetch(
-        `http://localhost:4000/api/${user?.id}/skills/${id}`,
+        `${
+          process.env.NODE_ENV === "development"
+            ? process.env.LOCAL_DOMAIN_URL
+            : process.env.DOMAIN_URL
+        }/${user?.id}/skills/${id}`,
         {
           method: "DELETE",
         }
