@@ -1,17 +1,19 @@
 import express from "express";
 import prisma from "../database/db.js";
-import checkUser from "../middlewares/checkUser.js";
 import Exceptions from "../handlers/Exceptions.js";
-import jwt from "jsonwebtoken";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import verifyAdminAccessToken from "../middlewares/verifyAdminAccessToken.js";
 
 const router = express.Router();
 
-router.post("/user", checkUser, async (req, res) => {
+router.post("/user", verifyAccessToken, async (req, res) => {
   try {
-    const payload = req.body;
-    console.log(payload);
+    // const user = req.body;
+
+    const user = req.user;
+    console.log(user.id);
     const userInfo = await prisma.users.findFirst({
-      where: { id: payload.id },
+      where: { id: user.id },
       select: {
         id: true,
         name: true,
@@ -24,24 +26,19 @@ router.post("/user", checkUser, async (req, res) => {
     });
     const bio = await prisma.bio.findFirst({
       where: {
-        usersId: payload.id,
+        usersId: user.id,
       },
     });
     const contacts = await prisma.contacts.findFirst({
       where: {
-        usersId: payload.id,
+        usersId: user.id,
       },
     });
     const layouts = await prisma.layouts.findFirst({
       where: {
-        usersId: payload.id,
+        usersId: user.id,
       },
     });
-    const newToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "7d",
-    });
-    res.cookie("accessToken", newToken, { maxAge: 604800000 }); // expires in 7 days
-
     return res.status(200).json({ ...userInfo, bio, layouts, contacts });
   } catch (error) {
     return res.status(500).json(new Exceptions(500, error.message));

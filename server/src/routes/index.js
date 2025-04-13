@@ -10,9 +10,11 @@ import layoutsRoute from "./layouts.js";
 import adminRoute from "./admin.js";
 import uploadCvRoute from "./resume.js";
 import feedbackRoute from "./feedbacks.js";
+import authRoute from "./auth/auth.js"
 
 const rootRouter = express.Router();
 
+rootRouter.use("/", authRoute);
 rootRouter.use("/", usersRoute);
 rootRouter.use("/", bioRoute);
 rootRouter.use("/", expRoute);

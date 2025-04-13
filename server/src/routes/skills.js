@@ -6,205 +6,229 @@ import { skillsSchema } from "../schemas/validationSchemas.js";
 import s3Client from "../s3/s3Client.js";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import multer from "multer";
-import dotenv from "dotenv";
 import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import resizedImage from "../handlers/resizeImage.js";
 import getImageKey from "../handlers/getImageKey.js";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
-dotenv.config();
-
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 export const upload = multer({ storage: multer.memoryStorage() });
+
 const router = express.Router();
 
-router.get("/:userId/skills", checkAccessUser, async (req, res) => {
-  const { userId } = req.params;
-  const user = await prisma.users.findUnique({
-    where: {
-      id: userId,
-    },
-  });
-  if (!user) {
-    return res.status(404).json(new Exceptions(404, "user not found"));
-  }
-  const skillsList = await prisma.skills.findMany({
-    where: {
-      usersId: userId,
-    },
-  });
-  console.log("get skills list");
-  return res.status(202).json(skillsList);
-});
-
-router.post(
-  "/:userId/skills",
-  checkAccessUser,
-  upload.single("file"),
-  checkUploadImageFormat,
-  async (req, res) => {
-    const { userId } = req.params;
-    const image = req.file;
-    const payload = req.body;
-
-    const validSkillsPayload = skillsSchema.safeParse(payload);
-    if (!validSkillsPayload.success) {
-      return res.json(new Exceptions(400, "Bad request the data isn't valid"));
+router.get("/skills", verifyAccessToken, async (req, res) => {
+  try {
+    const { id } = req.user;
+    const user = await prisma.users.findUnique({
+      where: {
+        id,
+      },
+    });
+    if (!user) {
+      return res.status(404).json(new Exceptions(404, "user not found"));
     }
-
-    let nameKey;
-
-    nameKey = `${userId}/skills/${crypto.randomUUID()}`;
-
-    const resizedSkillImage = await resizedImage(image.buffer, 50, 50, 10);
-
-    const command = new PutObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: nameKey,
-      Body: resizedSkillImage,
-      ContentType: "image/webp",
+    const skillsList = await prisma.skills.findMany({
+      where: {
+        usersId: id,
+      },
     });
 
-    await s3Client
-      .send(command)
-      .then(async () => {
-        console.log("uploaded success");
-        const newSkill = await prisma.skills.create({
-          data: {
-            skillName: payload.skillName,
-            skillLogo: `https://presento-app.s3.amazonaws.com/${nameKey}`,
-            usersId: userId,
-          },
-        });
-        return res.status(201).json({ newSkill, success: "a new skill added" });
-      })
-      .catch((error) => {
-        console.log("not uploaded");
-        return res
-          .status(200)
-          .json({ error: "failed not upload", message: error.message });
-      });
+    return res.status(200).json(skillsList);
+  } catch (err) {
+    return res.status(500).json({ data: "error", message: err.message });
   }
-);
-
-router.put(
-  "/:userId/skills/:skillId",
-  checkAccessUser,
-  upload.single("file"),
-  checkUploadImageFormat,
-  async (req, res) => {
-    const { skillId, userId } = req.params;
-    const payload = req.body;
-    const skillLogoImage = req.file;
-
-    
-    console.log(payload)
-
-    const updateSkill = await prisma.skills.findUnique({
+});
+router.get("/skills/:userId", verifyAccessToken, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await prisma.users.findUnique({
       where: {
-        id: skillId,
+        id: userId,
+      },
+    });
+    if (!user) {
+      return res.status(404).json(new Exceptions(404, "user not found"));
+    }
+    const skillsList = await prisma.skills.findMany({
+      where: {
         usersId: userId,
       },
     });
 
-    if (!updateSkill) {
-      return res
-        .status(404)
-        .json(new Exceptions(404, "this skill doesn't exist"));
-    }
+    return res.status(200).json(skillsList);
+  } catch (err) {
+    return res.status(500).json({ data: "error", message: err.message });
+  }
+});
 
-    const validSkillsPayload = skillsSchema.safeParse(payload);
+router.post(
+  "/skills",
+  verifyAccessToken,
+  upload.single("file"),
+  checkUploadImageFormat,
+  async (req, res) => {
+    try {
+      const user = req.user;
+      const image = req.file;
+      const payload = req.body;
+      const validSkillsPayload = skillsSchema.safeParse(payload);
 
-    if (!validSkillsPayload.success) {
-      return res
-        .status(400)
-        .json(new Exceptions(400, "Bad request the data isn't valid"));
-    }
+      if (!validSkillsPayload.success) {
+        return res.json(
+          new Exceptions(400, "Bad request the data isn't valid")
+        );
+      }
 
-    const { data } = validSkillsPayload;
+      const nameKey = `${crypto.randomUUID()}.${image.mimetype.split("/")[1]}`;
 
-    const skillImageKey = getImageKey(updateSkill.skillLogo);
+      const resizedSkillImage = await resizedImage(image.buffer, 50, 50, 10);
 
-    const resizedSkillImage = await resizedImage(
-      skillLogoImage.buffer,
-      50,
-      50,
-      80
-    );
-
-    const updateSkillLogoCommand = new PutObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: skillImageKey,
-      Body: resizedSkillImage,
-      ContentType: "image/webp",
-    });
-
-    await s3Client
-      .send(updateSkillLogoCommand)
-      .then(async (response) => {
-        console.log("skill image updated success");
-        if (response.$metadata.httpStatusCode === 200) {
-          await prisma.skills.update({
-            where: {
-              id: skillId,
-              usersId: userId,
-            },
-            data: {
-              skillName: data.skillName,
-            },
-          });
-          return res
-            .status(200)
-            .json(new Exceptions(200, "skill info updated successfully"));
-        }
-      })
-      .catch((error) => {
-        console.log("skill image not updated");
-        return res.status(500).json(new Exceptions(500, error.message));
+      const command = new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: nameKey,
+        Body: resizedSkillImage,
+        ContentType: image.mimetype,
       });
+
+      const uploadImageResult = await s3Client.send(command);
+      if (uploadImageResult.$metadata.httpStatusCode !== 200)
+        throw new Error("upload skill image error !!");
+      console.log("uploaded success");
+      const newSkill = await prisma.skills.create({
+        data: {
+          skillName: payload.skillName,
+          skillLogo: `${BUCKET_DOMAIN}/${nameKey}`,
+          usersId: user.id,
+        },
+      });
+      return res.status(201).json({ newSkill, success: "a new skill added" });
+    } catch (err) {
+      console.log(err.message);
+      return res
+        .status(200)
+        .json({ data: "failed not upload", message: err.message });
+    }
   }
 );
 
-router.delete("/:userId/skills/:id", checkAccessUser, async (req, res) => {
-  const { id, userId } = req.params;
-  const deletedSkill = await prisma.skills.findUnique({
-    where: {
-      id,
-      usersId: userId,
-    },
-  });
-  if (!deletedSkill) {
-    return res
-      .status(404)
-      .json(new Exceptions(404, "this skill doesn't exist error delete"));
-  }
-  console.log(deletedSkill);
-  const skillLogoKey = deletedSkill.skillLogo.split(".com/")[1];
-  console.log(skillLogoKey);
-  const deleteCommand = new DeleteObjectCommand({
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
-    Key: skillLogoKey,
-  });
+router.put(
+  "/skills/:skillId",
+  verifyAccessToken,
+  upload.single("file"),
+  checkUploadImageFormat,
+  async (req, res) => {
+    try {
+      const { skillId } = req.params;
+      const user = req.user;
+      const payload = req.body;
+      const image = req.file;
 
-  await s3Client
-    .send(deleteCommand)
-    .then(async () => {
-      console.log("skill image was deleted from s3");
-      await prisma.skills.delete({
+      console.log(payload);
+
+      const updateSkill = await prisma.skills.findUnique({
         where: {
-          id,
-          usersId: userId,
+          id: skillId,
+          usersId: user.id,
         },
       });
-      console.log("all skill info was deleted");
-      return res.status(200).json(new Exceptions(200, "skills was deleted "));
-    })
-    .catch((error) => {
-      return res.status(500).json(new Exceptions(500, error.message));
+
+      if (!updateSkill) {
+        return res
+          .status(404)
+          .json(new Exceptions(404, "this skill doesn't exist"));
+      }
+
+      const validSkillsPayload = skillsSchema.safeParse(payload);
+
+      if (!validSkillsPayload.success) {
+        return res
+          .status(400)
+          .json(new Exceptions(400, "Bad request the data isn't valid"));
+      }
+
+      const { data } = validSkillsPayload;
+
+      const skillLogoKey = getImageKey(updateSkill.skillLogo);
+
+      const resizedSkillImage = await resizedImage(image.buffer, 50, 50, 80);
+
+      const command = new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: skillLogoKey,
+        Body: resizedSkillImage,
+        ContentType: image.mimetype,
+      });
+
+      const updateUploadResult = await s3Client.send(command);
+
+      if (updateUploadResult.$metadata.httpStatusCode !== 200)
+        throw new Error("can't update skill image");
+
+      console.log("skill image updated success");
+
+      await prisma.skills.update({
+        where: {
+          id: skillId,
+          usersId: user.id,
+        },
+        data: {
+          skillName: data.skillName,
+        },
+      });
+      return res
+        .status(200)
+        .json(new Exceptions(200, "skill info updated successfully"));
+    } catch (err) {
+      console.log("skill image not updated");
+      return res.status(500).json(new Exceptions(500, err.message));
+    }
+  }
+);
+
+router.delete("/skills/:skillId", verifyAccessToken, async (req, res) => {
+  try {
+    const { skillId } = req.params;
+    const user = req.user;
+
+    const skill = await prisma.skills.findUnique({
+      where: {
+        id: skillId,
+        usersId: user.id,
+      },
     });
+
+    if (!skill) throw new Error("this skill not exist !!");
+
+    if (skill.skillLogo) {
+      const skillLogoKey = getImageKey(skill.skillLogo);
+
+      const command = new DeleteObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: skillLogoKey,
+      });
+
+      try {
+        await s3Client.send(command);
+        console.log("Skill image was deleted from S3");
+      } catch (s3Error) {
+        console.error("Failed to delete image from S3:", s3Error);
+      }
+    }
+
+    const skillDelete = await prisma.skills.delete({
+      where: {
+        id: skillId,
+        usersId: user.id,
+      },
+    });
+
+    return res
+      .status(204)
+      .json({ data: skillDelete, message: "deleted skill successful" });
+  } catch (err) {
+    return res.status(500).json(new Exceptions(500, err.message));
+  }
 });
 
 export default router;
-
-export function changeToSlug(text) {
-  const newText = text.split(" ").join("");
-  return newText;
-}

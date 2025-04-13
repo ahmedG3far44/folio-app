@@ -7,8 +7,12 @@ import cookieParser from "cookie-parser";
 // import https from "https";
 // import fs from "fs";
 
-const ENV = process.env.ENV;
 dotenv.config();
+
+
+
+const ENV = process.env.ENV;
+const PORT = process.env.PORT;
 
 const app = express();
 
@@ -20,8 +24,6 @@ const corsOptions = {
   methods: "GET,POST, PUT, DELETE",
   allowedHeaders: ["Content-Type", "Authorization"],
 };
-
-
 
 prisma
   .$connect()
@@ -41,9 +43,6 @@ app.get("/", async (req, res) => {
   return res.send("APP is working....");
 });
 
-
-app.listen(process.env.PORT || 4000, () => {
-  console.log(`Server running on port ${process.env.PORT || 4000}`);
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT || 4000}`);
 });
-
-

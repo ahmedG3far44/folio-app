@@ -8,10 +8,11 @@ datasource db {
 }
 
 model Users {
-  id              String         @id @unique
+  id              String         @id @unique @default(cuid())
   name            String
   email           String         @unique
   picture         String?
+  password        String
   role            Role           @default(USER)
   resume          String?
   ExperiencesList Experiences[]
@@ -31,7 +32,7 @@ enum Role {
 }
 
 model Bio {
-  id        String  @id @default(uuid())
+  id        String  @id @default(cuid())
   heroImage String? @default("")
   bio       String? @db.Text
   jobTitle  String? @default("change your current job title.... ")
@@ -41,12 +42,11 @@ model Bio {
 }
 
 model Experiences {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   cName     String
   cLogo     String?
   position  String?
-  start     String
-  end       String
+  duration  String
   role      String   @db.Text
   location  String
   userId    Users    @relation(fields: [usersId], references: [id])
@@ -57,7 +57,7 @@ model Experiences {
 
 //=========================================
 model Projects {
-  id          String       @id @default(uuid())
+  id          String       @id @default(cuid())
   title       String
   description String?
   thumbnail   String?      @db.Text
@@ -73,14 +73,14 @@ model Projects {
 }
 
 model Tags {
-  id         String    @id @default(uuid())
+  id         String    @id @default(cuid())
   tagName    String
   Projects   Projects? @relation(fields: [projectsId], references: [id])
   projectsId String?
 }
 
 model ImagesList {
-  id         String   @id @default(uuid())
+  id         String   @id @default(cuid())
   url        String
   projectId  Projects @relation(fields: [projectsId], references: [id])
   projectsId String
@@ -89,7 +89,7 @@ model ImagesList {
 //=========================================
 
 model Skills {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   skillName String
   skillLogo String?
   userId    Users    @relation(fields: [usersId], references: [id])
@@ -100,7 +100,7 @@ model Skills {
 
 // ====================================================
 model Testimonials {
-  id        String   @id @default(uuid())
+  id        String   @id @default(cuid())
   profile   String
   name      String
   feedback  String?  @db.Text
@@ -114,7 +114,7 @@ model Testimonials {
 
 // ====================================================
 model Contacts {
-  id       String  @id @default(uuid())
+  id       String  @id @default(cuid())
   linkedin String?
   github   String?
   youtube  String?
@@ -124,7 +124,7 @@ model Contacts {
 }
 
 model Layouts {
-  id             String  @id @default(uuid())
+  id             String  @id @default(cuid())
   heroLayout     String? @default("1")
   expLayout      String  @default("1")
   skillsLayout   String  @default("1")

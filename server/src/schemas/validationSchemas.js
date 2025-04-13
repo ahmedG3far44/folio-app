@@ -36,14 +36,16 @@ export const experienceSchema = z.object({
     .max(60, {
       message: "too long input value!!",
     }),
-  start: z.string().date(),
-  end: z.string().date(),
+  duration: z.string().min(4, {
+    message: "duration feild is required!!",
+  }),
+
   role: z
     .string("expected wrong type of data!!")
     .min(10, {
       message: "short input value!!",
     })
-    .max(300, {
+    .max(500, {
       message: "too long input value!!",
     }),
   location: z
@@ -64,7 +66,7 @@ export const projectSchema = z.object({
   description: z
     .string("wrong type of data")
     .min(10, { message: "short input value!!" })
-    .max(300, { message: "too long input value!!" }),
+    .max(350, { message: "too long input value!!" }),
   tags: z.string().array().max(10).optional(),
   sourceUrl: z
     .string("wrong type of data!!")
