@@ -1,15 +1,14 @@
 import express from "express";
 import prisma from "../database/db.js";
-import Exceptions from "../handlers/Exceptions.js";
-import checkAccessUser from "../middlewares/checkAccessUser.js";
+import Exceptions from "../utils/Exceptions.js";
 import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import s3Client from "../s3/s3Client.js";
-import resizedImage from "../handlers/resizeImage.js";
-import getImageKey from "../handlers/getImageKey.js";
+import resizedImage from "../utils/resizeImage.js";
+import getImageKey from "../utils/getImageKey.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
-import { experienceSchema } from "../schemas/validationSchemas.js";
 import { upload } from "./skills.js";
+import { experienceSchema } from "../utils/schemas.js";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const router = express.Router();
@@ -187,8 +186,6 @@ router.delete(
   verifyAccessToken,
   async (req, res) => {
     try {
-
-
       const user = req.user;
       const { experience_id } = req.params;
 
@@ -199,10 +196,7 @@ router.delete(
       if (!experience) throw new Error("This experience doesn't exist!!");
 
       if (experience.cLogo) {
-
         const companyImageKey = getImageKey(experience.cLogo);
-
-       
 
         const command = new DeleteObjectCommand({
           Bucket: BUCKET_NAME,
@@ -214,8 +208,6 @@ router.delete(
           console.log("error");
         }
       }
-
-   
 
       await prisma.experiences.delete({
         where: {

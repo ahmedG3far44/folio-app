@@ -1,14 +1,20 @@
 import express from "express";
 import prisma from "../database/db.js";
-import Exceptions from "../handlers/Exceptions.js";
-import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
-import { uploadToS3 } from "./projects.js";
-import { upload } from "./skills.js";
-import { feedbackSchema } from "../schemas/validationSchemas.js";
+import Exceptions from "../utils/Exceptions.js";
 import s3Client from "../s3/s3Client.js";
+
+import { upload } from "./skills.js";
+import { uploadToS3 } from "./projects.js";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { feedbackSchema } from "../utils/schemas.js";
 
 const router = express.Router();
+
+
+
+
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
 router.post(
   "/:userId/feedback",
@@ -37,19 +43,16 @@ router.post(
         throw new Error("profile picture is required");
       }
 
-      //   console.log(video[0]);
-      //   console.log(profile[0]);
       console.log(userId);
 
       if (video) {
-        // upload video
-        // update profile & video url in db
+        
         clientVideoKey = `${userId}/feedbacks/video_${crypto.randomUUID()}`;
         await uploadToS3(video[0], clientVideoKey);
       }
       clientProfileKey = `${userId}/feedbacks/profile_${crypto.randomUUID()}`;
       await uploadToS3(profile[0], clientProfileKey);
-      // update profile url in db
+    
 
       const validFeedbackData = feedbackSchema.safeParse(payload);
       if (!validFeedbackData.success) {
@@ -69,23 +72,7 @@ router.post(
           usersId: userId,
         },
       });
-      //   console.log(files.length);
-
-      //   files.map(async (file) => {
-      //     keyPath = `${userId}/feedbacks/${crypto.randomUUID()}`;
-      //     const params = {
-      //       Bucket: process.env.AWS_S3_BUCKET_NAME,
-      //       Key: keyPath,
-      //       Body: file.buffer,
-      //       ContentType: file.mimetype,
-      //     };
-      //     const command = new PutObjectCommand(params);
-      //     const uploadFeedbacks = await s3Client.send(command);
-      //     await uploadToS3(file, keyPath);
-      //     console.log(uploadFeedbacks.$metadata.httpStatusCode, "status s3 code");
-      //     //   console.log(file.buffer);
-      //   });
-
+     
       return res.status(201).json({
         uploadedState: "uploaded profile & video success",
         feedback,
@@ -110,21 +97,23 @@ router.get("/:userId/feedback", async (req, res) => {
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });
-router.delete("/:userId/feedback/:feedbackId", async (req, res) => {
-  const { userId, feedbackId } = req.params;
+router.delete("/feedback/:feedbackId", async (req, res) => {
+  const user = req.user;
+  const { feedbackId } = req.params;
 
   try {
+    
     const feedback = await prisma.testimonials.findUnique({
       where: {
         id: feedbackId,
-        usersId: userId,
+        usersId: user.id,
       },
     });
-    //=====================================
+  
     if (!feedback) {
       throw new Error("this items doesn't exist");
     }
-    //=====================================
+    
 
     const deleteProfileParams = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -134,26 +123,25 @@ router.delete("/:userId/feedback/:feedbackId", async (req, res) => {
     await s3Client.send(new DeleteObjectCommand(deleteProfileParams));
     console.log("feedback profile picture was deleted from S3");
 
-    //=====================================
+
     if (feedback.video) {
       const deleteVideoFeedbackParams = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Bucket: BUCKET_NAME,
         Key: feedback.video,
       };
       await s3Client.send(new DeleteObjectCommand(deleteVideoFeedbackParams));
       console.log("feedback video was deleted from S3");
     }
 
-    //=====================================
+
     await prisma.testimonials.delete({
       where: {
         id: feedbackId,
-        usersId: userId,
+        usersId: user.id,
       },
     });
     console.log("feedback deleted successful");
 
-    // ====================================
 
     return res
       .status(200)

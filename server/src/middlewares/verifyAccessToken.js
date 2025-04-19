@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import Exceptions from "../handlers/Exceptions.js";
+import Exceptions from "../utils/Exceptions.js";
 
 async function verifyAccessToken(req, res, next) {
   try {

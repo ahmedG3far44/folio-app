@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import "../globals.css";
+import { useAuth } from "../contexts/AuthProvider";
 
 const verifyUser = async (user) => {
   try {
@@ -19,21 +19,9 @@ const verifyUser = async (user) => {
   }
 };
 async function RedirectingPage() {
-  const { getUser, getPermission } = await getKindeServerSession();
-  const isAdmin = await getPermission("admin:access");
+  const { user } = useAuth();
 
-  const user = await getUser();
-
-  const payload = {
-    id: user?.id,
-    given_name: user?.given_name,
-    family_name: user?.family_name,
-    email: user?.email,
-    picture: user?.picture,
-    role: "USER",
-  };
-  
-  await verifyUser(payload);
+  const isAdmin = user.role === "ADMIN";
 
   return isAdmin
     ? redirect(`/${user?.id}/dashboard`)

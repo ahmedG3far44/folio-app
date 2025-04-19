@@ -10,7 +10,8 @@ import layoutsRoute from "./layouts.js";
 import adminRoute from "./admin.js";
 import uploadCvRoute from "./resume.js";
 import feedbackRoute from "./feedbacks.js";
-import authRoute from "./auth/auth.js"
+import authRoute from "./auth/auth.js";
+import uploadFilesRoute from "./uploadFiles.js";
 
 const rootRouter = express.Router();
 
@@ -26,5 +27,6 @@ rootRouter.use("/", layoutsRoute);
 rootRouter.use("/", adminRoute);
 rootRouter.use("/", uploadCvRoute);
 rootRouter.use("/", feedbackRoute);
+rootRouter.use("/", uploadFilesRoute);
 
 export default rootRouter;

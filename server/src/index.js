@@ -4,8 +4,6 @@ import prisma from "./database/db.js";
 import rootRouter from "./routes/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-// import https from "https";
-// import fs from "fs";
 
 dotenv.config();
 

@@ -1,9 +1,9 @@
-import { Router } from "express";
+import express from "express";
 import bcrypt from "bcrypt";
-import prisma from "../../database/db.js";
 import jwt from "jsonwebtoken";
+import prisma from "../../database/db.js";
 
-const router = Router();
+const router = express.Router();
 
 router.post("/auth/login", async (req, res) => {
   try {
@@ -16,6 +16,14 @@ router.post("/auth/login", async (req, res) => {
     const user = await prisma.users.findUnique({
       where: {
         email,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        picture: true,
+        role: true,
+        resume: true,
       },
     });
 
@@ -49,6 +57,14 @@ router.post("/auth/register", async (req, res) => {
       where: {
         email,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        picture: true,
+        role: true,
+        resume: true,
+      },
     });
 
     if (user) throw new Error("This user already exist!!");
@@ -59,8 +75,16 @@ router.post("/auth/register", async (req, res) => {
       data: {
         name,
         email,
-        password: hashedPassword, 
+        password: hashedPassword,
         picture,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        picture: true,
+        role: true,
+        resume: true,
       },
     });
 
@@ -71,8 +95,27 @@ router.post("/auth/register", async (req, res) => {
       role: newUser.role,
     };
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
-    console.log(token);
-    return res.status(200).json({
+
+    const bio = await prisma.bio.create({
+      data: {
+        bio: "change your bio info...",
+        bioName: newUser.name,
+        jobTitle: "Change Your Job Title...",
+        heroImage: newUser.picture,
+        usersId: newUser.id,
+      },
+    });
+    const contact = await prisma.contacts.create({
+      data: {
+        usersId: newUser.id,
+      },
+    });
+    const layouts = await prisma.layouts.create({
+      data: {
+        usersId: newUser.id,
+      },
+    });
+    return res.status(201).json({
       data: { user: newUser, token },
       message: "a new user was created!",
     });

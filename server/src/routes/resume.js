@@ -1,7 +1,7 @@
 import express from "express";
 import prisma from "../database/db.js";
 import s3Client from "../s3/s3Client.js";
-import Exceptions from "../handlers/Exceptions.js";
+import Exceptions from "../utils/Exceptions.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
 import { upload } from "./skills.js";

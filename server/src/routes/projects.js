@@ -1,17 +1,18 @@
+import sharp from "sharp";
 import express from "express";
 import prisma from "../database/db.js";
-import Exceptions from "../handlers/Exceptions.js";
-import checkAccessUser from "../middlewares/checkAccessUser.js";
+import Exceptions from "../utils/Exceptions.js";
 import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import s3Client from "../s3/s3Client.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
-import resizedImage from "../handlers/resizeImage.js";
+// import resizedImage from "../utils/resizeImage.js";
+import getImageKey from "../utils/getImageKey.js";
 
 import { upload } from "./skills.js";
-import { projectSchema } from "../schemas/validationSchemas.js";
+import { projectSchema } from "../utils/schemas.js";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-import getImageKey from "../handlers/getImageKey.js";
-import sharp from "sharp";
+
+
 
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
@@ -231,7 +232,7 @@ router.get("/:userId/project/:projectId", async (req, res) => {
   }
 });
 
-router.put("/project/:projectId", checkAccessUser, async (req, res) => {
+router.put("/project/:projectId", async (req, res) => {
   try {
     const { projectId } = req.params;
     const user = req.user;
@@ -243,7 +244,7 @@ router.put("/project/:projectId", checkAccessUser, async (req, res) => {
         .json(new Exceptions(404, "Bad request not a valid data."));
     }
 
-    //==============================================
+    
     const { title, thumbnail, likes, views, description } =
       validProjectData.data;
     await prisma.projects.update({

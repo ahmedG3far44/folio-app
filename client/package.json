@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "start:prod":"next build && pm2 start",
+    "start:prod": "next build && pm2 start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -35,6 +35,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/node": "22.14.1",
+    "@types/react": "19.1.2",
     "eslint": "^8",
     "eslint-config-next": "^14.2.5",
     "postcss": "^8",

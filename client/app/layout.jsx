@@ -1,17 +1,17 @@
 import "./globals.css";
 import { Poppins } from "next/font/google";
-import { ThemeProvider } from "@themes/theme-provider";
-import { Toaster } from "@shadcn/toaster";
+import { ThemeProvider } from "./components/ui/themes/theme-provider";
+import { Toaster } from "./components/ui/shadcn/toaster";
 import NextTopLoader from "nextjs-toploader";
-import credentials from "@credentials";
+import { AuthProvider } from "./contexts/AuthProvider";
+
 const pop = Poppins({
   subsets: ["latin"],
   weight: ["100", "200", "400", "500", "600", "700", "800", "900"],
 });
 
-const { user, isLogged } = await credentials();
 export const metadata = {
-  title: isLogged ? `${user.given_name} Portfolio` : "Presento Portfolio App",
+  title: `Portfolio`,
   description: "create your own portfolio with less code experience",
 };
 
@@ -26,7 +26,7 @@ export default function RootLayout({ children }) {
           disableTransitionOnChange
         >
           <NextTopLoader />
-          {children}
+          <AuthProvider>{children}</AuthProvider>
           <Toaster />
         </ThemeProvider>
       </body>

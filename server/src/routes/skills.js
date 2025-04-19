@@ -1,18 +1,24 @@
 import express from "express";
-import prisma from "../database/db.js";
-import Exceptions from "../handlers/Exceptions.js";
-import checkAccessUser from "../middlewares/checkAccessUser.js";
-import { skillsSchema } from "../schemas/validationSchemas.js";
-import s3Client from "../s3/s3Client.js";
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import multer from "multer";
-import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
-import resizedImage from "../handlers/resizeImage.js";
-import getImageKey from "../handlers/getImageKey.js";
+import prisma from "../database/db.js";
+import Exceptions from "../utils/Exceptions.js";
+import s3Client from "../s3/s3Client.js";
+
+import getImageKey from "../utils/getImageKey.js";
+import resizedImage from "../utils/resizeImage.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
+
+import { skillsSchema } from "../utils/schemas.js";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+
+
 
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
+
+
+
 export const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();

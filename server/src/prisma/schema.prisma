@@ -33,7 +33,7 @@ enum Role {
 
 model Bio {
   id        String  @id @default(cuid())
-  heroImage String? @default("")
+  heroImage String? @default("https://placehold.co/350x350.png")
   bio       String? @db.Text
   jobTitle  String? @default("change your current job title.... ")
   bioName   String? @default("change your name....")

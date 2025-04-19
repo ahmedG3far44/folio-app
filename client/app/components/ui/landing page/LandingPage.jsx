@@ -1,27 +1,21 @@
-import {
-  LoginLink,
-  LogoutLink,
-  RegisterLink,
-} from "@kinde-oss/kinde-auth-nextjs/components";
-import credentials from "@credentials";
 import Image from "next/image";
 import Link from "next/link";
-import { ModeToggle } from "@themes/dark-mode-toggle";
-
+import { ModeToggle } from "../themes/dark-mode-toggle";
 import { HiOutlineLogout } from "react-icons/hi";
 import {
-  LogOut,
   FilePen,
   CircleUserRound,
-  AppWindow,
   Box,
   BookOpenCheck,
   Atom,
   Crop,
 } from "lucide-react";
+import { useAuth } from "../../../contexts/AuthProvider";
+import { Button } from "../shadcn/button";
 
 async function LandingPage() {
-  const { isLogged, user, isAdmin } = await credentials();
+  const { isLogged, user, login, logout } = await useAuth();
+  const isAdmin = user.role === "ADMIN";
   // const IconComponent = <LuWand2 /> || <LuWand /> || (() => <span>🪄</span>);
   // Then use <IconComponent /> in your JSX
   const featuresCard = [
@@ -80,11 +74,11 @@ async function LandingPage() {
                       className="hover:text-purple-500 duration-150 cursor-pointer"
                       href={`/${user.id}`}
                     >
-                      {user.given_name}
+                      {user.name}
                     </Link>
                     <Image
                       className="w-8 h-8 min-w-8 min-h-8 object-cover rounded-full overflow-hidden"
-                      src={user.picture}
+                      src={user?.picture}
                       width={30}
                       height={30}
                     />
@@ -97,10 +91,12 @@ async function LandingPage() {
               </>
             ) : (
               <div className="flex justify-center items-center gap-4 w-1/4">
-                <LoginLink className="primary_button">Login</LoginLink>
-                <RegisterLink className="secondary_button">
-                  Sign Up
-                </RegisterLink>
+                <Button>
+                  <Link href={"/login"}>Login</Link>
+                </Button>
+                <Button variant="secondary">
+                  <Link href={"/signup"}>Signup</Link>
+                </Button>
               </div>
             )}
           </div>
