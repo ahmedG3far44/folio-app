@@ -12,8 +12,6 @@ import { upload } from "./skills.js";
 import { projectSchema } from "../utils/schemas.js";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
-
-
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
@@ -127,6 +125,7 @@ router.get("/project", verifyAccessToken, async (req, res) => {
         title: true,
         thumbnail: true,
         description: true,
+        source: true,
         tags: {
           select: {
             id: true,
@@ -151,6 +150,7 @@ router.get("/project", verifyAccessToken, async (req, res) => {
     res.status(500).json(new Exceptions(500, error.message));
   }
 });
+
 router.get("/project/:userId", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -166,6 +166,7 @@ router.get("/project/:userId", async (req, res) => {
         title: true,
         thumbnail: true,
         description: true,
+        source: true,
         tags: {
           select: {
             id: true,
@@ -193,7 +194,7 @@ router.get("/project/:userId", async (req, res) => {
 
 router.get("/:userId/project/:projectId", async (req, res) => {
   try {
-    const { userId, projectId } = req.params;
+    const { projectId, userId } = req.params;
 
     const project = await prisma.projects.findUnique({
       where: {
@@ -244,7 +245,6 @@ router.put("/project/:projectId", async (req, res) => {
         .json(new Exceptions(404, "Bad request not a valid data."));
     }
 
-    
     const { title, thumbnail, likes, views, description } =
       validProjectData.data;
     await prisma.projects.update({

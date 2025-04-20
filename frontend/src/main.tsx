@@ -6,6 +6,7 @@ import UploadProvider from "./contexts/UploadProvider.tsx";
 import { AuthProvider } from "./contexts/AuthProvider.tsx";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
+import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById("root")!).render(
       <AuthProvider>
         <UserProvider>
           <UploadProvider>
+            <Toaster position="top-right" />
             <App />
           </UploadProvider>
         </UserProvider>

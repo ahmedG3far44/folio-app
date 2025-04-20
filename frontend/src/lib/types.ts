@@ -42,6 +42,7 @@ export interface IProjectType {
   thumbnail: string;
   ImagesList: IProjectImagesType[];
   tags?: IProjectTagType[];
+  source: string;
   likes?: number;
   views?: number;
 }

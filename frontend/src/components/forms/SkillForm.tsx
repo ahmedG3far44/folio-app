@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../ErrorMessage";
 import { useAuth } from "@/contexts/AuthProvider";
 import { XIcon } from "lucide-react";
+import toast from "react-hot-toast";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -38,12 +39,10 @@ function SkillForm() {
         <form
           onSubmit={handleSubmit(async () => {
             const values = getValues();
-
-            console.log(values);
-            console.log(file);
             const formData = new FormData();
             formData.append("file", file!);
             formData.append("skillName", values.skillName);
+
             try {
               const response = await fetch(`${URL_SERVER}/skills`, {
                 method: "POST",
@@ -52,17 +51,19 @@ function SkillForm() {
                 },
                 body: formData,
               });
+
               if (!response.ok) {
-                throw new Error("create a new skill failed!!");
+                throw new Error("adding a new skill failed!!");
               }
               const data = await response.json();
-              console.log(data);
               setFile(null);
               reset();
-              console.log("show toast message");
+              toast.success("a new skill was created success!!");
               return data;
             } catch (err) {
               console.log((err as Error).message);
+              toast.error((err as Error).message);
+              return;
             }
           })}
           className="w-full p-2 flex flex-col gap-4"
@@ -77,12 +78,13 @@ function SkillForm() {
                     alt="compnay logo image"
                   />
                   {!isSubmitting && (
-                    <button
-                      className="cursor-pointer hover:bg-red-700 bg-red-500 duration-150 absolute -top-0  -right-0 p-2 rounded-2xl flex items-center justify-center text-white "
+                    <Button
+                      variant={"destructive"}
+                      className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-0  -right-0 p-2 rounded-2xl flex items-center justify-center text-white "
                       onClick={() => setFile(null)}
                     >
                       <XIcon size={20} />
-                    </button>
+                    </Button>
                   )}
                 </div>
               ) : (
@@ -103,7 +105,6 @@ function SkillForm() {
                   setFile(e.target.files ? e.target.files[0] : null)
                 }
               />
-              {/* <Button type="submit">upload</Button> */}
             </div>
           </Card>
           <Card className="p-4">

@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Card, CardTitle } from "@/components/ui/card";
 import SubmitButton from "@/components/submit-button";
 
 import { useAuth } from "@/contexts/AuthProvider";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-import { EyeOff, Eye } from "lucide-react";
-// import UploadImages from "../components/uploadImages";
-// import { useUpload } from "@/contexts/UploadProvider";
+import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -16,6 +15,7 @@ function SignUpPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   // const { uploadedInfo } = useUpload();
+  const [profile, setProfile] = useState<File | null>(null);
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,30 +23,37 @@ function SignUpPage() {
     name: "",
     email: "",
     password: "",
-    picture: "",
   });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
     try {
       setPending(true);
-      console.log("User register:");
-      console.log(registerUser.picture);
+      const formData = new FormData();
+      const { name, email, password } = registerUser;
+
+      if (!profile)
+        throw new Error("profile picture is required to register!!");
+
+      formData.append("profile", profile!);
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("password", password);
+
       const response = await fetch(`${URL_SERVER}/auth/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(registerUser),
+        body: formData,
       });
+
       if (!response.ok) throw new Error("This email is already exist!!");
+
       const data = await response.json();
+
       if (!data)
         throw new Error("can't login your email or passowrd is Wrong!!");
       const { user, token } = data.data;
-      console.log(user);
-      console.log(token);
       login({ user, token });
       setError(null);
       navigate(`/${user.id}`);
@@ -62,7 +69,7 @@ function SignUpPage() {
   return (
     <div className="w-full min-h-screen flex items-center justify-center">
       <Card className="p-4 ">
-        <CardTitle>Create A New Account</CardTitle>
+        <CardTitle className="self-center">Create A New Account</CardTitle>
         <form
           className="w-[400px] flex flex-col items-start gap-4"
           onSubmit={handleLogin}
@@ -73,6 +80,46 @@ function SignUpPage() {
             </p>
           )}
           {/* <UploadImages status="single" /> */}
+          <div className="self-center">
+            {profile ? (
+              <div className="w-30 h-30 rounded-full bg-zinc-100 flex items-center justify-center relative">
+                <img
+                  loading="lazy"
+                  className="w-full h-full rounded-full object-cover"
+                  src={URL.createObjectURL(profile)}
+                  alt="profile picture"
+                />
+                {!pending && (
+                  <Button
+                    onClick={() => setProfile(null)}
+                    variant={"destructive"}
+                    type="button"
+                    className="absolute -right-2 -top-0 hover:bg-red-700 duration-150 cursor-pointer"
+                  >
+                    <XIcon size={15} />
+                  </Button>
+                )}
+              </div>
+            ) : (
+              <>
+                <label
+                  className="w-30 h-30 rounded-full bg-zinc-100 border border-dashed border-zinc-500  flex items-center justify-center cursor-pointer hover:bg-zinc-200 duration-150"
+                  htmlFor="profile"
+                >
+                  <LucideUser size={40} />
+                </label>
+                <input
+                  id="profile"
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setProfile(e.target.files ? e.target.files[0] : null)
+                  }
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                />
+              </>
+            )}
+          </div>
           <input
             className="w-full p-2 rounded-md border"
             onChange={(e) =>
@@ -81,14 +128,7 @@ function SignUpPage() {
             type="text"
             placeholder="Full Name"
           />
-          <input
-            className="w-full p-2 rounded-md border"
-            onChange={(e) =>
-              setRegisterUser({ ...registerUser, picture: e.target.value })
-            }
-            type="url"
-            placeholder="Profile Picture"
-          />
+
           <input
             className="w-full p-2 rounded-md border"
             onChange={(e) =>
@@ -116,6 +156,17 @@ function SignUpPage() {
           <SubmitButton className="w-full" loading={pending} type="submit">
             Create Account
           </SubmitButton>
+          <div className="p-2 text-sm text-zinc-600">
+            <p>
+              I have already account{" "}
+              <Link
+                className={"hover:underline hover:text-black"}
+                to={"/login"}
+              >
+                Login
+              </Link>{" "}
+            </p>
+          </div>
         </form>
       </Card>
     </div>

@@ -10,6 +10,7 @@ import BioForm from "./components/forms/BioForm";
 import ExperienceForm from "./components/forms/ExperienceForm";
 import ProjectForm from "./components/forms/ProjectForm";
 import SkillForm from "./components/forms/SkillForm";
+import ProjectDetails from "./components/ProjectDetails";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route index path="/" element={<LandingPage />} />
 
       <Route path="/:userId" element={<UserPage />} />
+      <Route path="/project/:projectId" element={<ProjectDetails />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
 

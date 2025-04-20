@@ -1,16 +1,17 @@
+import { useState } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-// import { Button } from "@/components/ui/button";
-import Sidebar from "@/components/Sidebar";
-import { useState } from "react";
 
-import { ArrowBigRightIcon } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+
+import Sidebar from "@/components/Sidebar";
+
 
 function ProtectedUserRoute() {
   const { isLogged } = useAuth();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { pathname } = useLocation();
   const activePathName = pathname.split("/").pop();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
 
   if (!isLogged) return <Navigate to={"/login"} />;
   return (
@@ -28,10 +29,11 @@ function ProtectedUserRoute() {
         >
           {isOpen ? "Menu" : "Close"}
         </span>
-        <div className="p-4 w-full rounded-md flex items-center justify-start gap-4 text-sm bg-white text-zinc-700">
+        <div className="p-4 w-full rounded-md flex items-center justify-start gap-2  text-sm bg-white text-zinc-700">
           <span>Profile</span>
           <span>
-            <ArrowBigRightIcon size={20} />
+            
+            <ChevronRight size={20} />
           </span>
           <span>{activePathName}</span>
         </div>

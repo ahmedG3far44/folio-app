@@ -57,7 +57,7 @@ router.put("/bio/:bioId", verifyAccessToken, async (req, res) => {
       return res.json(new Exceptions(404, "Bad request not valid data"));
     }
 
-    const { name, summary, jobTitle } = validBioPayload?.data;
+    const { name, jobTitle, summary } = validBioPayload?.data;
 
     await prisma.bio.update({
       where: {

@@ -5,6 +5,7 @@ import SubmitButton from "@/components/submit-button";
 
 import { useAuth } from "@/contexts/AuthProvider";
 import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Eye, EyeOff } from "lucide-react";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -12,6 +13,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const { isLogged, user, login } = useAuth();
   const [pending, setPending] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loginUser, setUser] = useState({
     email: "",
@@ -73,14 +75,22 @@ function LoginPage() {
             type="email"
             placeholder="email"
           />
-          <input
-            className="w-full p-2 rounded-md border"
-            onChange={(e) =>
-              setUser({ ...loginUser, password: e.target.value })
-            }
-            type="password"
-            placeholder="password"
-          />
+          <div className="w-full flex items-center justify-between  rounded-md border">
+            <input
+              className="w-full h-full text-zinc-700 p-2 rounded-md"
+              onChange={(e) =>
+                setUser({ ...loginUser, password: e.target.value })
+              }
+              type={showPassword ? "text" : "password"}
+              placeholder="password"
+            />
+            <span
+              className="hover:text-black duration-150 cursor-pointer text-zinc-500 p-2 rounded-md"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </span>
+          </div>
 
           <SubmitButton className="w-full" loading={pending} type="submit">
             Login
@@ -92,9 +102,10 @@ function LoginPage() {
               className="text-sm text-start text-zinc-500 w-full 
           "
             >
-              I don't have an account yet{" "}
+              I don't have an account yet
               <Link
-                className="text-nowrap text-sm ml-2 text-zinc-600 hover:underline duration-150"
+                className="text-nowrap text-sm ml-1
+                 hover:text-black text-zinc-600 hover:underline duration-150"
                 to={"/signup"}
               >
                 Sign Up

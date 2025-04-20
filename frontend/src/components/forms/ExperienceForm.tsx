@@ -1,17 +1,18 @@
+import { z } from "zod";
 import { ChangeEvent, useState } from "react";
-import { Button } from "../ui/button";
 import { experienceSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
-import SubmitButton from "../submit-button";
-import ErrorMessage from "../ErrorMessage";
-import { Card } from "../ui/card";
 import { useAuth } from "@/contexts/AuthProvider";
 
-// import { XIcon } from "lucide-react";
-// import UploadImage from "../UploadImage";
+import { Button } from "../ui/button";
+import { Card } from "../ui/card";
 import { XIcon } from "lucide-react";
+
+import SubmitButton from "../submit-button";
+import ErrorMessage from "../ErrorMessage";
+import toast from "react-hot-toast";
+
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ExperienceForm() {
@@ -39,9 +40,6 @@ function ExperienceForm() {
         <form
           onSubmit={handleSubmit(async () => {
             const values = getValues();
-
-            console.log(values);
-            console.log(file);
             const formData = new FormData();
             formData.append("file", file!);
             formData.append("cName", values.cName);
@@ -49,6 +47,7 @@ function ExperienceForm() {
             formData.append("duration", values.duration);
             formData.append("role", values.role);
             formData.append("location", values.location);
+
             try {
               const response = await fetch(`${URL_SERVER}/experiences`, {
                 method: "POST",
@@ -61,13 +60,14 @@ function ExperienceForm() {
                 throw new Error("create a new experience failed!!");
               }
               const data = await response.json();
-              console.log(data);
               setFile(null);
               reset();
-              console.log("show toast message");
+              toast.success("a new experience was created success!!");
               return data;
             } catch (err) {
-              console.log((err as Error).message);
+              // console.log((err as Error).message);
+              toast.error((err as Error).message);
+              return;
             }
           })}
           className="w-full p-2 flex flex-col justify-start items-center gap-2"
@@ -81,12 +81,16 @@ function ExperienceForm() {
                     src={file ? URL.createObjectURL(file) : ""}
                     alt="compnay logo image"
                   />
-                  <button
-                    className="cursor-pointer hover:bg-red-700 bg-red-500 duration-150 absolute -top-2  -right-2 p-2 rounded-2xl flex items-center justify-center text-white "
-                    onClick={() => setFile(null)}
-                  >
-                    <XIcon size={20} />
-                  </button>
+                  {!isSubmitting && (
+                    <Button
+                      type="button"
+                      variant={"destructive"}
+                      className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2  -right-2 p-1 rounded-2xl flex items-center justify-center text-white "
+                      onClick={() => setFile(null)}
+                    >
+                      <XIcon size={20} />
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <label
@@ -110,6 +114,7 @@ function ExperienceForm() {
           </Card>
           <Card className="p-4 w-full">
             <input
+              readOnly={isSubmitting}
               className="p-2 border w-full rounded-md"
               type="text"
               id="cName"
@@ -122,6 +127,7 @@ function ExperienceForm() {
               />
             )}
             <input
+              readOnly={isSubmitting}
               className="p-2 border rounded-md"
               type="text"
               id="position"
@@ -134,6 +140,7 @@ function ExperienceForm() {
               />
             )}
             <input
+              readOnly={isSubmitting}
               className="p-2 border rounded-md"
               type="text"
               id="duration"
@@ -146,6 +153,7 @@ function ExperienceForm() {
               />
             )}
             <textarea
+              readOnly={isSubmitting}
               className="w-full p-2 border rounded-md"
               id="role"
               placeholder="role"
@@ -157,6 +165,7 @@ function ExperienceForm() {
               />
             )}
             <input
+              readOnly={isSubmitting}
               className="p-2 border rounded-md"
               type="text"
               id="location"

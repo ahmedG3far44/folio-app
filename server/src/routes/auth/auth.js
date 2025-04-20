@@ -2,8 +2,14 @@ import express from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../../database/db.js";
+import { upload } from "../skills.js";
+import s3Client from "../../s3/s3Client.js";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 const router = express.Router();
+
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
 router.post("/auth/login", async (req, res) => {
   try {
@@ -48,9 +54,14 @@ router.post("/auth/login", async (req, res) => {
     return res.status(500).json({ data: "Error", message: err.message });
   }
 });
-router.post("/auth/register", async (req, res) => {
+router.post("/auth/register", upload.single("profile"), async (req, res) => {
   try {
-    const { name, email, password, picture } = req.body;
+    const { name, email, password } = req.body;
+    const file = req.file;
+    // console.log(file);
+    // console.log(body);
+    // return;
+
     const salt = 10;
 
     const user = await prisma.users.findUnique({
@@ -70,13 +81,27 @@ router.post("/auth/register", async (req, res) => {
     if (user) throw new Error("This user already exist!!");
 
     const hashedPassword = await bcrypt.hash(password, salt);
+    
+    const pictureKey = `${crypto.randomUUID()}`;
+    try {
+      // upload profile
+      const command = new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Body: file.buffer,
+        Key: pictureKey,
+        ContentType: file.mimetype,
+      });
 
+      await s3Client.send(command);
+    } catch (err) {
+      res.status(500).json({ data: "error", message: err.message });
+    }
     const newUser = await prisma.users.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        picture,
+        picture: `${BUCKET_DOMAIN}/${pictureKey}`,
       },
       select: {
         id: true,
@@ -101,7 +126,7 @@ router.post("/auth/register", async (req, res) => {
         bio: "change your bio info...",
         bioName: newUser.name,
         jobTitle: "Change Your Job Title...",
-        heroImage: newUser.picture,
+        heroImage: `${BUCKET_DOMAIN}/${pictureKey}`,
         usersId: newUser.id,
       },
     });
