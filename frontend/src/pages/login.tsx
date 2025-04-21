@@ -6,12 +6,14 @@ import SubmitButton from "@/components/submit-button";
 import { useAuth } from "@/contexts/AuthProvider";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function LoginPage() {
   const navigate = useNavigate();
   const { isLogged, user, login } = useAuth();
+  const { activeTheme } = useTheme();
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -57,9 +59,17 @@ function LoginPage() {
   if (isLogged) return <Navigate to={`/${user.id}`} />;
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center">
-      <Card className="p-4 ">
-        <CardTitle>Login To your Account</CardTitle>
+    <div
+      style={{
+        backgroundColor: activeTheme.borderColor,
+        color: activeTheme.secondaryText,
+      }}
+      className="w-full min-h-screen flex items-center justify-center"
+    >
+      <Card className="p-">
+        <CardTitle>
+          <h1 className="text-2xl font-bold">Login To your Account</h1>
+        </CardTitle>
         <form
           className="w-[400px] flex flex-col items-start gap-4"
           onSubmit={handleLogin}
@@ -70,6 +80,7 @@ function LoginPage() {
             </p>
           )}
           <input
+            style={{ color: activeTheme.primaryText }}
             className="w-full p-2 rounded-md border"
             onChange={(e) => setUser({ ...loginUser, email: e.target.value })}
             type="email"
@@ -77,7 +88,8 @@ function LoginPage() {
           />
           <div className="w-full flex items-center justify-between  rounded-md border">
             <input
-              className="w-full h-full text-zinc-700 p-2 rounded-md"
+              style={{ color: activeTheme.primaryText }}
+              className="w-full h-full  p-2 rounded-md"
               onChange={(e) =>
                 setUser({ ...loginUser, password: e.target.value })
               }
@@ -85,7 +97,7 @@ function LoginPage() {
               placeholder="password"
             />
             <span
-              className="hover:text-black duration-150 cursor-pointer text-zinc-500 p-2 rounded-md"
+              className="hover:opacity-75 duration-150 cursor-pointer p-2 rounded-md"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -99,13 +111,13 @@ function LoginPage() {
         <CardFooter className="w-full">
           <div className="w-full flex items-center justify-start gap-2">
             <p
-              className="text-sm text-start text-zinc-500 w-full 
+              className="text-sm text-start w-full 
           "
             >
               I don't have an account yet
               <Link
-                className="text-nowrap text-sm ml-1
-                 hover:text-black text-zinc-600 hover:underline duration-150"
+                className="text-nowrap hover:opacity-75 text-sm ml-1
+                  hover:underline duration-150"
                 to={"/signup"}
               >
                 Sign Up

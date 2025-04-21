@@ -12,6 +12,7 @@ import uploadCvRoute from "./resume.js";
 import feedbackRoute from "./feedbacks.js";
 import authRoute from "./auth/auth.js";
 import uploadFilesRoute from "./uploadFiles.js";
+import themesRoute from "./themes.js";
 
 const rootRouter = express.Router();
 
@@ -28,5 +29,6 @@ rootRouter.use("/", adminRoute);
 rootRouter.use("/", uploadCvRoute);
 rootRouter.use("/", feedbackRoute);
 rootRouter.use("/", uploadFilesRoute);
+rootRouter.use("/", themesRoute);
 
 export default rootRouter;

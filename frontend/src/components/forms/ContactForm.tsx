@@ -9,11 +9,14 @@ import { useAuth } from "@/contexts/AuthProvider";
 import toast from "react-hot-toast";
 import ErrorMessage from "../ErrorMessage";
 import SubmitButton from "../submit-button";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { Card } from "../ui/card";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ContactForm() {
   const { token } = useAuth();
+  const { activeTheme } = useTheme();
   const { contacts } = useUser();
   const {
     register,
@@ -26,6 +29,7 @@ function ContactForm() {
   });
   return (
     <form
+      
       className="w-full flex flex-col justify-start items-start gap-2"
       onSubmit={handleSubmit(async () => {
         const values = getValues();
@@ -62,50 +66,84 @@ function ContactForm() {
         }
       })}
     >
-      <input
-        {...register("github")}
-        defaultValue={contacts.github}
-        readOnly={isSubmitting}
-        placeholder="github profile url"
-        type="url"
-        className="p-2 w-full border border-zinc-200 rounded-md"
-      />
-      {errors.github && (
-        <ErrorMessage message={errors.github.message?.toString() as string} />
-      )}
-      <input
-        {...register("linkedin")}
-        defaultValue={contacts.linkedin}
-        readOnly={isSubmitting}
-        placeholder="linkedin profile url"
-        type="url"
-        className="p-2 w-full border border-zinc-200 rounded-md"
-      />
-      {errors.linkedin && (
-        <ErrorMessage message={errors.linkedin.message?.toString() as string} />
-      )}
-      <input
-        {...register("youtube")}
-        defaultValue={contacts.youtube}
-        readOnly={isSubmitting}
-        placeholder="youtube channel url"
-        type="url"
-        className="p-2 w-full border border-zinc-200 rounded-md"
-      />
-      {errors.youtube && (
-        <ErrorMessage message={errors.youtube.message?.toString() as string} />
-      )}
-      <input
-        {...register("twitter")}
-        defaultValue={contacts.twitter}
-        readOnly={isSubmitting}
-        placeholder="twitter profile url"
-        type="url"
-        className="p-2 w-full border border-zinc-200 rounded-md"
-      />
-      {errors.twitter && (
-        <ErrorMessage message={errors.twitter.message?.toString() as string} />
-      )}
+      <Card
+        style={{
+          backgroundColor: activeTheme.cardColor,
+          border: `1px solid ${activeTheme.borderColor}`,
+        }}
+        className={"w-full p-4"}
+      >
+        <input
+          style={{
+            backgroundColor: activeTheme.borderColor,
+            border: `1px solid ${activeTheme.secondaryText}`,
+            color: activeTheme.primaryText,
+          }}
+          {...register("github")}
+          defaultValue={contacts.github}
+          readOnly={isSubmitting}
+          placeholder="github profile url"
+          type="url"
+          className="p-2 w-full border border-zinc-200 rounded-md"
+        />
+        {errors.github && (
+          <ErrorMessage message={errors.github.message?.toString() as string} />
+        )}
+        <input
+          style={{
+            backgroundColor: activeTheme.borderColor,
+            border: `1px solid ${activeTheme.secondaryText}`,
+            color: activeTheme.primaryText,
+          }}
+          {...register("linkedin")}
+          defaultValue={contacts.linkedin}
+          readOnly={isSubmitting}
+          placeholder="linkedin profile url"
+          type="url"
+          className="p-2 w-full border border-zinc-200 rounded-md"
+        />
+        {errors.linkedin && (
+          <ErrorMessage
+            message={errors.linkedin.message?.toString() as string}
+          />
+        )}
+        <input
+          style={{
+            backgroundColor: activeTheme.borderColor,
+            border: `1px solid ${activeTheme.secondaryText}`,
+            color: activeTheme.primaryText,
+          }}
+          {...register("youtube")}
+          defaultValue={contacts.youtube}
+          readOnly={isSubmitting}
+          placeholder="youtube channel url"
+          type="url"
+          className="p-2 w-full border border-zinc-200 rounded-md"
+        />
+        {errors.youtube && (
+          <ErrorMessage
+            message={errors.youtube.message?.toString() as string}
+          />
+        )}
+        <input
+          style={{
+            backgroundColor: activeTheme.borderColor,
+            border: `1px solid ${activeTheme.secondaryText}`,
+            color: activeTheme.primaryText,
+          }}
+          {...register("twitter")}
+          defaultValue={contacts.twitter}
+          readOnly={isSubmitting}
+          placeholder="twitter profile url"
+          type="url"
+          className="p-2 w-full border border-zinc-200 rounded-md"
+        />
+        {errors.twitter && (
+          <ErrorMessage
+            message={errors.twitter.message?.toString() as string}
+          />
+        )}
+      </Card>
       <SubmitButton
         className="w-full mt-4"
         loading={isSubmitting}

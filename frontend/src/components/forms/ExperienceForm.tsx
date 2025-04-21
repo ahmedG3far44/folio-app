@@ -12,12 +12,14 @@ import { XIcon } from "lucide-react";
 import SubmitButton from "../submit-button";
 import ErrorMessage from "../ErrorMessage";
 import toast from "react-hot-toast";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ExperienceForm() {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
   const { token } = useAuth();
+  const { activeTheme } = useTheme();
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const {
     register,
@@ -72,7 +74,14 @@ function ExperienceForm() {
           })}
           className="w-full p-2 flex flex-col justify-start items-center gap-2"
         >
-          <Card className="w-full">
+          <Card
+            style={{
+              backgroundColor: activeTheme.cardColor,
+              border: `1px solid ${activeTheme.borderColor}`,
+              color: activeTheme.primaryText,
+            }}
+            className="w-full"
+          >
             <div className="w-full flex items-center justify-center gap-4 flex-col">
               {file ? (
                 <div className="relative">
@@ -94,7 +103,7 @@ function ExperienceForm() {
                 </div>
               ) : (
                 <label
-                  className="w-1/2 p-4 bg-zinc-100 border border-dashed rounded-md hover:bg-zinc-200 cursor-pointer duration-150"
+                  className="w-1/2 p-4  border border-dashed rounded-md hover:opacity-75 cursor-pointer duration-150"
                   htmlFor="file"
                 >
                   Upload image
@@ -112,8 +121,20 @@ function ExperienceForm() {
               {/* <Button type="submit">upload</Button> */}
             </div>
           </Card>
-          <Card className="p-4 w-full">
+          <Card
+            style={{
+              backgroundColor: activeTheme.cardColor,
+              border: `1px solid ${activeTheme.borderColor}`,
+              color: activeTheme.secondaryText,
+            }}
+            className="p-4 w-full"
+          >
             <input
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                border: `1px solid ${activeTheme.borderColor}`,
+                color: activeTheme.primaryText,
+              }}
               readOnly={isSubmitting}
               className="p-2 border w-full rounded-md"
               type="text"
@@ -127,6 +148,11 @@ function ExperienceForm() {
               />
             )}
             <input
+               style={{
+                backgroundColor: activeTheme.backgroundColor,
+                border: `1px solid ${activeTheme.borderColor}`,
+                color: activeTheme.primaryText,
+              }}
               readOnly={isSubmitting}
               className="p-2 border rounded-md"
               type="text"
@@ -140,6 +166,11 @@ function ExperienceForm() {
               />
             )}
             <input
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                border: `1px solid ${activeTheme.borderColor}`,
+                color: activeTheme.primaryText,
+              }}
               readOnly={isSubmitting}
               className="p-2 border rounded-md"
               type="text"
@@ -153,6 +184,11 @@ function ExperienceForm() {
               />
             )}
             <textarea
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                border: `1px solid ${activeTheme.borderColor}`,
+                color: activeTheme.primaryText,
+              }}
               readOnly={isSubmitting}
               className="w-full p-2 border rounded-md"
               id="role"
@@ -165,6 +201,11 @@ function ExperienceForm() {
               />
             )}
             <input
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                border: `1px solid ${activeTheme.borderColor}`,
+                color: activeTheme.primaryText,
+              }}
               readOnly={isSubmitting}
               className="p-2 border rounded-md"
               type="text"
@@ -178,7 +219,11 @@ function ExperienceForm() {
               />
             )}
           </Card>
-          <SubmitButton className="w-full" loading={isSubmitting} type="submit">
+          <SubmitButton
+            className="w-full mt-4"
+            loading={isSubmitting}
+            type="submit"
+          >
             Submit
           </SubmitButton>
         </form>

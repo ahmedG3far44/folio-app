@@ -1,60 +1,59 @@
+import { useTheme } from "@/contexts/ThemeProvider";
 import { IContactType } from "@/lib/types";
 import { Github, Linkedin, Twitter, Youtube } from "lucide-react";
+import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 function ShowUserContacts({ contacts }: { contacts?: IContactType }) {
+  const { activeTheme } = useTheme();
   return (
     <div className="flex justify-start items-start gap-2">
       {/* {contacts?.id} */}
       {contacts?.github && (
-        <Link
-          className="p-2 border rounded-lg bg-zinc-50 border-zinc-300 hover:bg-zinc-200 cursor-pointer"
-          target="_blank"
-          to={contacts.github}
-        >
-          <span>
-            <label className="hidden">Github Profile Link</label>
-            <Github size={20} />
-          </span>
-        </Link>
+        <ContactIcon
+          path={contacts.github}
+          icons={<Github color={activeTheme.primaryText} size={20} />}
+        />
       )}
       {contacts?.youtube && (
-        <Link
-          className="p-2 border rounded-lg bg-zinc-50 border-zinc-300 hover:bg-zinc-200 cursor-pointer"
-          target="_blank"
-          to={contacts.youtube}
-        >
-          <span>
-            <label className="hidden">Youtube Channel Url Link</label>
-            <Youtube size={20} />
-          </span>
-        </Link>
+        <ContactIcon
+          path={contacts.youtube}
+          icons={<Youtube color={activeTheme.primaryText} size={20} />}
+        />
       )}
       {contacts?.twitter && (
-        <Link
-          className="p-2 border rounded-lg bg-zinc-50 border-zinc-300 hover:bg-zinc-200 cursor-pointer"
-          target="_blank"
-          to={contacts.twitter}
-        >
-          <span>
-            <label className="hidden">Twitter Profile Link</label>
-            <Twitter size={20} />
-          </span>
-        </Link>
+        <ContactIcon
+          path={contacts.twitter}
+          icons={<Twitter color={activeTheme.primaryText} size={20} />}
+        />
       )}
       {contacts?.linkedin && (
-        <Link
-          className="p-2 border rounded-lg bg-zinc-50 border-zinc-300 hover:bg-zinc-200 cursor-pointer"
-          target="_blank"
-          to={contacts.linkedin}
-        >
-          <span>
-            <label className="hidden">Linkedin Profile Link</label>
-            <Linkedin size={20} />
-          </span>
-        </Link>
+        <ContactIcon
+          path={contacts.linkedin}
+          icons={<Linkedin color={activeTheme.primaryText} size={20} />}
+        />
       )}
     </div>
+  );
+}
+
+function ContactIcon({ path, icons }: { path: string; icons: ReactNode }) {
+  const { activeTheme } = useTheme();
+  return (
+    <Link
+      style={{
+        backgroundColor: activeTheme.cardColor,
+        border: `1px solid ${activeTheme.borderColor}`,
+      }}
+      className="p-2 border rounded-lg hover:opacity-70 duration-150   cursor-pointer"
+      target="_blank"
+      to={path}
+    >
+      <span>
+        <label className="hidden">Linkedin Profile Link</label>
+        {icons}
+      </span>
+    </Link>
   );
 }
 

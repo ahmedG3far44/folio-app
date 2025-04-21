@@ -8,13 +8,14 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function SignUpPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  // const { uploadedInfo } = useUpload();
+  const { activeTheme } = useTheme();
   const [profile, setProfile] = useState<File | null>(null);
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -67,7 +68,13 @@ function SignUpPage() {
     }
   };
   return (
-    <div className="w-full min-h-screen flex items-center justify-center">
+    <div
+      style={{
+        backgroundColor: activeTheme.backgroundColor,
+        color: activeTheme.primaryText,
+      }}
+      className="w-full min-h-screen flex items-center justify-center"
+    >
       <Card className="p-4 ">
         <CardTitle className="self-center">Create A New Account</CardTitle>
         <form
@@ -82,7 +89,7 @@ function SignUpPage() {
           {/* <UploadImages status="single" /> */}
           <div className="self-center">
             {profile ? (
-              <div className="w-30 h-30 rounded-full bg-zinc-100 flex items-center justify-center relative">
+              <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center relative">
                 <img
                   loading="lazy"
                   className="w-full h-full rounded-full object-cover"
@@ -94,7 +101,7 @@ function SignUpPage() {
                     onClick={() => setProfile(null)}
                     variant={"destructive"}
                     type="button"
-                    className="absolute -right-2 -top-0 hover:bg-red-700 duration-150 cursor-pointer"
+                    className="absolute -right-4 -top-1 hover:bg-red-700 duration-150 cursor-pointer"
                   >
                     <XIcon size={15} />
                   </Button>
@@ -103,7 +110,7 @@ function SignUpPage() {
             ) : (
               <>
                 <label
-                  className="w-30 h-30 rounded-full bg-zinc-100 border border-dashed border-zinc-500  flex items-center justify-center cursor-pointer hover:bg-zinc-200 duration-150"
+                  className="w-20 h-20 rounded-full my-4 bg-zinc-100 border border-dashed border-zinc-500  flex items-center justify-center cursor-pointer hover:bg-zinc-200 duration-150"
                   htmlFor="profile"
                 >
                   <LucideUser size={40} />
@@ -121,6 +128,10 @@ function SignUpPage() {
             )}
           </div>
           <input
+            style={{
+              backgroundColor: activeTheme.backgroundColor,
+              border: `1px solid ${activeTheme.borderColor}`,
+            }}
             className="w-full p-2 rounded-md border"
             onChange={(e) =>
               setRegisterUser({ ...registerUser, name: e.target.value })
@@ -130,6 +141,10 @@ function SignUpPage() {
           />
 
           <input
+            style={{
+              backgroundColor: activeTheme.backgroundColor,
+              border: `1px solid ${activeTheme.borderColor}`,
+            }}
             className="w-full p-2 rounded-md border"
             onChange={(e) =>
               setRegisterUser({ ...registerUser, email: e.target.value })
@@ -137,9 +152,15 @@ function SignUpPage() {
             type="email"
             placeholder="email"
           />
-          <div className="w-full flex items-center justify-between  rounded-md border">
+          <div
+            style={{
+              backgroundColor: activeTheme.backgroundColor,
+              border: `1px solid ${activeTheme.borderColor}`,
+            }}
+            className="w-full flex items-center justify-between  rounded-md border"
+          >
             <input
-              className="w-full h-full text-zinc-700 p-2 rounded-md"
+              className="w-full h-full p-2 rounded-md"
               onChange={(e) =>
                 setRegisterUser({ ...registerUser, password: e.target.value })
               }
@@ -147,7 +168,7 @@ function SignUpPage() {
               placeholder="password"
             />
             <span
-              className="hover:text-black duration-150 cursor-pointer text-zinc-500 p-2 rounded-md"
+              className="hover:opacity-80 duration-150 cursor-pointer p-2 rounded-md"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}

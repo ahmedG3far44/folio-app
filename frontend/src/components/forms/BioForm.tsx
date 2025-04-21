@@ -15,6 +15,7 @@ import toast from "react-hot-toast";
 import ContactForm from "./ContactForm";
 import { UserPen } from "lucide-react";
 import UploadResume from "./UploadResume";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -24,6 +25,7 @@ function BioForm() {
   const [isResumeOpen, setIsResumeOpen] = useState<boolean>(false);
   // const [heroImage, setHeroImage] = useState<File | null>(null);
   const { bio } = useUser();
+  const { activeTheme } = useTheme();
   const { token } = useAuth();
   const {
     register,
@@ -35,7 +37,10 @@ function BioForm() {
     resolver: zodResolver(bioSchema),
   });
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div
+      style={{ color: activeTheme.primaryText }}
+      className="w-full flex flex-col gap-4"
+    >
       <div className="w-full p-4">
         <div className="w-full flex justify-between items-center">
           <h1>Bio Info</h1>
@@ -80,11 +85,22 @@ function BioForm() {
             })}
             className="w-full p-2 flex flex-col justify-start items-center gap-2"
           >
-            <Card className="p-4 w-full">
+            <Card
+              style={{
+                backgroundColor: activeTheme.cardColor,
+                border: `1px solid ${activeTheme.borderColor}`,
+              }}
+              className="p-4 w-full"
+            >
               <input
+                style={{
+                  backgroundColor: activeTheme.borderColor,
+                  border: `1px solid ${activeTheme.secondaryText}`,
+                  color: activeTheme.primaryText,
+                }}
                 defaultValue={bio.jobTitle}
                 readOnly={isSubmitting}
-                className="p-2 border w-full rounded-md"
+                className="p-2  w-full rounded-md"
                 type="text"
                 id="jobTitle"
                 placeholder="Job title"
@@ -96,9 +112,14 @@ function BioForm() {
                 />
               )}
               <input
+                style={{
+                  backgroundColor: activeTheme.borderColor,
+                  border: `1px solid ${activeTheme.secondaryText}`,
+                  color: activeTheme.primaryText,
+                }}
                 defaultValue={bio.bioName}
                 readOnly={isSubmitting}
-                className="p-2 border rounded-md"
+                className="p-2  rounded-md"
                 type="text"
                 id="name"
                 placeholder="name"
@@ -110,9 +131,14 @@ function BioForm() {
                 />
               )}
               <textarea
+                style={{
+                  backgroundColor: activeTheme.borderColor,
+                  border: `1px solid ${activeTheme.secondaryText}`,
+                  color: activeTheme.primaryText,
+                }}
                 defaultValue={bio.bio}
                 readOnly={isSubmitting}
-                className="w-full p-2 border rounded-md"
+                className="w-full p-2  rounded-md"
                 id="bio"
                 placeholder="bio"
                 {...register("summary")}
@@ -124,7 +150,7 @@ function BioForm() {
               )}
             </Card>
             <SubmitButton
-              className="w-full"
+              className="w-full mt-4"
               loading={isSubmitting}
               type="submit"
             >
@@ -145,9 +171,9 @@ function BioForm() {
           </Button>
         </div>
         {isContactOpen && (
-          <Card className={"w-full p-4"}>
+          
             <ContactForm />
-          </Card>
+          
         )}
       </div>
       <div className="w-full p-4 flex flex-col justify-start items-center gap-4">
@@ -162,7 +188,13 @@ function BioForm() {
           </Button>
         </div>
         {isResumeOpen && (
-          <Card className={"w-full p-4"}>
+          <Card
+            style={{
+              backgroundColor: activeTheme.cardColor,
+              border: `1px solid ${activeTheme.borderColor}`,
+            }}
+            className={"w-full p-4"}
+          >
             <UploadResume />
           </Card>
         )}

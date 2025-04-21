@@ -4,6 +4,7 @@ import { Card } from "./ui/card";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useState } from "react";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 function User({ dashboard }: { dashboard: boolean }) {
   const { user, isLogged, isAdmin, logout } = useAuth();
@@ -48,22 +49,28 @@ function UserMenu({
   isAdmin: boolean;
   logout: () => void;
 }) {
+  const { activeTheme } = useTheme();
   return (
     <Card
+      style={{
+        backgroundColor: activeTheme.cardColor,
+        color: activeTheme.secondaryText,
+        borderColor: activeTheme.borderColor,
+      }}
       className={`${className} animate-scale p-2 flex-col justify-start items-start gap-1 rounded-md border absolute top-12 right-0 z-50 `}
     >
-      <ul className={`text-sm font-semibold text-zinc-600`}>
-        <li className="w-full p-2 cursor-pointer hover:bg-zinc-50">
+      <ul className={`text-sm font-semibold`}>
+        <li className="w-full p-2 cursor-pointer hover:opacity-75 duration-150">
           {isAdmin ? (
             <Link to={`/dashboard/insights`}>Dashboard</Link>
           ) : (
             <Link to={`/profile/bio`}>Profile</Link>
           )}
         </li>
-        <li className="w-full p-2 cursor-pointer hover:bg-zinc-50">
+        <li className="w-full p-2 cursor-pointer hover:opacity-75 duration-150">
           {user.email}
         </li>
-        <li className=" w-full p-2 cursor-pointer hover:bg-zinc-50">
+        <li className=" w-full p-2 cursor-pointer hover:opacity-75 duration-150">
           <Button onClick={logout} className="w-full cursor-pointer">
             Logout
           </Button>

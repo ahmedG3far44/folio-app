@@ -28,8 +28,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.getItem("token") as string
   );
   const [isLogged, setIsLogged] = useState<boolean>(!token ? false : true);
-  
-  const isAdmin: boolean = user.role === "ADMIN";
+
+  const isAdmin: boolean = user?.role === "ADMIN";
 
   const login = async ({ user, token }: { user: IUserType; token: string }) => {
     setUser(user);
@@ -46,7 +46,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   return (
     <AuthContext.Provider
-      value={{ user, token, isLogged, isAdmin, login, logout }}
+      value={{
+        user,
+        token,
+        isLogged,
+        isAdmin,
+        login,
+        logout,
+      }}
     >
       {children}
     </AuthContext.Provider>

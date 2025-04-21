@@ -132,3 +132,12 @@ model Layouts {
   userId         Users   @relation(fields: [usersId], references: [id])
   usersId        String
 }
+
+model Theme {
+  id              String  @id @default(cuid())
+  backgroundColor String? @default("#121212")
+  cardColor       String  @default("#1E1E1E")
+  primaryText     String  @default("#64B5F6")
+  secondaryText   String  @default("#BBBBBB")
+  borderColor     String? @default("#2E7D32")
+}

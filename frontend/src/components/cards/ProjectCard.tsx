@@ -1,11 +1,20 @@
 import { IProjectType } from "@/lib/types";
 import { Card } from "../ui/card";
 import { Link } from "react-router-dom";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 function ProjectCard({ id, title, description, thumbnail }: IProjectType) {
+  const { activeTheme } = useTheme();
   return (
-    <Card className="p-4">
-      <div className="w-full h-[250px] rounded-md overflow-hidden border border-zinc-200">
+    <Card
+      style={{
+        backgroundColor: activeTheme.cardColor,
+        color: activeTheme.primaryText,
+        border: `1px solid ${activeTheme.borderColor}`,
+      }}
+      className="p-4 shadow-xl"
+    >
+      <div className="w-full h-[250px] rounded-md overflow-hidden">
         <img
           property="true"
           loading="lazy"
@@ -20,15 +29,19 @@ function ProjectCard({ id, title, description, thumbnail }: IProjectType) {
             return <span key={tag?.id}>{tag?.tagName}</span>;
           })}
       </div> */}
-      <div>
+      <div className="flex flex-col justify-start items-start space-y-2">
         <Link
           to={`/project/${id}`}
           className="text-xl font-semibold hover:underline my-1 cursor-pointer duration-150"
         >
           {title}
         </Link>
-        <p className="line-clamp-3">{description}</p>
-        {/* <span>{id}</span> */}
+        <p
+          style={{ color: activeTheme.secondaryText }}
+          className="line-clamp-3 text-sm "
+        >
+          {description}
+        </p>
       </div>
     </Card>
   );

@@ -1,12 +1,23 @@
+import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import { useTheme } from "@/contexts/ThemeProvider";
 import { Outlet } from "react-router-dom";
 
 function LandingPage() {
+  const { activeTheme } = useTheme();
   return (
-    <div className="p-4 w-full flex flex-col justify-between items-center md:p-8 lg:p-10 lg:w-3/4 m-auto min-h-screen">
-      <Header />
-      <Outlet />
+    <div
+      style={{
+        backgroundColor: activeTheme.backgroundColor,
+        color: activeTheme.primaryText,
+      }}
+      className="w-full flex flex-col justify-between items-center  m-auto min-h-screen"
+    >
+      <Container>
+        <Header />
+        <Outlet />
+      </Container>
       <Footer />
     </div>
   );

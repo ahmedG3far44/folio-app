@@ -4,11 +4,13 @@ import { Button } from "../ui/button";
 import SubmitButton from "../submit-button";
 import { useAuth } from "@/contexts/AuthProvider";
 import toast from "react-hot-toast";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function UploadResume() {
   const { token } = useAuth();
+  const { activeTheme } = useTheme();
   const [file, setFile] = useState<File | null>(null);
   const [uploadState, setUploadState] = useState<{
     uploading: boolean;
@@ -67,10 +69,10 @@ function UploadResume() {
       className="w-full flex flex-col gap-8 justify-center items-center"
     >
       {file ? (
-        <div className="w-[400px] flex flex-col items-center justify-center gap-4 p-4 border rounded-2xl relative">
+        <div style={{color:activeTheme.secondaryText}} className="w-[400px] flex flex-col items-center justify-center gap-4 p-4 border rounded-2xl relative">
           <div className="w-fit">
             <span>
-              <FileCheck2 size={50} />
+              <FileCheck2 size={30} />
             </span>
             {!uploadState.uploading && (
               <Button
@@ -90,15 +92,20 @@ function UploadResume() {
             <h1 className="font-bold">
               {(file.size / 1024 / 1024).toLocaleString()} KB
             </h1>
-            <h1 className="font-semibold text-sm text-zinc-600">
+            <h1 className="font-semibold text-sm">
               {file.type.split("/").pop()?.toString()}
             </h1>
           </div>
         </div>
       ) : (
         <label
+          style={{
+            backgroundColor: activeTheme.backgroundColor,
+            border: `1px solid ${activeTheme.borderColor}`,
+            color: activeTheme.primaryText,
+          }}
           htmlFor="resume"
-          className="p-8 bg-zinc-100 hover:bg-zinc-200 duration-150 flex flex-col items-center justify-center cursor-pointer rounded-md border border-dashed border-zinc-500"
+          className="p-8  hover:opacity-75 duration-150 flex flex-col items-center justify-center cursor-pointer rounded-md border border-dashed "
         >
           <h1>Upload Resume file</h1>
           <span>Pdf, Docx, Word</span>

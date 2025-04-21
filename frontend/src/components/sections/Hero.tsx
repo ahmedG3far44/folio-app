@@ -2,6 +2,7 @@ import { IBioType, IContactType } from "@/lib/types";
 import ShowUserContacts from "../cards/ShowUserContacts";
 import { Card } from "../ui/card";
 import Resume from "../cards/Resume";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 function Hero({
   bioInfo,
@@ -10,6 +11,7 @@ function Hero({
   bioInfo: IBioType;
   contacts: IContactType;
 }) {
+  const { activeTheme } = useTheme();
   return (
     <div className="w-3/4  m-auto flex flex-col justify-center items-center gap-8 my-30">
       <div className=" flex justify-around items-center gap-16 flex-wrap lg:flex-nowrap ">
@@ -27,7 +29,14 @@ function Hero({
           <Resume />
         </div>
       </div>
-      <Card className="w-full p-4">
+      <Card
+        style={{
+          backgroundColor: activeTheme.cardColor,
+          color: activeTheme.secondaryText,
+          border: `1px solid ${activeTheme.borderColor}`,
+        }}
+        className="w-full p-4"
+      >
         <p>{bioInfo?.bio}</p>
       </Card>
     </div>

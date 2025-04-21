@@ -97,3 +97,17 @@ export interface UploadFileType {
   name: string;
   type: string;
 }
+export interface IThemeType {
+  id: string;
+  backgroundColor: string;
+  cardColor: string;
+  primaryText: string;
+  secondaryText: string;
+  borderColor: string;
+}
+
+export interface ThemeContextType {
+  activeTheme: IThemeType;
+  themesList: IThemeType[];
+  switchTheme: ({newActiveTheme}:{newActiveTheme:IThemeType}) => void;
+}

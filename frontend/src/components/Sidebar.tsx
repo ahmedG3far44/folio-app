@@ -7,14 +7,13 @@ import {
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
   const { user, isLogged, logout } = useAuth();
+  const { activeTheme } = useTheme();
   const { pathname } = useLocation();
   const activeLink = pathname.split("/").pop();
-
-  //   const [isOpen, setIsOpen] = useState(false);
-  console.log(isOpen);
   const profileLinks = [
     {
       id: 1,
@@ -52,14 +51,24 @@ function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
       path: "testimonials",
       icon: <LucideFlaskConical size={20} />,
     },
+    {
+      id: 7,
+      name: "Themes",
+      path: "themes",
+      icon: <LucideFlaskConical size={20} />,
+    },
   ];
   return (
     <aside
-      className={` bg-white ${
-        isOpen && "hidden shadow-sm  border-zinc-400"
+      style={{
+        backgroundColor: activeTheme.backgroundColor,
+        color: activeTheme.primaryText,
+      }}
+      className={` ${
+        isOpen && "hidden shadow-sm "
       }  flex-col justify-start items-center lg:flex h-screen z-50`}
     >
-      <div className="border-b border-b-stone-200 flex items-start justify-start gap-2 p-4 flex-wrap">
+      <div className=" flex items-start justify-start gap-2 p-4 flex-wrap">
         <div className="w-10 h-10 overflow-hidden rounded-full">
           <img
             className="w-full h-full object-cover"
@@ -67,7 +76,7 @@ function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
             alt={user.email as string}
           />
         </div>
-        <div className="text-sm text-stone-600 ">
+        <div className="text-sm  ">
           <h3 className="font-bold">{user.name}</h3>
           <h4>{user.email}</h4>
         </div>
@@ -77,12 +86,16 @@ function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
           {profileLinks.map((url) => {
             return (
               <Link
+                style={{
+                  color:
+                    url.path === activeLink
+                      ? activeTheme.secondaryText
+                      : activeTheme.primaryText,
+                }}
                 to={`${
                   url.path === "/" ? `/${user.id}` : `/profile/${url.path}`
                 }`}
-                className={`${
-                  url.path === activeLink && "text-purple-500 "
-                } p-4 w-full hover:text-stone-500  transition-all duration-150 cursor-pointer flex items-center gap-4 font-bold `}
+                className={` p-4 w-full  transition-all duration-150 cursor-pointer flex items-center gap-4 font-bold `}
                 key={url.id}
               >
                 <span>{url.icon}</span>
