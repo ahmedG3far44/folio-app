@@ -48,7 +48,7 @@ function UserPage() {
     >
       <div className="max-w-full w-full lg:w-3/4  m-auto min-h-screen  flex flex-col gap-4 ">
         {!userId ? (
-          <div className="min-h-full w-3/4 m-auto flex flex-col items-center justify-start text-2xl text-zinc-500 font-bold">
+          <div className="min-h-full w-3/4 m-auto flex flex-col items-center justify-start text-2xl  font-bold">
             <h1 className="text-4xl font-black">404 not found</h1>
             <h4>there is not user profile found.</h4>
           </div>

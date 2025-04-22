@@ -16,15 +16,27 @@ function User({ dashboard }: { dashboard: boolean }) {
           <div className="flex flex-row-reverse items-center justify-center gap-4 ">
             <img
               role="button"
-              className="rounded-full w-10 h-10 object-cover object-center hover:scale-110 transition-all duration-150"
+              className="rounded-full w-10 h-10 object-cover object-center hover:scale-110 transition-all duration-150 cursor-pointer"
               src={user.picture as string}
               alt={user.role}
             />
-            {!dashboard && (
-              <h1 className="text-xl font-semibold  hover:text-zinc-600 duration-150 transition-all">
-                <Link to={`/${user.id}`}>{user.name}</Link>
-              </h1>
-            )}
+            <>
+              {dashboard ? (
+                <div className="flex flex-col items-end">
+                  <h1 className="text-xl font-semibold  duration-150 transition-all">
+                    <span>{user.name}</span>
+                  </h1>
+                  <span className="text-sm">{user.email}</span>
+                </div>
+              ) : (
+                <Link
+                  className="text-xl font-semibold  duration-150 transition-all hover:opacity-75 "
+                  to={`/${user.id}`}
+                >
+                  {user.name}
+                </Link>
+              )}
+            </>
           </div>
 
           {isOpen && !dashboard && (
