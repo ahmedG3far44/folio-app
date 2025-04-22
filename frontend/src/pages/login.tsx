@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useTheme } from "@/contexts/ThemeProvider";
+import ErrorMessage from "@/components/ErrorMessage";
+import Logo from "@/components/Logo";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -26,7 +28,14 @@ function LoginPage() {
     e.preventDefault();
 
     try {
+      setError(null);
       setPending(true);
+      const { email, password } = loginUser;
+
+      if (!email || !password)
+        throw new Error(
+          "The email & password field is required, makre sure you fill it with correct data!!"
+        );
 
       const response = await fetch(`${URL_SERVER}/auth/login`, {
         method: "POST",
@@ -41,15 +50,13 @@ function LoginPage() {
       if (!data)
         throw new Error("can't login your email or passowrd is Wrong!!");
       const { user, token } = data.data;
-      console.log(user);
-      console.log(token);
+
       login({ user, token });
       setError(null);
       navigate(`/${user.id}`);
       return;
     } catch (err: any) {
-      console.error(err);
-      setError("your email or password is wrong!!");
+      setError((err as Error).message);
       return;
     } finally {
       setPending(false);
@@ -67,25 +74,24 @@ function LoginPage() {
       className="w-full min-h-screen flex items-center justify-center"
     >
       <Card className="p-8">
-        <CardTitle>
-          <h1 className="text-2xl font-bold">Login To your Account</h1>
+        <CardTitle className="flex items-center justify-center flex-col gap-2 my-2">
+          <Logo />
+          <h1 className="text-2xl font-semibold text-center">
+            login to your account
+          </h1>
         </CardTitle>
         <form
           className="w-[400px] flex flex-col items-start gap-4"
           onSubmit={handleLogin}
         >
-          {error && (
-            <p className="text-red-500 p-2 border border-red-500 rounded-md w-full bg-red-100">
-              {error}
-            </p>
-          )}
+          {error && <ErrorMessage message={error} className={"text-center"} />}
           <input
             style={{
               backgroundColor: activeTheme.backgroundColor,
               color: activeTheme.primaryText,
               borderColor: activeTheme.borderColor,
             }}
-            className="w-full p-2 rounded-md border"
+            className="w-full p-2 rounded-md "
             onChange={(e) => setUser({ ...loginUser, email: e.target.value })}
             type="email"
             placeholder="email"
@@ -124,7 +130,7 @@ function LoginPage() {
             </span>
           </div>
 
-          <SubmitButton  className="w-full" loading={pending} type="submit">
+          <SubmitButton className="w-full" loading={pending} type="submit">
             Login
           </SubmitButton>
         </form>

@@ -37,7 +37,16 @@ function SignUpPage() {
       const { name, email, password } = registerUser;
 
       if (!profile)
-        throw new Error("profile picture is required to register!!");
+        throw new Error("Profile picture is required to register!!");
+      if (!email || !password || !name)
+        throw new Error(
+          "The email or passowrd field is required, make sure to fill all the fields correctly!!"
+        );
+
+      if (password.length <= 8)
+        throw new Error(
+          "Your password is less than 8 character, please enter a strong!!"
+        );
 
       formData.append("profile", profile!);
       formData.append("name", name);
@@ -77,16 +86,19 @@ function SignUpPage() {
       className="w-full min-h-screen flex items-center justify-center"
     >
       <Card className="p-4 ">
-        <CardTitle className="self-center text-2xl font-bold">Create A New Account</CardTitle>
+        <CardTitle className="self-center text-2xl font-bold">
+          Create A New Account
+        </CardTitle>
         <form
           className="w-[400px] flex flex-col items-start gap-4"
           onSubmit={handleLogin}
         >
-          {error && <ErrorMessage message={error} />}
-        
           <div className="self-center">
             {profile ? (
-              <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center relative">
+              <div
+                style={{ borderColor: activeTheme.borderColor }}
+                className="w-20 h-20 rounded-full  flex items-center justify-center border-2 relative"
+              >
                 <img
                   loading="lazy"
                   className="w-full h-full rounded-full object-cover"
@@ -98,7 +110,7 @@ function SignUpPage() {
                     onClick={() => setProfile(null)}
                     variant={"destructive"}
                     type="button"
-                    className="absolute -right-4 -top-1 hover:bg-red-700 duration-150 cursor-pointer"
+                    className="absolute -right-4 -top-1 hover:opacity-75 duration-150 cursor-pointer"
                   >
                     <XIcon size={15} />
                   </Button>
@@ -112,7 +124,7 @@ function SignUpPage() {
                     color: activeTheme.primaryText,
                     borderColor: activeTheme.borderColor,
                   }}
-                  className="w-20 h-20 rounded-full my-4  border border-dashed   flex items-center justify-center cursor-pointer hover:opacity-70 duration-150"
+                  className="w-20 h-20 rounded-full   border border-dashed   flex items-center justify-center cursor-pointer hover:opacity-70 duration-150"
                   htmlFor="profile"
                 >
                   <LucideUser size={40} />
@@ -129,13 +141,15 @@ function SignUpPage() {
               </>
             )}
           </div>
+
+          {error && <ErrorMessage className={"text-center"} message={error} />}
           <input
             style={{
               backgroundColor: activeTheme.backgroundColor,
               color: activeTheme.primaryText,
               borderColor: activeTheme.borderColor,
             }}
-            className="w-full p-2 rounded-md border"
+            className="w-full p-2 rounded-md "
             onChange={(e) =>
               setRegisterUser({ ...registerUser, name: e.target.value })
             }
@@ -149,7 +163,7 @@ function SignUpPage() {
               color: activeTheme.primaryText,
               borderColor: activeTheme.borderColor,
             }}
-            className="w-full p-2 rounded-md border"
+            className="w-full p-2 rounded-md "
             onChange={(e) =>
               setRegisterUser({ ...registerUser, email: e.target.value })
             }
@@ -162,7 +176,7 @@ function SignUpPage() {
               color: activeTheme.primaryText,
               borderColor: activeTheme.borderColor,
             }}
-            className="w-full flex items-center justify-between  rounded-md border"
+            className="w-full flex items-center justify-between  rounded-md "
           >
             <input
               style={{

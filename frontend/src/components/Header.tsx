@@ -25,7 +25,7 @@ function Header() {
       }}
       className={`${
         isScroll && " border-bz-[999]"
-      } w-full border-b-0 flex justify-between items-center p-2 sticky top-0`}
+      } w-full border-b-0 flex justify-between items-center px-4 py-8 sticky top-0`}
     >
       <Logo />
       <div>
