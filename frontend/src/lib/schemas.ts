@@ -100,26 +100,10 @@ export const userSchema = z.object({
 });
 
 export const contactsSchema = z.object({
-  linkedin: z
-    .string()
-    .url({ message: "please enter a valid url link!!" })
-    .min(0)
-    .optional(),
-  github: z
-    .string()
-    .url({ message: "please enter a valid url link!!" })
-    .min(0)
-    .optional(),
-  youtube: z
-    .string()
-    .url({ message: "please enter a valid url link!!" })
-    .min(0)
-    .optional(),
-  twitter: z
-    .string()
-    .url({ message: "please enter a valid url link!!" })
-    .min(0)
-    .optional(),
+  linkedin: z.string().url().optional(),
+  github: z.string().url().optional(),
+  youtube: z.string().url().optional(),
+  twitter: z.string().url().optional(),
 });
 
 export const layoutsSchema = z.object({
@@ -139,4 +123,8 @@ export const feedbackSchema = z.object({
     .string()
     .min(1, { message: "this field is required" })
     .max(100, { message: "too long input field" }),
+  feedback: z
+    .string()
+    .min(1, { message: "this field is required" })
+    .max(200, { message: "too long input field" }),
 });

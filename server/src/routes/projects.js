@@ -377,6 +377,7 @@ export async function uploadToS3(image, path) {
     const imgURL = `${BUCKET_DOMAIN}/${path}`;
     return imgURL;
   } catch (error) {
-    return console.log(error.message);
+    console.log(error.message);
+    return error;
   }
 }

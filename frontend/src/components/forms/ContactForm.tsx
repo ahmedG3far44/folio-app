@@ -74,11 +74,11 @@ function ContactForm() {
         className={"w-full p-4"}
       >
         <input
-          style={{
-            backgroundColor: activeTheme.borderColor,
-            border: `1px solid ${activeTheme.secondaryText}`,
-            color: activeTheme.primaryText,
-          }}
+            style={{
+              backgroundColor: activeTheme.backgroundColor,
+              color: activeTheme.primaryText,
+              borderColor: activeTheme.borderColor,
+            }}
           {...register("github")}
           defaultValue={contacts.github}
           readOnly={isSubmitting}
@@ -90,10 +90,10 @@ function ContactForm() {
           <ErrorMessage message={errors.github.message?.toString() as string} />
         )}
         <input
-          style={{
-            backgroundColor: activeTheme.borderColor,
-            border: `1px solid ${activeTheme.secondaryText}`,
+           style={{
+            backgroundColor: activeTheme.backgroundColor,
             color: activeTheme.primaryText,
+            borderColor: activeTheme.borderColor,
           }}
           {...register("linkedin")}
           defaultValue={contacts.linkedin}
@@ -108,10 +108,10 @@ function ContactForm() {
           />
         )}
         <input
-          style={{
-            backgroundColor: activeTheme.borderColor,
-            border: `1px solid ${activeTheme.secondaryText}`,
+           style={{
+            backgroundColor: activeTheme.backgroundColor,
             color: activeTheme.primaryText,
+            borderColor: activeTheme.borderColor,
           }}
           {...register("youtube")}
           defaultValue={contacts.youtube}
@@ -126,10 +126,10 @@ function ContactForm() {
           />
         )}
         <input
-          style={{
-            backgroundColor: activeTheme.borderColor,
-            border: `1px solid ${activeTheme.secondaryText}`,
+           style={{
+            backgroundColor: activeTheme.backgroundColor,
             color: activeTheme.primaryText,
+            borderColor: activeTheme.borderColor,
           }}
           {...register("twitter")}
           defaultValue={contacts.twitter}

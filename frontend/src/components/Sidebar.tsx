@@ -4,12 +4,19 @@ import {
   LucideAlarmCheck,
   LucideFlaskConical,
   LucideInfo,
+  XIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
 
-function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
+function Sidebar({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen?: (menuState: boolean) => void;
+}) {
   const { user, isLogged, logout } = useAuth();
   const { activeTheme } = useTheme();
   const { pathname } = useLocation();
@@ -58,6 +65,10 @@ function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
       icon: <LucideFlaskConical size={20} />,
     },
   ];
+
+  const handleCloseMenu = () => {
+    setIsOpen?.(!isOpen);
+  };
   return (
     <aside
       style={{
@@ -66,9 +77,15 @@ function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
       }}
       className={` ${
         isOpen && "hidden shadow-sm "
-      }  flex-col justify-start items-center lg:flex h-screen z-50`}
+      } w-[25%] min-w-[200px] shadow-md fixed top-0 left-0 flex-col justify-start items-center lg:flex min-h-screen z-[999] animate-slide-in`}
     >
-      <div className=" flex items-start justify-start gap-2 p-4 flex-wrap">
+      <div style={{borderColor:activeTheme.borderColor}} className="flex border-b items-start justify-start gap-2 p-4 flex-wrap">
+        <button
+          className="lg:hidden absolute right-4 top-4 border cursor-pointer rounded-2xl p-1 hover:opacity-75 duration-150"
+          onClick={handleCloseMenu}
+        >
+          <XIcon size={20} />
+        </button>
         <div className="w-10 h-10 overflow-hidden rounded-full">
           <img
             className="w-full h-full object-cover"
@@ -81,7 +98,7 @@ function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
           <h4>{user.email}</h4>
         </div>
       </div>
-      <div className="flex flex-col justify-around items-center w-full h-full p-4 mt-10">
+      <div className="flex flex-col justify-between min-h-full items-center w-full h-full p-4 mt-10">
         <ul>
           {profileLinks.map((url) => {
             return (
@@ -104,15 +121,17 @@ function Sidebar({ isOpen }: { isOpen: boolean; setIsOpen?: () => void }) {
             );
           })}
         </ul>
-        {isLogged && (
-          <Button
-            className="w-full cursor-pointer mt-auto mb-8"
-            type="button"
-            onClick={logout}
-          >
-            Logout
-          </Button>
-        )}
+        <div className="justify-end w-1/2 mt-32">
+          {isLogged && (
+            <Button
+              className="w-full cursor-pointer mt-auto mb-8"
+              type="button"
+              onClick={logout}
+            >
+              Logout
+            </Button>
+          )}
+        </div>
       </div>
     </aside>
   );

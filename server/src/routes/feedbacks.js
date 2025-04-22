@@ -10,14 +10,11 @@ import { feedbackSchema } from "../utils/schemas.js";
 
 const router = express.Router();
 
-
-
-
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
 router.post(
-  "/:userId/feedback",
+  "/feedback/:userId",
   upload.fields([
     {
       name: "video",
@@ -43,18 +40,19 @@ router.post(
         throw new Error("profile picture is required");
       }
 
-      console.log(userId);
-
       if (video) {
-        
-        clientVideoKey = `${userId}/feedbacks/video_${crypto.randomUUID()}`;
-        await uploadToS3(video[0], clientVideoKey);
+        clientVideoKey = `${crypto.randomUUID()}`;
+        console.log(clientVideoKey);
+        const videoFile = video[0];
+        const result = await uploadToS3(videoFile, clientVideoKey);
+        console.log(result);
       }
-      clientProfileKey = `${userId}/feedbacks/profile_${crypto.randomUUID()}`;
+      
+      clientProfileKey = `${crypto.randomUUID()}`;
       await uploadToS3(profile[0], clientProfileKey);
-    
 
       const validFeedbackData = feedbackSchema.safeParse(payload);
+
       if (!validFeedbackData.success) {
         throw new Error("not valid data inputs");
       }
@@ -64,16 +62,14 @@ router.post(
           ...validFeedbackData.data,
           feedback: payload.feedback ? payload?.feedback : null,
           profile: clientProfileKey
-            ? `${process.env.AWS_S3_BUCKET_DOMAIN}/${clientProfileKey}`
+            ? `${BUCKET_DOMAIN}/${clientProfileKey}`
             : null,
-          video: clientVideoKey
-            ? `${process.env.AWS_S3_BUCKET_DOMAIN}/${clientVideoKey}`
-            : null,
+          video: clientVideoKey ? `${BUCKET_DOMAIN}/${clientVideoKey}` : null,
           usersId: userId,
         },
       });
-     
-      return res.status(201).json({
+
+      res.status(201).json({
         uploadedState: "uploaded profile & video success",
         feedback,
       });
@@ -84,7 +80,7 @@ router.post(
   }
 );
 
-router.get("/:userId/feedback", async (req, res) => {
+router.get("/feedback/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
     const feedbackList = await prisma.testimonials.findMany({
@@ -102,18 +98,16 @@ router.delete("/feedback/:feedbackId", async (req, res) => {
   const { feedbackId } = req.params;
 
   try {
-    
     const feedback = await prisma.testimonials.findUnique({
       where: {
         id: feedbackId,
         usersId: user.id,
       },
     });
-  
+
     if (!feedback) {
       throw new Error("this items doesn't exist");
     }
-    
 
     const deleteProfileParams = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -122,7 +116,6 @@ router.delete("/feedback/:feedbackId", async (req, res) => {
 
     await s3Client.send(new DeleteObjectCommand(deleteProfileParams));
     console.log("feedback profile picture was deleted from S3");
-
 
     if (feedback.video) {
       const deleteVideoFeedbackParams = {
@@ -133,7 +126,6 @@ router.delete("/feedback/:feedbackId", async (req, res) => {
       console.log("feedback video was deleted from S3");
     }
 
-
     await prisma.testimonials.delete({
       where: {
         id: feedbackId,
@@ -141,7 +133,6 @@ router.delete("/feedback/:feedbackId", async (req, res) => {
       },
     });
     console.log("feedback deleted successful");
-
 
     return res
       .status(200)

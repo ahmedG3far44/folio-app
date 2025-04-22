@@ -13,6 +13,7 @@ import SubmitButton from "../submit-button";
 import ErrorMessage from "../ErrorMessage";
 import toast from "react-hot-toast";
 import { useTheme } from "@/contexts/ThemeProvider";
+import UploadHere from "../cards/UploadHere";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -84,17 +85,19 @@ function ExperienceForm() {
           >
             <div className="w-full flex items-center justify-center gap-4 flex-col">
               {file ? (
-                <div className="relative">
+                <div
+                  style={{ borderColor: activeTheme.borderColor }}
+                  className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
+                >
                   <img
-                    className="w-40 h-40 object-cover rounded-2xl"
+                    className="w-30 h-30 object-cover rounded-2xl"
                     src={file ? URL.createObjectURL(file) : ""}
                     alt="compnay logo image"
                   />
                   {!isSubmitting && (
                     <Button
-                      type="button"
                       variant={"destructive"}
-                      className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2  -right-2 p-1 rounded-2xl flex items-center justify-center text-white "
+                      className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
                       onClick={() => setFile(null)}
                     >
                       <XIcon size={20} />
@@ -102,12 +105,7 @@ function ExperienceForm() {
                   )}
                 </div>
               ) : (
-                <label
-                  className="w-1/2 p-4  border border-dashed rounded-md hover:opacity-75 cursor-pointer duration-150"
-                  htmlFor="file"
-                >
-                  Upload image
-                </label>
+                <UploadHere inputId="file" />
               )}
               <input
                 id="file"
@@ -118,7 +116,6 @@ function ExperienceForm() {
                   setFile(e.target.files ? e.target.files[0] : null)
                 }
               />
-              {/* <Button type="submit">upload</Button> */}
             </div>
           </Card>
           <Card
@@ -132,8 +129,8 @@ function ExperienceForm() {
             <input
               style={{
                 backgroundColor: activeTheme.backgroundColor,
-                border: `1px solid ${activeTheme.borderColor}`,
                 color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
               }}
               readOnly={isSubmitting}
               className="p-2 border w-full rounded-md"
@@ -148,10 +145,10 @@ function ExperienceForm() {
               />
             )}
             <input
-               style={{
+              style={{
                 backgroundColor: activeTheme.backgroundColor,
-                border: `1px solid ${activeTheme.borderColor}`,
                 color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
               }}
               readOnly={isSubmitting}
               className="p-2 border rounded-md"
@@ -168,8 +165,8 @@ function ExperienceForm() {
             <input
               style={{
                 backgroundColor: activeTheme.backgroundColor,
-                border: `1px solid ${activeTheme.borderColor}`,
                 color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
               }}
               readOnly={isSubmitting}
               className="p-2 border rounded-md"
@@ -186,8 +183,8 @@ function ExperienceForm() {
             <textarea
               style={{
                 backgroundColor: activeTheme.backgroundColor,
-                border: `1px solid ${activeTheme.borderColor}`,
                 color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
               }}
               readOnly={isSubmitting}
               className="w-full p-2 border rounded-md"
@@ -203,8 +200,8 @@ function ExperienceForm() {
             <input
               style={{
                 backgroundColor: activeTheme.backgroundColor,
-                border: `1px solid ${activeTheme.borderColor}`,
                 color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
               }}
               readOnly={isSubmitting}
               className="p-2 border rounded-md"

@@ -29,7 +29,7 @@ function SubmitButton({
   return (
     <Button
       style={{
-        backgroundColor: activeTheme.cardColor,
+        backgroundColor: activeTheme.backgroundColor,
         color: activeTheme.primaryText,
         border: `1px solid ${activeTheme.borderColor}`,
       }}

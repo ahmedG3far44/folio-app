@@ -94,9 +94,9 @@ function BioForm() {
             >
               <input
                 style={{
-                  backgroundColor: activeTheme.borderColor,
-                  border: `1px solid ${activeTheme.secondaryText}`,
+                  backgroundColor: activeTheme.backgroundColor,
                   color: activeTheme.primaryText,
+                  borderColor: activeTheme.borderColor,
                 }}
                 defaultValue={bio.jobTitle}
                 readOnly={isSubmitting}
@@ -112,11 +112,11 @@ function BioForm() {
                 />
               )}
               <input
-                style={{
-                  backgroundColor: activeTheme.borderColor,
-                  border: `1px solid ${activeTheme.secondaryText}`,
-                  color: activeTheme.primaryText,
-                }}
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
                 defaultValue={bio.bioName}
                 readOnly={isSubmitting}
                 className="p-2  rounded-md"
@@ -132,9 +132,9 @@ function BioForm() {
               )}
               <textarea
                 style={{
-                  backgroundColor: activeTheme.borderColor,
-                  border: `1px solid ${activeTheme.secondaryText}`,
+                  backgroundColor: activeTheme.backgroundColor,
                   color: activeTheme.primaryText,
+                  borderColor: activeTheme.borderColor,
                 }}
                 defaultValue={bio.bio}
                 readOnly={isSubmitting}

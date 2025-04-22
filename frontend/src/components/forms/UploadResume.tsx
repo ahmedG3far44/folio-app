@@ -5,6 +5,7 @@ import SubmitButton from "../submit-button";
 import { useAuth } from "@/contexts/AuthProvider";
 import toast from "react-hot-toast";
 import { useTheme } from "@/contexts/ThemeProvider";
+import UploadHere from "../cards/UploadHere";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -69,7 +70,14 @@ function UploadResume() {
       className="w-full flex flex-col gap-8 justify-center items-center"
     >
       {file ? (
-        <div style={{color:activeTheme.secondaryText}} className="w-[400px] flex flex-col items-center justify-center gap-4 p-4 border rounded-2xl relative">
+        <div
+          style={{
+            backgroundColor: activeTheme.backgroundColor,
+            color: activeTheme.primaryText,
+            borderColor: activeTheme.borderColor,
+          }}
+          className="w-full lg:w-[350px] flex flex-col items-center justify-center gap-4 p-4 border rounded-2xl relative"
+        >
           <div className="w-fit">
             <span>
               <FileCheck2 size={30} />
@@ -98,18 +106,7 @@ function UploadResume() {
           </div>
         </div>
       ) : (
-        <label
-          style={{
-            backgroundColor: activeTheme.backgroundColor,
-            border: `1px solid ${activeTheme.borderColor}`,
-            color: activeTheme.primaryText,
-          }}
-          htmlFor="resume"
-          className="p-8  hover:opacity-75 duration-150 flex flex-col items-center justify-center cursor-pointer rounded-md border border-dashed "
-        >
-          <h1>Upload Resume file</h1>
-          <span>Pdf, Docx, Word</span>
-        </label>
+        <UploadHere inputId="resume" />
       )}
       <input
         type="file"

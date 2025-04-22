@@ -1,6 +1,6 @@
 function ErrorMessage({ message }: { message: string }) {
   return (
-    <div className="p-2 border border-red-500 text-sm text-red-500 bg-red-100 w-full rounded-md">
+    <div className="p-1  text-sm text-rose-500 bg-transparent w-full rounded-md">
       {message}
     </div>
   );

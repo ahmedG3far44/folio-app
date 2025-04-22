@@ -12,11 +12,14 @@ import SubmitButton from "../submit-button";
 import ErrorMessage from "../ErrorMessage";
 import { useAuth } from "@/contexts/AuthProvider";
 import toast from "react-hot-toast";
+import { useTheme } from "@/contexts/ThemeProvider";
+import UploadHere from "../cards/UploadHere";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ProjectForm() {
   const { token } = useAuth();
+  const { activeTheme } = useTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [images, setImages] = useState<File[] | []>([]);
@@ -50,9 +53,6 @@ function ProjectForm() {
           onSubmit={handleSubmit(async () => {
             const values = getValues();
             const { title, description, sourceUrl } = values;
-            console.log(values);
-            console.log(thumbnail);
-            console.log(images);
 
             const formData = new FormData();
             formData.append("thumbnail", thumbnail!);
@@ -79,12 +79,11 @@ function ProjectForm() {
                 throw new Error("adding a new project failed!!");
               }
               const data = await response.json();
-              console.log(data);
+
               setThumbnail(null);
               setImages([]);
               setTags([]);
               reset();
-              // console.log("show add project success toast message");
               toast.success("a new project was created success!!");
               return data;
             } catch (err) {
@@ -98,29 +97,27 @@ function ProjectForm() {
           <Card className="w-full">
             <div className="w-full flex items-center justify-center gap-4 flex-col">
               {thumbnail ? (
-                <div className="relative">
+                <div
+                  style={{ borderColor: activeTheme.borderColor }}
+                  className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
+                >
                   <img
-                    className="w-40 h-40 object-cover rounded-2xl"
+                    className="w-30 h-30 object-cover rounded-2xl"
                     src={thumbnail ? URL.createObjectURL(thumbnail) : ""}
                     alt="compnay logo image"
                   />
                   {!isSubmitting && (
                     <Button
                       variant={"destructive"}
-                      className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2  -right-2 p-2 rounded-2xl flex items-center justify-center text-white "
+                      className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
                       onClick={() => setThumbnail(null)}
                     >
-                      <XIcon size={15} />
+                      <XIcon size={20} />
                     </Button>
                   )}
                 </div>
               ) : (
-                <label
-                  className="w-1/2 p-4 bg-zinc-100 border border-dashed rounded-md hover:bg-zinc-200 cursor-pointer duration-150"
-                  htmlFor="thumbnail"
-                >
-                  Upload image
-                </label>
+                <UploadHere inputId="thumbnail" />
               )}
               <input
                 readOnly={isSubmitting}
@@ -137,20 +134,22 @@ function ProjectForm() {
           <Card className="w-full">
             <div className="w-full flex items-center justify-center gap-4 flex-col">
               {images.length > 0 ? (
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex flex-wrap items-start justify-center gap-4 p-4">
                   {images.map((img, index) => {
                     return (
-                      <div key={index} className="relative">
+                      <div
+                        style={{ borderColor: activeTheme.borderColor }}
+                        className="relative w-30 h-30 rounded-2xl border p-2 flex items-center justify-center"
+                      >
                         <img
-                          className="w-30 h-30 object-cover rounded-2xl"
-                          src={images ? URL.createObjectURL(img) : ""}
+                          className="w-25  h-25  lg:w-full lg:h-full object-cover rounded-2xl"
+                          src={img ? URL.createObjectURL(img) : ""}
                           alt="compnay logo image"
                         />
                         {!isSubmitting && (
                           <Button
                             variant={"destructive"}
-                            type="button"
-                            className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2  -right-2 p-2 rounded-2xl flex items-center justify-center text-white "
+                            className="cursor-pointer z-[50] hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
                             onClick={() =>
                               setImages([
                                 ...images.filter(
@@ -167,12 +166,7 @@ function ProjectForm() {
                   })}
                 </div>
               ) : (
-                <label
-                  className="w-1/2 p-4 bg-zinc-100 border border-dashed rounded-md hover:bg-zinc-200 cursor-pointer duration-150"
-                  htmlFor="images"
-                >
-                  Upload image
-                </label>
+                <UploadHere inputId="images" />
               )}
               <input
                 readOnly={isSubmitting}
@@ -189,6 +183,11 @@ function ProjectForm() {
           </Card>
           <Card className="p-4 w-full">
             <input
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
               readOnly={isSubmitting}
               className="p-2 border w-full rounded-md"
               type="text"
@@ -201,14 +200,19 @@ function ProjectForm() {
                 message={errors.title.message?.toString() as string}
               />
             )}
-            <div className="w-full flex items-center gap-4">
+            <div className="w-full flex items-center gap-2">
               <input
+                style={{
+                  backgroundColor: activeTheme.backgroundColor,
+                  color: activeTheme.primaryText,
+                  borderColor: activeTheme.borderColor,
+                }}
                 readOnly={isSubmitting}
                 className="p-2 border rounded-md w-[80%]"
                 type="text"
                 id="tags"
                 placeholder="tags"
-                defaultValue={oneTag ? oneTag : ""}
+                value={oneTag ? oneTag : ""}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setOneTag(e.target.value);
                 }}
@@ -225,12 +229,19 @@ function ProjectForm() {
             <div className="flex items-center justify-start gap-4">
               {tags.map((tag, index) => {
                 return (
-                  <div className="relative p-1 px-4 w-fit rounded-2xl border border-zinc-100 bg-secondary">
+                  <div
+                    style={{
+                      backgroundColor: activeTheme.backgroundColor,
+                      color: activeTheme.primaryText,
+                      borderColor: activeTheme.borderColor,
+                    }}
+                    className="relative p-1 px-4 w-fit rounded-2xl border "
+                  >
                     {!isSubmitting && (
                       <Button
                         type="button"
                         variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-4  -right-4  rounded-xl flex items-center justify-center text-white shadow"
+                        className="cursor-pointer duration-150 absolute -top-4  -right-4  rounded-xl flex items-center justify-center"
                         onClick={() =>
                           setTags([
                             ...tags.filter(
@@ -248,6 +259,11 @@ function ProjectForm() {
               })}
             </div>
             <input
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
               readOnly={isSubmitting}
               className="p-2 border rounded-md"
               type="text"
@@ -262,6 +278,11 @@ function ProjectForm() {
             )}
 
             <textarea
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
               readOnly={isSubmitting}
               className="w-full p-2 border rounded-md"
               id="description"

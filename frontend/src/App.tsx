@@ -12,35 +12,41 @@ import ProjectForm from "./components/forms/ProjectForm";
 import SkillForm from "./components/forms/SkillForm";
 import ProjectDetails from "./components/ProjectDetails";
 import ThemesForm from "./components/forms/ThemesForm";
+import TestimonialsForm from "./components/forms/TestimonialsForm";
+import UserFeedBack from "./components/UserFeedBack";
 
 function App() {
   return (
     // <div style={{backgroundColor:"#0000"}}>
-      <Routes>
-        <Route index path="/" element={<LandingPage />} />
+    <Routes>
+      <Route index path="/" element={<LandingPage />} />
 
-        <Route path="/:userId" element={<UserPage />} />
-        <Route path="/project/:projectId" element={<ProjectDetails />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignUpPage />} />
+      <Route path="/:userId" element={<UserPage />} />
 
-        <Route path="/dashboard" element={<ProtectedAdminRoute />}>
-          <Route path="insights" element={<h1>Dashboard Admin Insights</h1>} />
-          <Route path="users" element={<h1>Dashboard Admin Insights</h1>} />
-          <Route path="themes" element={<h1>Dashboard Admin Insights</h1>} />
-        </Route>
 
-        <Route path="/profile" element={<ProtectedUserRoute />}>
-          <Route path="bio" element={<BioForm />} />
-          <Route path="experiences" element={<ExperienceForm />} />
-          <Route path="projects" element={<ProjectForm />} />
-          <Route path="skills" element={<SkillForm />} />
-          <Route path="testimonials" element={<h1>Profile feedbacks</h1>} />
-          <Route path="themes" element={<ThemesForm />} />
-        </Route>
+      <Route path="/feedback/:userId" element={<UserFeedBack />} />
+      
+      <Route path="/project/:projectId" element={<ProjectDetails />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/signup" element={<SignUpPage />} />
 
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <Route path="/dashboard" element={<ProtectedAdminRoute />}>
+        <Route path="insights" element={<h1>Dashboard Admin Insights</h1>} />
+        <Route path="users" element={<h1>Dashboard Admin Insights</h1>} />
+        <Route path="themes" element={<h1>Dashboard Admin Insights</h1>} />
+      </Route>
+
+      <Route path="/profile" element={<ProtectedUserRoute />}>
+        <Route path="bio" element={<BioForm />} />
+        <Route path="experiences" element={<ExperienceForm />} />
+        <Route path="projects" element={<ProjectForm />} />
+        <Route path="skills" element={<SkillForm />} />
+        <Route path="testimonials" element={<TestimonialsForm />} />
+        <Route path="themes" element={<ThemesForm />} />
+      </Route>
+
+      <Route path="*" element={<NotFoundPage />} />
+    </Routes>
     // </div>
   );
 }

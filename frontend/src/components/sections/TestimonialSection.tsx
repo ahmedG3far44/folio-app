@@ -7,22 +7,21 @@ function TestimonialSection({
   testimonials: ITestimonialType[];
 }) {
   return (
-    <div>
-      <div>
-        {testimonials.map((testimonial: ITestimonialType) => {
-          return (
-            <TestimonialsCard
-              key={testimonial.id}
-              id={testimonial.id}
-              profile={testimonial.profile}
-              name={testimonial.name}
-              position={testimonial.position}
-              text={testimonial.text}
-              video={testimonial.video}
-            />
-          );
-        })}
-      </div>
+    <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 grid-flow-row mb-18">
+      {testimonials.map((testimonial: ITestimonialType) => {
+        return (
+          <TestimonialsCard
+            key={testimonial.id}
+            id={testimonial.id}
+            profile={testimonial.profile}
+            name={testimonial.name}
+            position={testimonial.position}
+            feedback={testimonial.feedback}
+            video={testimonial.video}
+            createdAt={testimonial.createdAt}
+          />
+        );
+      })}
     </div>
   );
 }

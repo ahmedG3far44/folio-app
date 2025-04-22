@@ -26,6 +26,7 @@ export interface UserInfoContextType {
   contacts: IContactType;
   pending: boolean;
   error: string;
+  getUserInfo: () => Promise<UserInfoContextType>;
 }
 
 export interface IBioType {
@@ -56,11 +57,12 @@ export interface IProjectTagType {
 }
 export interface ITestimonialType {
   id: string;
-  profile?: string;
+  profile: string;
   name: string;
+  feedback: string;
+  video: string;
   position: string;
-  text?: string;
-  video?: string;
+  createdAt: Date;
 }
 export interface ISkillType {
   id: string;
@@ -109,5 +111,5 @@ export interface IThemeType {
 export interface ThemeContextType {
   activeTheme: IThemeType;
   themesList: IThemeType[];
-  switchTheme: ({newActiveTheme}:{newActiveTheme:IThemeType}) => void;
+  switchTheme: ({ newActiveTheme }: { newActiveTheme: IThemeType }) => void;
 }

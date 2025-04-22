@@ -10,11 +10,17 @@ import ErrorMessage from "../ErrorMessage";
 import { useAuth } from "@/contexts/AuthProvider";
 import { XIcon } from "lucide-react";
 import toast from "react-hot-toast";
+// import { useParams } from "react-router-dom";
+import UploadHere from "../cards/UploadHere";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function SkillForm() {
   const { token } = useAuth();
+  // const { skillID } = useParams();
+  const { activeTheme } = useTheme();
+  // console.log(skillID);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
 
@@ -71,16 +77,19 @@ function SkillForm() {
           <Card className="w-full">
             <div className="w-full flex items-center justify-center gap-4 flex-col">
               {file ? (
-                <div className="relative w-40 h-40 rounded-2xl">
+                <div
+                  style={{ borderColor: activeTheme.borderColor }}
+                  className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
+                >
                   <img
-                    className="w-40 h-40 object-cover rounded-2xl"
+                    className="w-30 h-30 object-cover rounded-2xl"
                     src={file ? URL.createObjectURL(file) : ""}
                     alt="compnay logo image"
                   />
                   {!isSubmitting && (
                     <Button
                       variant={"destructive"}
-                      className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-0  -right-0 p-2 rounded-2xl flex items-center justify-center text-white "
+                      className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
                       onClick={() => setFile(null)}
                     >
                       <XIcon size={20} />
@@ -88,12 +97,7 @@ function SkillForm() {
                   )}
                 </div>
               ) : (
-                <label
-                  className="w-1/2 p-4 bg-zinc-100 border border-dashed rounded-md hover:bg-zinc-200 cursor-pointer duration-150"
-                  htmlFor="file"
-                >
-                  Upload image
-                </label>
+                <UploadHere inputId="file" />
               )}
               <input
                 readOnly={isSubmitting}
@@ -109,6 +113,11 @@ function SkillForm() {
           </Card>
           <Card className="p-4">
             <input
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
               readOnly={isSubmitting}
               className="p-2 border rounded-md"
               type="text"

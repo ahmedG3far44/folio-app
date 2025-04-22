@@ -9,6 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
+import ErrorMessage from "@/components/ErrorMessage";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -76,17 +77,13 @@ function SignUpPage() {
       className="w-full min-h-screen flex items-center justify-center"
     >
       <Card className="p-4 ">
-        <CardTitle className="self-center">Create A New Account</CardTitle>
+        <CardTitle className="self-center text-2xl font-bold">Create A New Account</CardTitle>
         <form
           className="w-[400px] flex flex-col items-start gap-4"
           onSubmit={handleLogin}
         >
-          {error && (
-            <p className="text-red-500 p-2 border border-red-500 rounded-md w-full bg-red-100">
-              {error}
-            </p>
-          )}
-          {/* <UploadImages status="single" /> */}
+          {error && <ErrorMessage message={error} />}
+        
           <div className="self-center">
             {profile ? (
               <div className="w-20 h-20 rounded-full bg-zinc-100 flex items-center justify-center relative">
@@ -110,7 +107,12 @@ function SignUpPage() {
             ) : (
               <>
                 <label
-                  className="w-20 h-20 rounded-full my-4 bg-zinc-100 border border-dashed border-zinc-500  flex items-center justify-center cursor-pointer hover:bg-zinc-200 duration-150"
+                  style={{
+                    backgroundColor: activeTheme.backgroundColor,
+                    color: activeTheme.primaryText,
+                    borderColor: activeTheme.borderColor,
+                  }}
+                  className="w-20 h-20 rounded-full my-4  border border-dashed   flex items-center justify-center cursor-pointer hover:opacity-70 duration-150"
                   htmlFor="profile"
                 >
                   <LucideUser size={40} />
@@ -130,7 +132,8 @@ function SignUpPage() {
           <input
             style={{
               backgroundColor: activeTheme.backgroundColor,
-              border: `1px solid ${activeTheme.borderColor}`,
+              color: activeTheme.primaryText,
+              borderColor: activeTheme.borderColor,
             }}
             className="w-full p-2 rounded-md border"
             onChange={(e) =>
@@ -143,7 +146,8 @@ function SignUpPage() {
           <input
             style={{
               backgroundColor: activeTheme.backgroundColor,
-              border: `1px solid ${activeTheme.borderColor}`,
+              color: activeTheme.primaryText,
+              borderColor: activeTheme.borderColor,
             }}
             className="w-full p-2 rounded-md border"
             onChange={(e) =>
@@ -155,12 +159,18 @@ function SignUpPage() {
           <div
             style={{
               backgroundColor: activeTheme.backgroundColor,
-              border: `1px solid ${activeTheme.borderColor}`,
+              color: activeTheme.primaryText,
+              borderColor: activeTheme.borderColor,
             }}
             className="w-full flex items-center justify-between  rounded-md border"
           >
             <input
-              className="w-full h-full p-2 rounded-md"
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
+              className="w-full h-full p-2 rounded-tl-md rounded-bl-md"
               onChange={(e) =>
                 setRegisterUser({ ...registerUser, password: e.target.value })
               }
@@ -168,7 +178,12 @@ function SignUpPage() {
               placeholder="password"
             />
             <span
-              className="hover:opacity-80 duration-150 cursor-pointer p-2 rounded-md"
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
+              className="hover:opacity-80 duration-150 cursor-pointer p-2 rounded-tr-md rounded-br-md"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -177,11 +192,14 @@ function SignUpPage() {
           <SubmitButton className="w-full" loading={pending} type="submit">
             Create Account
           </SubmitButton>
-          <div className="p-2 text-sm text-zinc-600">
+          <div
+            style={{ color: activeTheme.secondaryText }}
+            className="p-2 text-sm"
+          >
             <p>
               I have already account{" "}
               <Link
-                className={"hover:underline hover:text-black"}
+                className={"underline duration-150 hover:opacity-70"}
                 to={"/login"}
               >
                 Login

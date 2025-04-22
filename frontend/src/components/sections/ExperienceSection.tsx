@@ -7,7 +7,7 @@ function ExperienceSection({
   experiences: IExperienceType[];
 }) {
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div className="grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-4 p-4">
       {experiences.map((exp: IExperienceType) => {
         return (
           <ExperienceCard

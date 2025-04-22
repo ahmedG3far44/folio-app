@@ -61,12 +61,12 @@ function LoginPage() {
   return (
     <div
       style={{
-        backgroundColor: activeTheme.borderColor,
+        backgroundColor: activeTheme.backgroundColor,
         color: activeTheme.secondaryText,
       }}
       className="w-full min-h-screen flex items-center justify-center"
     >
-      <Card className="p-">
+      <Card className="p-8">
         <CardTitle>
           <h1 className="text-2xl font-bold">Login To your Account</h1>
         </CardTitle>
@@ -80,16 +80,31 @@ function LoginPage() {
             </p>
           )}
           <input
-            style={{ color: activeTheme.primaryText }}
+            style={{
+              backgroundColor: activeTheme.backgroundColor,
+              color: activeTheme.primaryText,
+              borderColor: activeTheme.borderColor,
+            }}
             className="w-full p-2 rounded-md border"
             onChange={(e) => setUser({ ...loginUser, email: e.target.value })}
             type="email"
             placeholder="email"
           />
-          <div className="w-full flex items-center justify-between  rounded-md border">
+          <div
+            style={{
+              backgroundColor: activeTheme.backgroundColor,
+              color: activeTheme.primaryText,
+              borderColor: activeTheme.borderColor,
+            }}
+            className="w-full flex items-center justify-between  rounded-md"
+          >
             <input
-              style={{ color: activeTheme.primaryText }}
-              className="w-full h-full  p-2 rounded-md"
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
+              className="w-full h-full  p-2 rounded-tl-md rounded-bl-md"
               onChange={(e) =>
                 setUser({ ...loginUser, password: e.target.value })
               }
@@ -97,26 +112,34 @@ function LoginPage() {
               placeholder="password"
             />
             <span
-              className="hover:opacity-75 duration-150 cursor-pointer p-2 rounded-md"
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
+              className="hover:opacity-75 duration-150 cursor-pointer p-2 rounded-tr-md rounded-br-md"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
             </span>
           </div>
 
-          <SubmitButton className="w-full" loading={pending} type="submit">
+          <SubmitButton  className="w-full" loading={pending} type="submit">
             Login
           </SubmitButton>
         </form>
         <CardFooter className="w-full">
-          <div className="w-full flex items-center justify-start gap-2">
+          <div
+            style={{ color: activeTheme.secondaryText }}
+            className="w-full flex items-center justify-start gap-2"
+          >
             <p
               className="text-sm text-start w-full 
           "
             >
               I don't have an account yet
               <Link
-                className="text-nowrap hover:opacity-75 text-sm ml-1
+                className="underline text-nowrap hover:opacity-75 text-sm ml-1
                   hover:underline duration-150"
                 to={"/signup"}
               >

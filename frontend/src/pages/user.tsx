@@ -12,12 +12,14 @@ import { useTheme } from "@/contexts/ThemeProvider";
 // import { useTheme } from "@/contexts/ThemeProvider";
 // import { useAuth } from "@/contexts/AuthProvider";
 import { useUser } from "@/contexts/UserProvider";
+// import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 // const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function UserPage() {
-  const { userId } = useParams();
+  const params = useParams();
+  const { userId } = params;
   const { activeTheme } = useTheme();
   const {
     pending,
@@ -29,6 +31,12 @@ function UserPage() {
     contacts,
   } = useUser();
   // const { themesList } = useTheme();
+  // useEffect(() => {
+  //   console.log(params);
+  //   if (params.userId) {
+  //     getUserInfo(params.userId);
+  //   }
+  // }, [params.userId]);
 
   return (
     <div
@@ -38,7 +46,7 @@ function UserPage() {
       }}
       className="w-full min-h-screen flex flex-col justify-between items-center"
     >
-      <div className="max-w-full w-full lg:w-3/4  m-auto min-h-screen p-4 flex flex-col gap-4 ">
+      <div className="max-w-full w-full lg:w-3/4  m-auto min-h-screen  flex flex-col gap-4 ">
         {!userId ? (
           <div className="min-h-full w-3/4 m-auto flex flex-col items-center justify-start text-2xl text-zinc-500 font-bold">
             <h1 className="text-4xl font-black">404 not found</h1>

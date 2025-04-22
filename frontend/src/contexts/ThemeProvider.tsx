@@ -30,11 +30,11 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
     theme
       ? theme
       : {
-          backgroundColor: "#1A2F23",
-          cardColor: "#2D3B33",
-          primaryText: "#7CC68D",
-          secondaryText: "#B8C4B9",
-          borderColor: "#4E7D53",
+          backgroundColor: "#09090B",
+          cardColor: "#18181B",
+          primaryText: "#E2E2E5",
+          secondaryText: "#A1A1AA",
+          borderColor: "#27272A",
         }
   );
   console.log(setActiveTheme);

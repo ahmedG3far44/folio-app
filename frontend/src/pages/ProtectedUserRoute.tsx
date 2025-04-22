@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Menu, XIcon } from "lucide-react";
 
 import Sidebar from "@/components/Sidebar";
 import { useTheme } from "@/contexts/ThemeProvider";
@@ -12,7 +12,7 @@ function ProtectedUserRoute() {
   const { activeTheme } = useTheme();
   const { pathname } = useLocation();
   const activePathName = pathname.split("/").pop();
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isOpen, setIsOpen] = useState<boolean>(true);
 
   if (!isLogged) return <Navigate to={"/login"} />;
   return (
@@ -20,13 +20,13 @@ function ProtectedUserRoute() {
       style={{ backgroundColor: activeTheme.backgroundColor }}
       className="w-full max-w-full h-screen flex justify-center items-center lg:grid lg:gap-4  lg:grid-cols-[20%_1fr]"
     >
-      <Sidebar isOpen={isOpen} />
+      <Sidebar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main
         style={{
           backgroundColor: activeTheme.cardColor,
           color: activeTheme.primaryText,
         }}
-        className="w-full min-h-screen lg:w-full p-4 space-y-2"
+        className="w-full absolute top-0 right-0 min-h-screen lg:w-[75%] p-4 space-y-2"
       >
         <h1 className="text-2xl font-black my-4">User Dashboard</h1>
         <span
@@ -34,9 +34,9 @@ function ProtectedUserRoute() {
           onClick={() => {
             setIsOpen(!isOpen);
           }}
-          className="lg:hidden block cursor-pointer"
+          className="lg:hidden w-full  flex justify-end items-center cursor-pointer ml-auto"
         >
-          {isOpen ? "Menu" : "Close"}
+          {isOpen ? <Menu /> : <XIcon />}
         </span>
         <div
           style={{

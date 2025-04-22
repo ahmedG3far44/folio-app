@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import User from "./User";
 import { useTheme } from "@/contexts/ThemeProvider";
+import Logo from "./Logo";
 
 function Header() {
   const { isLogged } = useAuth();
@@ -26,20 +27,7 @@ function Header() {
         isScroll && " border-bz-[999]"
       } w-full border-b-0 flex justify-between items-center p-2 sticky top-0`}
     >
-      <h1 className="text-3xl font-black">
-        <Link
-          className="cursor-pointer hover:text-zinc-600 transition-all flex items-center gap-2"
-          to={"/"}
-        >
-          <img
-            width={40}
-            height={40}
-            src="../../public/icon(2).svg"
-            alt="logo app"
-          />
-          Folio
-        </Link>
-      </h1>
+      <Logo />
       <div>
         {isLogged ? (
           <User dashboard={false} />
@@ -49,7 +37,7 @@ function Header() {
               style={{
                 backgroundColor: activeTheme.backgroundColor,
                 color: activeTheme.primaryText,
-                border:activeTheme.borderColor
+                border: activeTheme.borderColor,
               }}
               className="cursor-pointer border hover:opacity-75 duration-150 shadow-md"
             >
@@ -60,7 +48,7 @@ function Header() {
               style={{
                 backgroundColor: activeTheme.primaryText,
                 color: activeTheme.backgroundColor,
-                borderColor:activeTheme.borderColor
+                borderColor: activeTheme.borderColor,
               }}
               className="cursor-pointer border hover:opacity-75 duration-150 shadow-md"
               variant={"outline"}
