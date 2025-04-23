@@ -1,14 +1,18 @@
 import { useAuth } from "@/contexts/AuthProvider";
 import {
+  FileUser,
+  FolderKanban,
   Home,
-  LucideAlarmCheck,
-  LucideFlaskConical,
-  LucideInfo,
+  Info,
+  LayoutPanelLeft,
+  MessageCircleMore,
+  SunMoon,
   XIcon,
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
+
 
 function Sidebar({
   isOpen,
@@ -32,37 +36,37 @@ function Sidebar({
       id: 2,
       name: "Bio",
       path: "bio",
-      icon: <LucideInfo size={20} />,
+      icon: <Info size={20} />,
     },
     {
       id: 3,
       name: "Experiences",
       path: "experiences",
-      icon: <LucideAlarmCheck size={20} />,
+      icon: <FileUser size={20} />,
     },
     {
       id: 4,
       name: "Projects",
       path: "projects",
-      icon: <Home size={20} />,
+      icon: <FolderKanban size={20} />,
     },
     {
       id: 5,
       name: "Skills",
       path: "skills",
-      icon: <LucideFlaskConical size={20} />,
+      icon: <LayoutPanelLeft size={20} />,
     },
     {
       id: 6,
       name: "Testimonials",
       path: "testimonials",
-      icon: <LucideFlaskConical size={20} />,
+      icon: <MessageCircleMore size={20} />,
     },
     {
       id: 7,
       name: "Themes",
       path: "themes",
-      icon: <LucideFlaskConical size={20} />,
+      icon: <SunMoon size={20} />,
     },
   ];
 
@@ -77,9 +81,12 @@ function Sidebar({
       }}
       className={` ${
         isOpen && "hidden shadow-sm "
-      } w-[25%] min-w-[200px] shadow-md fixed top-0 left-0 flex-col justify-start items-center lg:flex min-h-screen z-[999] animate-slide-in`}
+      } w-[25%] min-w-[200px] shadow-md fixed top-0 left-0 flex-col justify-start items-center lg:flex min-h-screen z-[999]`}
     >
-      <div style={{borderColor:activeTheme.borderColor}} className="flex border-b items-start justify-start gap-2 p-4 flex-wrap">
+      <div
+        style={{ borderColor: activeTheme.borderColor }}
+        className="flex border-b items-start justify-start gap-2 p-4 flex-wrap"
+      >
         <button
           className="lg:hidden absolute right-4 top-4 border cursor-pointer rounded-2xl p-1 hover:opacity-75 duration-150"
           onClick={handleCloseMenu}

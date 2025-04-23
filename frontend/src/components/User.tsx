@@ -5,14 +5,15 @@ import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeProvider";
+import { easeInOut, motion } from "motion/react";
 
-function User({ dashboard }: { dashboard: boolean }) {
+function User({ dashboard }: { dashboard?: boolean }) {
   const { user, isLogged, isAdmin, logout } = useAuth();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <div>
       {isLogged ? (
-        <div onClick={() => setIsOpen(!isOpen)} className="relative ">
+        <div onClick={() => setIsOpen(!isOpen)} className="relative">
           <div className="flex flex-row-reverse items-center justify-center gap-4 ">
             <img
               role="button"
@@ -22,7 +23,7 @@ function User({ dashboard }: { dashboard: boolean }) {
             />
             <>
               {dashboard ? (
-                <div className="flex flex-col items-end">
+                <div className="flex flex-col items-end ">
                   <h1 className="text-xl font-semibold  duration-150 transition-all">
                     <span>{user.name}</span>
                   </h1>
@@ -63,32 +64,65 @@ function UserMenu({
 }) {
   const { activeTheme } = useTheme();
   return (
-    <Card
-      style={{
-        backgroundColor: activeTheme.cardColor,
-        color: activeTheme.secondaryText,
-        borderColor: activeTheme.borderColor,
+    <motion.div
+      initial={{
+        scale: 0,
+        opacity: 0,
       }}
-      className={`${className} animate-scale p-2 flex-col justify-start items-start gap-1 rounded-md border absolute top-12 right-0 z-50 `}
+      animate={{
+        scale: 1,
+        opacity: 1,
+      }}
+      transition={{ duration: 0.4, ease: easeInOut }}
+      exit={{ scale: 0, opacity: 0 }}
+      className="p-2 flex-col justify-start items-start gap-1 rounded-md  absolute top-10  mt-2 right-0 z-50 "
     >
-      <ul className={`text-sm font-semibold`}>
-        <li className="w-full p-2 cursor-pointer hover:opacity-75 duration-150">
-          {isAdmin ? (
-            <Link to={`/dashboard/insights`}>Dashboard</Link>
-          ) : (
-            <Link to={`/profile/bio`}>Profile</Link>
-          )}
-        </li>
-        <li className="w-full p-2 cursor-pointer hover:opacity-75 duration-150">
-          {user.email}
-        </li>
-        <li className=" w-full p-2 cursor-pointer hover:opacity-75 duration-150">
-          <Button onClick={logout} className="w-full cursor-pointer">
-            Logout
-          </Button>
-        </li>
-      </ul>
-    </Card>
+      <Card
+        style={{
+          backgroundColor: activeTheme.cardColor,
+          color: activeTheme.secondaryText,
+          borderColor: activeTheme.borderColor,
+        }}
+        className={`${className} p-4`}
+      >
+        <ul className={`flex flex-col items-start gap-1 text-sm font-semibold`}>
+          <motion.li
+            whileHover={{
+              backgroundColor: activeTheme.backgroundColor,
+              color: activeTheme.primaryText,
+            }}
+            className="w-full p-2 cursor-pointer  duration-150 rounded-md"
+          >
+            <Link
+              to={isAdmin ? "/dashboard/insights" : "/profile/bio"}
+              className="w-full cursor-pointer  duration-150 rounded-md"
+            >
+              {isAdmin ? "Dashboard" : "Profile"}
+            </Link>
+          </motion.li>
+          <motion.li
+            whileHover={{
+              backgroundColor: activeTheme.backgroundColor,
+              color: activeTheme.primaryText,
+            }}
+            className="w-full p-2 cursor-pointer duration-150 rounded-md"
+          >
+            {user.email}
+          </motion.li>
+          <motion.li
+            whileHover={{
+              backgroundColor: activeTheme.backgroundColor,
+              color: activeTheme.primaryText,
+            }}
+            className=" w-full  cursor-pointer  duration-150 rounded-md"
+          >
+            <Button onClick={logout} className="w-full cursor-pointer">
+              Logout
+            </Button>
+          </motion.li>
+        </ul>
+      </Card>
+    </motion.div>
   );
 }
 

@@ -26,7 +26,7 @@ function ProtectedUserRoute() {
           backgroundColor: activeTheme.cardColor,
           color: activeTheme.primaryText,
         }}
-        className="w-full absolute top-0 right-0 min-h-screen lg:w-[75%] p-4 space-y-2"
+        className="w-full overflow-hidden absolute top-0 right-0 min-h-screen lg:w-[75%] p-4 space-y-2"
       >
         <h1 className="text-2xl font-black my-4">User Dashboard</h1>
         <span

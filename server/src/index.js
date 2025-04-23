@@ -18,7 +18,7 @@ const corsOptions = {
   origin:
     ENV === "development"
       ? "http://localhost:3000"
-      : "https://presentoapp.kinde.com",
+      : "https://animated-pegasus-c760ed.netlify.app",
   methods: "GET,POST, PUT, DELETE",
   allowedHeaders: ["Content-Type", "Authorization"],
 };

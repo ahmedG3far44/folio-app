@@ -1,6 +1,6 @@
-import { useTheme } from "@/contexts/ThemeProvider";
-// import { Card } from "../ui/card";
+import { useTheme } from "@/contexts/ThemeProvider"; // import { Card } from "../ui/card";
 import ThemeCard from "../cards/ThemeCard";
+import { easeInOut, motion } from "motion/react";
 
 function ThemesForm() {
   const { activeTheme, themesList, switchTheme } = useTheme();
@@ -22,7 +22,10 @@ function ThemesForm() {
       <div className="p-4 flex justify-start items-start flex-wrap gap-4 w-3/4">
         {themesList.map((theme) => {
           return (
-            <div
+            <motion.div
+              initial={{ scale: 0.9 }}
+              whileHover={{ scale: 1 }}
+              transition={{ duration: 0.1, ease: easeInOut }}
               onClick={() => switchTheme({ newActiveTheme: theme })}
               role="button"
               className="cursor-pointer duration-150 hover:opacity-75"
@@ -36,7 +39,7 @@ function ThemesForm() {
                 secondaryText={theme.secondaryText}
                 borderColor={theme.borderColor}
               />
-            </div>
+            </motion.div>
           );
         })}
       </div>

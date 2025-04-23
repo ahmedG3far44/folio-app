@@ -46,7 +46,6 @@ router.post("/auth/login", async (req, res) => {
       role: user.role,
     };
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
-    console.log(token);
     return res
       .status(200)
       .json({ data: { user, token }, message: "a user login success" });
@@ -58,9 +57,6 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const file = req.file;
-    // console.log(file);
-    // console.log(body);
-    // return;
 
     const salt = 10;
 
@@ -81,10 +77,9 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     if (user) throw new Error("This user already exist!!");
 
     const hashedPassword = await bcrypt.hash(password, salt);
-    
+
     const pictureKey = `${crypto.randomUUID()}`;
     try {
-      // upload profile
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
         Body: file.buffer,

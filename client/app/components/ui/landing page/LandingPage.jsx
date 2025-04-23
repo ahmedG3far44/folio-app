@@ -16,8 +16,7 @@ import { Button } from "../shadcn/button";
 async function LandingPage() {
   const { isLogged, user, login, logout } = await useAuth();
   const isAdmin = user.role === "ADMIN";
-  // const IconComponent = <LuWand2 /> || <LuWand /> || (() => <span>🪄</span>);
-  // Then use <IconComponent /> in your JSX
+
   const featuresCard = [
     {
       icon: <CircleUserRound size={25} />,

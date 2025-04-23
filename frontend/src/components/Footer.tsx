@@ -2,9 +2,13 @@ import { useTheme } from "@/contexts/ThemeProvider";
 
 import Logo from "./Logo";
 import User from "./User";
+import { useAuth } from "@/contexts/AuthProvider";
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 
 function Footer() {
   const { activeTheme } = useTheme();
+  const { isLogged } = useAuth();
   return (
     <footer
       className="w-full flex items-center justify-center mt-auto"
@@ -88,10 +92,18 @@ function Footer() {
           </div>
 
           <div className="flex items-end flex-col justify-center gap-4">
-            <User dashboard={true} />
-            <p className="text-end">
-              Lorem ipsum dolor sit amet consectetur adipisicing el
-            </p>
+            {isLogged ? (
+              <User dashboard={true} />
+            ) : (
+              <div className="space-x-4">
+                <Link to={"/login"}>
+                  <Button>Login</Button>
+                </Link>{" "}
+                <Link to={"/login"}>
+                  <Button>Create Account</Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
 

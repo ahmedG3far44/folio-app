@@ -110,6 +110,10 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -125,6 +129,15 @@
 .animate-slide-in {
   animation: slide-in 0.3s ease-in-out forwards;
   max-width: 25%;
+}
+.animate-around {
+  animation: around-in 10s ease-in-out forwards infinite;
+}
+.animate-around-back {
+  animation: around-out 10s ease-in-out backwards infinite;
+}
+.animate-scale-smooth {
+  animation: scale-smooth 1s ease-in-out forwards 6;
 }
 
 @keyframes scale {
@@ -155,5 +168,59 @@
     transform: translateX(0%);
     border-right: 1px solid var(--card-foreground);
     /* height: auto; */
+  }
+}
+@keyframes around-in {
+  0% {
+    transform: translateX(20%);
+    transform: translateY(20%);
+  }
+  25% {
+    transform: translateX(50%);
+    transform: translateY(50%);
+  }
+  50% {
+    transform: translateX(50%);
+    transform: translateY(50%);
+  }
+  100% {
+    transform: translateX(20%);
+    transform: translateY(20%);
+  }
+}
+@keyframes around-out {
+  0% {
+    transform: translateX(-20%);
+    transform: translateY(-20%);
+  }
+  25% {
+    transform: translateX(-50%);
+    transform: translateY(-50%);
+  }
+  50% {
+    transform: translateX(-50%);
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateX(-20%);
+    transform: translateY(-20%);
+  }
+}
+
+@keyframes scale-smooth {
+  0% {
+    scale: 0.5;
+    opacity: 0;
+    height: 0;
+  }
+  50% {
+    scale: 1.1;
+    opacity: 1;
+    height: auto;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+    height: auto;
   }
 }

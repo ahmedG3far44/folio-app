@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+
 export interface IUserType {
   id: string;
   name: string | null;
@@ -106,6 +108,12 @@ export interface IThemeType {
   primaryText: string;
   secondaryText: string;
   borderColor: string;
+}
+
+export interface IFeatureType {
+  icon: ReactNode;
+  title: string;
+  text: string;
 }
 
 export interface ThemeContextType {

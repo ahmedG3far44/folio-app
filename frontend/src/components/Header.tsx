@@ -24,8 +24,8 @@ function Header() {
         // borderBottom: `1px solid ${activeTheme.borderColor}`,
       }}
       className={`${
-        isScroll && " border-bz-[999]"
-      } w-full border-b-0 flex justify-between items-center px-4 py-8 sticky top-0`}
+        isScroll && " border-b z-[999]"
+      } w-full border-b-0 flex justify-between items-center px-4 py-8 sticky top-0 z-[999]`}
     >
       <Logo />
       <div>
@@ -37,9 +37,9 @@ function Header() {
               style={{
                 backgroundColor: activeTheme.backgroundColor,
                 color: activeTheme.primaryText,
-                border: activeTheme.borderColor,
+                borderColor: activeTheme.borderColor,
               }}
-              className="cursor-pointer border hover:opacity-75 duration-150 shadow-md"
+              className="cursor-pointer border hover:opacity-75 duration-150 shadow-xl"
             >
               <Link to={"/login"}>Login</Link>
             </Button>
@@ -50,7 +50,7 @@ function Header() {
                 color: activeTheme.backgroundColor,
                 borderColor: activeTheme.borderColor,
               }}
-              className="cursor-pointer border hover:opacity-75 duration-150 shadow-md"
+               className="cursor-pointer border hover:opacity-75 duration-150 shadow-xl"
               variant={"outline"}
             >
               <Link to={"/signup"}>Signup</Link>
