@@ -5,7 +5,15 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { IFeatureType } from "@/lib/types";
-import { Atom, BookAIcon, Crop, FilePen, LucideBox, User } from "lucide-react";
+import {
+  Atom,
+  BookAIcon,
+  Crop,
+  FilePen,
+  Github,
+  LucideBox,
+  User,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { easeIn, easeInOut, motion } from "motion/react";
 import { Link } from "react-router-dom";
@@ -81,32 +89,32 @@ function LandingPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               style={{ color: activeTheme.secondaryText }}
-              className="lg:text-6xl text-4xl flex flex-col items-center justify-center font-black"
+              className="lg:text-6xl text-3xl flex flex-col items-center justify-center font-black "
             >
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-purple-500"
               >
-                Build in a week ,
+                Build a Portfolio,
               </motion.span>{" "}
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 style={{ color: activeTheme.primaryText }}
               >
-                Scale it to millions
+                Share What You Do Best
               </motion.span>
             </motion.h1>
             <p
-              className="font-semibold text-sm lg:w-1/2 w-3/4  text-center"
+              className=" text-sm lg:w-1/2 w-3/4  text-center"
               style={{
                 color: activeTheme.secondaryText,
               }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora
-              vitae quod quidem doloribus voluptatem quo voluptas laboriosam
-              corrupti temporibus minus aliquid
+              Easily create a digital profile that reflects your talents and
+              experience. Share your skills, feedback, and success stories with
+              a style that’s totally you
             </p>
             <div className="space-x-4 my-4">
               {!isLogged && (
@@ -114,8 +122,14 @@ function LandingPage() {
                   <Button className="">Start Now</Button>
                 </Link>
               )}
-              <Link to={"/"}>
-                <Button className="">Github Source</Button>
+              <Link
+                target="_blank"
+                to={"https://github.com/ahmedG3far44/Presento-Online-Platform"}
+              >
+                <Button >
+                  <Github size={20} />
+                  Github Source
+                </Button>
               </Link>
             </div>
             <div>
@@ -175,7 +189,7 @@ function LandingPage() {
             initial={{ opacity: 0, scaleY: 0.5, scaleX: 0.5, translateY: 20 }}
             whileInView={{ opacity: 1, scaleY: 1, scaleX: 1, translateY: 0 }}
             transition={{ duration: 0.5, ease: easeInOut }}
-            className={`p-4  w-full h-auto lg:w-3/4 lg:h-[700px] rounded-2xl shadow-xl lg:my-20 z-5  relative `}
+            className={`p-4  w-full h-auto lg:w-3/4 lg:h-auto rounded-2xl shadow-xl lg:my-20 z-5  relative `}
           >
             <Card
               style={{
