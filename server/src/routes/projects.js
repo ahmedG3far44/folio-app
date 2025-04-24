@@ -61,10 +61,10 @@ router.post(
 
       projectImages.map(async (image, index) => {
         if (image.fieldname === "image") {
-          imageKey = `image-${index + 1}-${crypto.randomUUID()}`;
+          imageKey = `original-${index + 1}-${crypto.randomUUID()}`;
           keysArray.push(imageKey);
         } else {
-          thumbnailKey = `thumbnail-${crypto.randomUUID()}`;
+          thumbnailKey = `thumb-${crypto.randomUUID()}`;
         }
         await uploadToS3(
           image,
@@ -335,7 +335,7 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
     });
     console.log("the project deleted successful");
 
-    res.status(204).json(new Exceptions(200, "project deleted successful"));
+    res.status(200).json(new Exceptions(200, "project deleted successful."));
   } catch (error) {
     console.log(error.message);
     res.status(500).json(new Exceptions(500, error.message));
@@ -354,8 +354,8 @@ export async function uploadToS3(image, path) {
     })
     .toFormat("webp", {
       quality: 80,
-      mozjpeg: true,
-      progressive: true,
+      alphaQuality: 90,
+      effort: 6,
     })
     .toBuffer();
 

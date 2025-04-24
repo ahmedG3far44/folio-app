@@ -7,6 +7,7 @@ import { upload } from "./skills.js";
 import { uploadToS3 } from "./projects.js";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { feedbackSchema } from "../utils/schemas.js";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
 const router = express.Router();
 
@@ -47,7 +48,7 @@ router.post(
         const result = await uploadToS3(videoFile, clientVideoKey);
         console.log(result);
       }
-      
+
       clientProfileKey = `${crypto.randomUUID()}`;
       await uploadToS3(profile[0], clientProfileKey);
 
@@ -93,9 +94,10 @@ router.get("/feedback/:userId", async (req, res) => {
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });
-router.delete("/feedback/:feedbackId", async (req, res) => {
+router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
   const user = req.user;
   const { feedbackId } = req.params;
+  console.log(feedbackId);
 
   try {
     const feedback = await prisma.testimonials.findUnique({

@@ -139,6 +139,12 @@ html {
 .animate-scale-smooth {
   animation: scale-smooth 1s ease-in-out forwards 6;
 }
+.animate-fade {
+  animation: fade 1s ease-in-out forwards;
+}
+.animate-fade-reverse {
+  animation: fade-reverse 1s ease-in-out forwards;
+}
 
 @keyframes scale {
   0% {
@@ -222,5 +228,26 @@ html {
     scale: 1;
     opacity: 1;
     height: auto;
+  }
+}
+@keyframes fade {
+  0% {
+    opacity: 0;
+    right: 0;
+  }
+  100% {
+    opacity: 1;
+    right: -100px;
+    /* rotate: 45deg; */
+  }
+}
+@keyframes fade-reverse {
+  0% {
+    opacity: 0;
+    left: 0px;
+  }
+  100% {
+    opacity: 1;
+    left: -100px;
   }
 }

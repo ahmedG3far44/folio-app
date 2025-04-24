@@ -77,7 +77,7 @@ export const addSkill = async ({
       throw new Error("adding a new skill failed!!");
     }
     const data = await response.json();
-    return {data , message:`A new skill was created success!!`};
+    return { data, message: `A new skill was created success!!` };
   } catch (err) {
     console.log((err as Error).message);
 
@@ -138,6 +138,34 @@ export const deleteSkillById = async ({
     }
     const data = await response.json();
     return { data, message: `a skill ${skillId} was delted!!` };
+  } catch (err) {
+    console.log((err as Error).message);
+    return { data: "error", message: (err as Error).message };
+  }
+};
+
+export const deleteById = async ({
+  id,
+  token,
+  deleteRoute,
+}: {
+  id: string;
+  token: string;
+  deleteRoute: string;
+}) => {
+  try {
+    const response = await fetch(`${URL_SERVER}/${deleteRoute}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`deleting a ${deleteRoute} failed!!`);
+    }
+    const data = await response.json();
+    console.log(data);
+    return { data: data.type, message: data.message };
   } catch (err) {
     console.log((err as Error).message);
     return { data: "error", message: (err as Error).message };

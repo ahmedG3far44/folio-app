@@ -37,7 +37,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
           borderColor: "#27272A",
         }
   );
-  console.log(setActiveTheme);
+
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   useEffect(() => {
     async function getThemesList() {
@@ -50,7 +50,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
           );
         const themes = await response.json();
         const { data } = themes;
-        console.log(data);
+
         setThemesList([...data]);
         return data;
       } catch (err) {

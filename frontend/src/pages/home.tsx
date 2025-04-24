@@ -46,13 +46,13 @@ function LandingPage() {
       text: "Easily customize and reorder sections like About Me, Work Experience, and Projects.",
     },
   ];
-  // const [scroll, setScroll] = useState<boolean>(false);
+  const [activeState, setActive] = useState<boolean>(false);
   const [scrollY, setScrollY] = useState<number>(0);
-
+  console.log(activeState);
   useEffect(() => {
     window.addEventListener("scroll", () => {
-      // setScroll(window.scrollY >= 200 || (window.scrollY <= 800 && true));
       setScrollY(window.scrollY);
+      setActive(window.scrollY >= 800 && window.scrollY <= 1250 ? true : false);
     });
   });
   return (
@@ -63,6 +63,7 @@ function LandingPage() {
       }}
       className="w-full flex flex-col justify-between items-center  m-auto min-h-screen overflow-hidden"
     >
+      {/* <h1 className="fixed top-20 left-20">{Math.floor(scrollY / 10)}</h1> */}
       <Container>
         <Header />
         <section className="lg:h-screen p-4  flex flex-col items-center justify-center lg:gap-4 relative">
@@ -174,14 +175,35 @@ function LandingPage() {
             initial={{ opacity: 0, scaleY: 0.5, scaleX: 0.5, translateY: 20 }}
             whileInView={{ opacity: 1, scaleY: 1, scaleX: 1, translateY: 0 }}
             transition={{ duration: 0.5, ease: easeInOut }}
-            className={`p-4  w-full h-auto lg:w-3/4 lg:h-[700px] rounded-2xl shadow-xl lg:my-20 z-5  overflow-hidden`}
+            className={`p-4  w-full h-auto lg:w-3/4 lg:h-[700px] rounded-2xl shadow-xl lg:my-20 z-5  relative `}
           >
+            <Card
+              style={{
+                backgroundColor: activeTheme.cardColor,
+                borderColor: activeTheme.borderColor,
+                rotate: "45deg",
+                left: `${Math.ceil(scrollY / 10000)}`,
+              }}
+              className={`${
+                activeState ? "animate-fade-reverse block" : "hidden"
+              } absolute  p-8 border  w-96 h-96 -z-1 shadow-2xl`}
+            ></Card>
+            <Card
+              style={{
+                backgroundColor: activeTheme.cardColor,
+                borderColor: activeTheme.borderColor,
+                rotate: "-45deg",
+              }}
+              className={` ${
+                activeState ? "animate-fade block" : "hidden"
+              } absolute p-8 border w-96 h-96 -z-1 shadow-2xl`}
+            ></Card>
             <video
               preload="true"
               autoPlay
               muted
               loop
-              className="w-full h-full rounded-2xl object-cover"
+              className="w-full h-full rounded-2xl object-cover z-4"
               src="https://cdn.dribbble.com/userupload/15153126/file/original-e020287a0dc270092df19c2738aff2c0.mp4"
             ></video>
           </motion.div>

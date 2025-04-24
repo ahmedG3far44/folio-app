@@ -15,13 +15,22 @@ import toast from "react-hot-toast";
 import { useTheme } from "@/contexts/ThemeProvider";
 import UploadHere from "../cards/UploadHere";
 import { useUser } from "@/contexts/UserProvider";
+import ShowListCard from "../cards/ShowListCard";
+import Loader from "../loader";
+// import { IExperienceType } from "@/lib/types";
+// import { deleteById } from "@/lib/handlers";
+import { useNavigate } from "react-router-dom";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ExperienceForm() {
   const { token } = useAuth();
   const { activeTheme } = useTheme();
-  const { experiences } = useUser();
+  const router = useNavigate();
+  const { experiences, pending } = useUser();
+  // const [updateThisExperience, setUpdateThisExperience] =
+  //   useState<IExperienceType>();
+  // const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const {
@@ -33,6 +42,27 @@ function ExperienceForm() {
   } = useForm<z.infer<typeof experienceSchema>>({
     resolver: zodResolver(experienceSchema),
   });
+  // const handleUpdate = (exp: IExperienceType) => {
+  //   setIsUpdating(true);
+  //   setUpdateThisExperience({ ...exp });
+  //   setIsOpen(true);
+  //   console.log(updateThisExperience);
+  // };
+  // const handleDelete = async (id: string) => {
+  //   try {
+  //     const result = await deleteById({
+  //       id,
+  //       token,
+  //       deleteRoute: "experiences",
+  //     });
+  //     console.log(result.data);
+  //     toast.success(result.message);
+  //     return router(0);
+  //   } catch (err) {
+  //     toast.error((err as Error).message);
+  //     return;
+  //   }
+  // };
   return (
     <>
       <div className="w-full flex flex-col gap-4 my-4">
@@ -47,12 +77,28 @@ function ExperienceForm() {
             onSubmit={handleSubmit(async () => {
               const values = getValues();
               const formData = new FormData();
+
               formData.append("file", file!);
               formData.append("cName", values.cName);
               formData.append("position", values.position);
               formData.append("duration", values.duration);
               formData.append("role", values.role);
               formData.append("location", values.location);
+
+              // formData.append("cName", cName as string);
+              // formData.append(
+              //   "position",
+              //   position as string
+              // );
+              // formData.append(
+              //   "duration",
+              //   duration as string
+              // );
+              // formData.append("role", role as string);
+              // formData.append(
+              //   "location",
+              //   location as string
+              // );
 
               try {
                 const response = await fetch(`${URL_SERVER}/experiences`, {
@@ -63,15 +109,19 @@ function ExperienceForm() {
                   body: formData,
                 });
                 if (!response.ok) {
-                  throw new Error("create a new experience failed!!");
+                  throw new Error(`${"create a new"} experience failed!!`);
                 }
                 const data = await response.json();
+                console.log(data);
                 setFile(null);
                 reset();
-                toast.success("a new experience was created success!!");
-                return data;
+                // setIsUpdating(false);
+                // setIsOpen(false);
+                toast.success(`a new experience was success!!`);
+                console.log(data);
+                return router(0);
               } catch (err) {
-                // console.log((err as Error).message);
+                console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
               }
@@ -94,14 +144,22 @@ function ExperienceForm() {
                   >
                     <img
                       className="w-30 h-30 object-cover rounded-2xl"
-                      src={file ? URL.createObjectURL(file) : ""}
+                      src={file ? URL.createObjectURL(file!) : ""}
+                      // isUpdating
+                      //   ? cLogo
+                      //   : file
+                      //   ? URL.createObjectURL(file)
+                      //   : ""
                       alt="compnay logo image"
                     />
                     {!isSubmitting && (
                       <Button
+                        type="button"
                         variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
-                        onClick={() => setFile(null)}
+                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        onClick={() => {
+                          setFile(null);
+                        }}
                       >
                         <XIcon size={20} />
                       </Button>
@@ -230,14 +288,36 @@ function ExperienceForm() {
         )}
       </div>
       <Card
-        className="p-4 border"
+        className="w-full p-4 border"
         style={{
           color: activeTheme.primaryText,
           backgroundColor: activeTheme.backgroundColor,
           borderColor: activeTheme.borderColor,
         }}
       >
-        {JSON.stringify(experiences)}
+        {pending ? (
+          <div className="w-full min-h-[400px] flex items-center justify-center">
+            <Loader size="md" />
+          </div>
+        ) : (
+          <>
+            {experiences.length > 0 && (
+              <div className="flex flex-col justify-start items-start gap-1">
+                {experiences.map((exp) => {
+                  return (
+                    <ShowListCard
+                      id={exp.id}
+                      key={exp.id}
+                      title={exp.cName}
+                      image={exp.cLogo}
+                      sectionName={"experiences"}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
       </Card>
     </>
   );

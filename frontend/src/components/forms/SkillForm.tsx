@@ -14,12 +14,14 @@ import toast from "react-hot-toast";
 import UploadHere from "../cards/UploadHere";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
+import ShowListCard from "../cards/ShowListCard";
+import Loader from "../loader";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function SkillForm() {
   const { token } = useAuth();
-  const { skills } = useUser();
+  const { skills, pending } = useUser();
   const { activeTheme } = useTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
@@ -146,7 +148,29 @@ function SkillForm() {
           borderColor: activeTheme.borderColor,
         }}
       >
-        {JSON.stringify(skills)}
+        {pending ? (
+          <div className="w-full min-h-[400px] flex items-center justify-center">
+            <Loader size="md" />
+          </div>
+        ) : (
+          <>
+            {skills.length > 0 && (
+              <div className="flex flex-col justify-start items-start gap-1">
+                {skills.map((skill) => {
+                  return (
+                    <ShowListCard
+                      id={skill.id}
+                      key={skill.id}
+                      title={skill.skillName}
+                      image={skill.skillLogo}
+                      sectionName={"skills"}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
       </Card>
     </>
   );

@@ -12,12 +12,8 @@ import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import { skillsSchema } from "../utils/schemas.js";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 
-
-
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
-
-
 
 export const upload = multer({ storage: multer.memoryStorage() });
 
@@ -230,8 +226,8 @@ router.delete("/skills/:skillId", verifyAccessToken, async (req, res) => {
     });
 
     return res
-      .status(204)
-      .json({ data: skillDelete, message: "deleted skill successful" });
+      .status(200)
+      .json(new Exceptions(200, "skill deleted successful."));
   } catch (err) {
     return res.status(500).json(new Exceptions(500, err.message));
   }

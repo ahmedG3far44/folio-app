@@ -15,13 +15,15 @@ import toast from "react-hot-toast";
 import { useTheme } from "@/contexts/ThemeProvider";
 import UploadHere from "../cards/UploadHere";
 import { useUser } from "@/contexts/UserProvider";
+import ShowListCard from "../cards/ShowListCard";
+import Loader from "../loader";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ProjectForm() {
   const { token } = useAuth();
   const { activeTheme } = useTheme();
-  const { projects } = useUser();
+  const { projects, pending } = useUser();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [images, setImages] = useState<File[] | []>([]);
@@ -316,7 +318,29 @@ function ProjectForm() {
           borderColor: activeTheme.borderColor,
         }}
       >
-        {JSON.stringify(projects)}
+        {pending ? (
+          <div className="w-full min-h-[400px] flex items-center justify-center">
+            <Loader size="md" />
+          </div>
+        ) : (
+          <>
+            {projects.length > 0 && (
+              <div className="flex flex-col justify-start items-start gap-1">
+                {projects.map((project) => {
+                  return (
+                    <ShowListCard
+                      id={project.id}
+                      key={project.id}
+                      title={project.title}
+                      image={project.thumbnail}
+                      sectionName={"project"}
+                    />
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
       </Card>
     </>
   );

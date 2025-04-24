@@ -7,18 +7,15 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-
-
 const ENV = process.env.ENV;
 const PORT = process.env.PORT;
+const LOCAL_CLIENT_URL = process.env.LOCAL_CLIENT_URL;
+const PRODUCTION_CLIENT_URL = process.env.PRODUCTION_CLIENT_URL;
 
 const app = express();
 
 const corsOptions = {
-  origin:
-    ENV === "development"
-      ? "http://localhost:3000"
-      : "https://animated-pegasus-c760ed.netlify.app",
+  origin: ENV === "development" ? LOCAL_CLIENT_URL : PRODUCTION_CLIENT_URL,
   methods: "GET,POST, PUT, DELETE",
   allowedHeaders: ["Content-Type", "Authorization"],
 };

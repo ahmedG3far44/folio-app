@@ -51,9 +51,6 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user } = useAuth();
   const params = useParams();
 
-  console.log(params);
-  console.log("user id params in UserContext");
-
   const [bio, setBio] = useState<IBioType>();
   const [experiences, setExperiences] = useState<IExperienceType[]>();
   const [projects, setProjects] = useState<IProjectType[]>();
