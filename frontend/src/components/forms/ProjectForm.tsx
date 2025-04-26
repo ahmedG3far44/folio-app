@@ -17,18 +17,29 @@ import UploadHere from "../cards/UploadHere";
 import { useUser } from "@/contexts/UserProvider";
 import ShowListCard from "../cards/ShowListCard";
 import Loader from "../loader";
+import { IProjectImagesType, IProjectType } from "@/lib/types";
+import { useNavigate } from "react-router-dom";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ProjectForm() {
+  const navigate = useNavigate();
   const { token } = useAuth();
   const { activeTheme } = useTheme();
   const { projects, pending } = useUser();
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [updatedProject, setUpdatedProject] = useState<IProjectType | null>(
+    null
+  );
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [thumbnail, setThumbnail] = useState<File | null>(null);
-  const [images, setImages] = useState<File[] | []>([]);
+  const [thumbnail, setThumbnail] = useState<File | string | null>(null);
+  const [images, setImages] = useState<File[] | IProjectImagesType[] | null>(
+    null
+  );
   const [tags, setTags] = useState<string[] | []>([]);
   const [oneTag, setOneTag] = useState<string | null>(null);
+
   const {
     register,
     reset,
@@ -56,66 +67,107 @@ function ProjectForm() {
         {isOpen && (
           <form
             onSubmit={handleSubmit(async () => {
-              const values = getValues();
-              const { title, description, sourceUrl } = values;
-
               const formData = new FormData();
-              formData.append("thumbnail", thumbnail!);
-              formData.append("title", title);
-              formData.append("description", description);
-              formData.append("sourceUrl", sourceUrl!);
 
-              for (const tag of tags) {
-                formData.append("tags", tag);
-              }
-              for (const image of images) {
-                formData.append("image", image);
+              if (isUpdating && updatedProject) {
+                const { title, description, sourceUrl } = getValues();
+                formData.append("title", title);
+                formData.append("description", description);
+                formData.append("sourceUrl", sourceUrl as string);
+              } else {
+                const values = getValues();
+                if (thumbnail) {
+                  formData.append("thumbnail", thumbnail!);
+                }
+
+                Object.entries(values).forEach(([key, value]) => {
+                  formData.append(key, value);
+                });
+
+                if (tags && tags.length > 0) {
+                  for (const tag of tags) {
+                    formData.append("tags", tag);
+                  }
+                }
+
+                if (images) {
+                  for (const image of images) {
+                    formData.append("image", image as File);
+                  }
+                }
               }
 
               try {
-                const response = await fetch(`${URL_SERVER}/project`, {
-                  method: "POST",
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: formData,
-                });
+                const response = await fetch(
+                  `${URL_SERVER}/project/${
+                    isUpdating ? updatedProject?.id : ""
+                  }`,
+                  {
+                    method: isUpdating ? "PUT" : "POST",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: formData,
+                  }
+                );
+
                 if (!response.ok) {
                   throw new Error("adding a new project failed!!");
                 }
+
                 const data = await response.json();
 
-                setThumbnail(null);
-                setImages([]);
-                setTags([]);
-                reset();
-                toast.success("a new project was created success!!");
-                return data;
+                console.log(data);
+
+                toast.success(data.message);
+
+                return navigate(0);
               } catch (err) {
                 console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
+              } finally {
+                setThumbnail(null);
+                setImages([]);
+                setTags([]);
+                reset();
+                setIsOpen(false);
+                setIsUpdating(false);
               }
             })}
             className="w-full p-2 flex flex-col justify-start items-center gap-2"
           >
             <Card className="w-full">
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {thumbnail ? (
+                {updatedProject?.thumbnail !== "" || thumbnail ? (
                   <div
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
                   >
                     <img
                       className="w-30 h-30 object-cover rounded-2xl"
-                      src={thumbnail ? URL.createObjectURL(thumbnail) : ""}
+                      src={
+                        thumbnail
+                          ? URL.createObjectURL(thumbnail as File)
+                          : updatedProject
+                          ? (updatedProject.thumbnail as string)
+                          : ""
+                      }
                       alt="compnay logo image"
                     />
                     {!isSubmitting && (
                       <Button
+                        type="button"
                         variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
-                        onClick={() => setThumbnail(null)}
+                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        onClick={() => {
+                          if (updatedProject)
+                            setUpdatedProject({
+                              ...updatedProject,
+                              thumbnail: "",
+                            });
+                          setThumbnail(null);
+                        }}
                       >
                         <XIcon size={20} />
                       </Button>
@@ -138,30 +190,38 @@ function ProjectForm() {
             </Card>
             <Card className="w-full">
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {images.length > 0 ? (
+                {updatedProject ? (
                   <div className="flex flex-wrap items-start justify-center gap-4 p-4">
-                    {images.map((img, index) => {
+                    {updatedProject.ImagesList?.map((img) => {
                       return (
                         <div
+                          key={img.id}
                           style={{ borderColor: activeTheme.borderColor }}
                           className="relative w-30 h-30 rounded-2xl border p-2 flex items-center justify-center"
                         >
                           <img
                             className="w-25  h-25  lg:w-full lg:h-full object-cover rounded-2xl"
-                            src={img ? URL.createObjectURL(img) : ""}
+                            src={img && img.url}
                             alt="compnay logo image"
                           />
                           {!isSubmitting && (
                             <Button
                               variant={"destructive"}
+                              type="button"
                               className="cursor-pointer z-[50] hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
-                              onClick={() =>
-                                setImages([
-                                  ...images.filter(
-                                    (_, filterIndex) => index !== filterIndex
-                                  ),
-                                ])
-                              }
+                              // When filtering images during update
+                              onClick={() => {
+                                if (updatedProject) {
+                                  setUpdatedProject({
+                                    ...updatedProject,
+                                    ImagesList:
+                                      updatedProject.ImagesList.filter(
+                                        (filteredImg) =>
+                                          filteredImg.id !== img.id
+                                      ),
+                                  });
+                                }
+                              }}
                             >
                               <XIcon size={20} />
                             </Button>
@@ -198,6 +258,7 @@ function ProjectForm() {
                 type="text"
                 id="title"
                 placeholder="Project Title"
+                defaultValue={updatedProject ? updatedProject.title : ""}
                 {...register("title")}
               />
               {errors.title && (
@@ -232,36 +293,75 @@ function ProjectForm() {
                 </Button>
               </div>
               <div className="flex items-center justify-start gap-4">
-                {tags.map((tag, index) => {
-                  return (
-                    <div
-                      style={{
-                        backgroundColor: activeTheme.backgroundColor,
-                        color: activeTheme.primaryText,
-                        borderColor: activeTheme.borderColor,
-                      }}
-                      className="relative p-1 px-4 w-fit rounded-2xl border "
-                    >
-                      {!isSubmitting && (
-                        <Button
-                          type="button"
-                          variant={"destructive"}
-                          className="cursor-pointer duration-150 absolute -top-4  -right-4  rounded-xl flex items-center justify-center"
-                          onClick={() =>
-                            setTags([
-                              ...tags.filter(
-                                (_, filterIndex) => index !== filterIndex
-                              ),
-                            ])
-                          }
+                {updatedProject ? (
+                  <>
+                    {updatedProject.tags?.map((tag, index) => {
+                      return (
+                        <div
+                          style={{
+                            backgroundColor: activeTheme.backgroundColor,
+                            color: activeTheme.primaryText,
+                            borderColor: activeTheme.borderColor,
+                          }}
+                          key={tag.id}
+                          className="relative p-1 px-4 w-fit rounded-2xl border "
                         >
-                          <XIcon size={12} />
-                        </Button>
-                      )}
-                      <span>{tag}</span>
-                    </div>
-                  );
-                })}
+                          {!isSubmitting && (
+                            <Button
+                              type="button"
+                              variant={"destructive"}
+                              className="cursor-pointer duration-150 absolute -top-4  -right-4  rounded-xl flex items-center justify-center"
+                              onClick={() =>
+                                setTags([
+                                  ...tags.filter(
+                                    (tag, filterIndex) => index !== filterIndex
+                                  ),
+                                ])
+                              }
+                            >
+                              <XIcon size={12} />
+                            </Button>
+                          )}
+                          <span>{tag.tagName}</span>
+                        </div>
+                      );
+                    })}
+                  </>
+                ) : (
+                  <>
+                    {tags.map((tag, index) => {
+                      return (
+                        <div
+                          style={{
+                            backgroundColor: activeTheme.backgroundColor,
+                            color: activeTheme.primaryText,
+                            borderColor: activeTheme.borderColor,
+                          }}
+                          key={index}
+                          className="relative p-1 px-4 w-fit rounded-2xl border "
+                        >
+                          {!isSubmitting && (
+                            <Button
+                              type="button"
+                              variant={"destructive"}
+                              className="cursor-pointer duration-150 absolute -top-4  -right-4  rounded-xl flex items-center justify-center"
+                              onClick={() =>
+                                setTags([
+                                  ...tags.filter(
+                                    (_, filterIndex) => index !== filterIndex
+                                  ),
+                                ])
+                              }
+                            >
+                              <XIcon size={12} />
+                            </Button>
+                          )}
+                          <span>{tag}</span>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
               </div>
               <input
                 style={{
@@ -274,6 +374,7 @@ function ProjectForm() {
                 type="text"
                 id="sourceUrl"
                 placeholder="sourceUrl"
+                defaultValue={updatedProject ? updatedProject.source : ""}
                 {...register("sourceUrl")}
               />
               {errors.sourceUrl && (
@@ -292,6 +393,7 @@ function ProjectForm() {
                 className="w-full p-2 border rounded-md"
                 id="description"
                 placeholder="description"
+                defaultValue={updatedProject ? updatedProject.description : ""}
                 {...register("description")}
               />
               {errors.description && (
@@ -334,6 +436,12 @@ function ProjectForm() {
                       title={project.title}
                       image={project.thumbnail}
                       sectionName={"project"}
+                      setUpdate={() => {
+                        setIsOpen(true);
+                        setUpdatedProject(project);
+                        setIsUpdating(true);
+                        console.log(project);
+                      }}
                     />
                   );
                 })}

@@ -95,12 +95,12 @@ function Footer() {
             {isLogged ? (
               <User dashboard={true} />
             ) : (
-              <div className="space-x-4">
-                <Link to={"/login"}>
-                  <Button>Login</Button>
+              <div className="flex flex-col items-start justify-start gap-4">
+                <Link className="w-full" to={"/login"}>
+                  <Button className="w-full">Login</Button>
                 </Link>{" "}
-                <Link to={"/login"}>
-                  <Button>Create Account</Button>
+                <Link className="w-full" to={"/signup"}>
+                  <Button className="w-full">Create Account</Button>
                 </Link>
               </div>
             )}

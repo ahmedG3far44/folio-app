@@ -67,13 +67,13 @@ export const projectSchema = z.object({
     .string("wrong type of data")
     .min(10, { message: "short input value!!" })
     .max(350, { message: "too long input value!!" }),
-  tags: z.string().array().max(10).optional(),
   sourceUrl: z
     .string("wrong type of data!!")
     .min(10, { message: "short input value!!" })
     .max(200, { message: "too long input value!!" })
     .optional(),
 });
+
 export const skillsSchema = z.object({
   skillName: z
     .string("expected type wrong!!")

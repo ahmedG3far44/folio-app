@@ -9,30 +9,34 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { XIcon } from "lucide-react";
 
-import SubmitButton from "../submit-button";
-import ErrorMessage from "../ErrorMessage";
-import toast from "react-hot-toast";
 import { useTheme } from "@/contexts/ThemeProvider";
-import UploadHere from "../cards/UploadHere";
 import { useUser } from "@/contexts/UserProvider";
-import ShowListCard from "../cards/ShowListCard";
-import Loader from "../loader";
-// import { IExperienceType } from "@/lib/types";
-// import { deleteById } from "@/lib/handlers";
 import { useNavigate } from "react-router-dom";
+import { IExperienceType } from "@/lib/types";
+
+import Loader from "../loader";
+import toast from "react-hot-toast";
+import ErrorMessage from "../ErrorMessage";
+import SubmitButton from "../submit-button";
+import UploadHere from "../cards/UploadHere";
+import ShowListCard from "../cards/ShowListCard";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ExperienceForm() {
+  const router = useNavigate();
   const { token } = useAuth();
   const { activeTheme } = useTheme();
-  const router = useNavigate();
   const { experiences, pending } = useUser();
-  // const [updateThisExperience, setUpdateThisExperience] =
-  //   useState<IExperienceType>();
-  // const [isUpdating, setIsUpdating] = useState<boolean>(false);
+
+
+  const [updateThisExperience, setUpdateThisExperience] =
+    useState<IExperienceType | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+
+
   const {
     register,
     reset,
@@ -42,27 +46,8 @@ function ExperienceForm() {
   } = useForm<z.infer<typeof experienceSchema>>({
     resolver: zodResolver(experienceSchema),
   });
-  // const handleUpdate = (exp: IExperienceType) => {
-  //   setIsUpdating(true);
-  //   setUpdateThisExperience({ ...exp });
-  //   setIsOpen(true);
-  //   console.log(updateThisExperience);
-  // };
-  // const handleDelete = async (id: string) => {
-  //   try {
-  //     const result = await deleteById({
-  //       id,
-  //       token,
-  //       deleteRoute: "experiences",
-  //     });
-  //     console.log(result.data);
-  //     toast.success(result.message);
-  //     return router(0);
-  //   } catch (err) {
-  //     toast.error((err as Error).message);
-  //     return;
-  //   }
-  // };
+
+  
   return (
     <>
       <div className="w-full flex flex-col gap-4 my-4">
@@ -76,54 +61,47 @@ function ExperienceForm() {
           <form
             onSubmit={handleSubmit(async () => {
               const values = getValues();
+
               const formData = new FormData();
 
-              formData.append("file", file!);
-              formData.append("cName", values.cName);
-              formData.append("position", values.position);
-              formData.append("duration", values.duration);
-              formData.append("role", values.role);
-              formData.append("location", values.location);
+              if (file) {
+                formData.append("file", file!);
+              }
 
-              // formData.append("cName", cName as string);
-              // formData.append(
-              //   "position",
-              //   position as string
-              // );
-              // formData.append(
-              //   "duration",
-              //   duration as string
-              // );
-              // formData.append("role", role as string);
-              // formData.append(
-              //   "location",
-              //   location as string
-              // );
+              Object.entries(values).forEach(([key, value]) => {
+                formData.append(key, value);
+              });
 
               try {
-                const response = await fetch(`${URL_SERVER}/experiences`, {
-                  method: "POST",
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: formData,
-                });
+                const response = await fetch(
+                  `${URL_SERVER}/experiences/${
+                    isUpdating ? updateThisExperience?.id : ""
+                  }`,
+                  {
+                    method: isUpdating ? "PUT" : "POST",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: formData,
+                  }
+                );
                 if (!response.ok) {
                   throw new Error(`${"create a new"} experience failed!!`);
                 }
                 const data = await response.json();
                 console.log(data);
-                setFile(null);
+
                 reset();
-                // setIsUpdating(false);
-                // setIsOpen(false);
                 toast.success(`a new experience was success!!`);
-                console.log(data);
                 return router(0);
               } catch (err) {
                 console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
+              } finally {
+                setFile(null);
+                setIsOpen(false);
+                setIsUpdating(false);
               }
             })}
             className="w-full p-2 flex flex-col justify-start items-center gap-2"
@@ -137,19 +115,20 @@ function ExperienceForm() {
               className="w-full"
             >
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {file ? (
+                {updateThisExperience?.cLogo !== "" || file ? (
                   <div
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
                   >
                     <img
                       className="w-30 h-30 object-cover rounded-2xl"
-                      src={file ? URL.createObjectURL(file!) : ""}
-                      // isUpdating
-                      //   ? cLogo
-                      //   : file
-                      //   ? URL.createObjectURL(file)
-                      //   : ""
+                      src={
+                        file
+                          ? URL.createObjectURL(file)
+                          : updateThisExperience !== null
+                          ? updateThisExperience.cLogo
+                          : ""
+                      }
                       alt="compnay logo image"
                     />
                     {!isSubmitting && (
@@ -158,6 +137,11 @@ function ExperienceForm() {
                         variant={"destructive"}
                         className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
                         onClick={() => {
+                          if (updateThisExperience)
+                            setUpdateThisExperience({
+                              ...updateThisExperience,
+                              cLogo: "",
+                            });
                           setFile(null);
                         }}
                       >
@@ -198,6 +182,9 @@ function ExperienceForm() {
                 type="text"
                 id="cName"
                 placeholder="Company Name"
+                defaultValue={
+                  updateThisExperience ? updateThisExperience.cName : ""
+                }
                 {...register("cName")}
               />
               {errors.cName && (
@@ -212,6 +199,9 @@ function ExperienceForm() {
                   borderColor: activeTheme.borderColor,
                 }}
                 readOnly={isSubmitting}
+                defaultValue={
+                  updateThisExperience ? updateThisExperience.position : ""
+                }
                 className="p-2 border rounded-md"
                 type="text"
                 id="position"
@@ -233,6 +223,9 @@ function ExperienceForm() {
                 className="p-2 border rounded-md"
                 type="text"
                 id="duration"
+                defaultValue={
+                  updateThisExperience ? updateThisExperience.duration : ""
+                }
                 placeholder="duration"
                 {...register("duration")}
               />
@@ -251,6 +244,9 @@ function ExperienceForm() {
                 className="w-full p-2 border rounded-md"
                 id="role"
                 placeholder="role"
+                defaultValue={
+                  updateThisExperience ? updateThisExperience.role : ""
+                }
                 {...register("role")}
               />
               {errors.role && (
@@ -269,6 +265,9 @@ function ExperienceForm() {
                 type="text"
                 id="location"
                 placeholder="location"
+                defaultValue={
+                  updateThisExperience ? updateThisExperience.location : ""
+                }
                 {...register("location")}
               />
               {errors.location && (
@@ -311,6 +310,13 @@ function ExperienceForm() {
                       title={exp.cName}
                       image={exp.cLogo}
                       sectionName={"experiences"}
+                      setUpdate={() => {
+                        setIsUpdating(true);
+                        setIsOpen(true);
+                        setUpdateThisExperience(exp);
+                        console.log(updateThisExperience);
+                        console.log(isUpdating);
+                      }}
                     />
                   );
                 })}

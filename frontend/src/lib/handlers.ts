@@ -1,3 +1,5 @@
+import { IExperienceType, IProjectType, ISkillType } from "./types";
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -162,6 +164,54 @@ export const deleteById = async ({
     });
     if (!response.ok) {
       throw new Error(`deleting a ${deleteRoute} failed!!`);
+    }
+    const data = await response.json();
+    console.log(data);
+    return { data: data.type, message: data.message };
+  } catch (err) {
+    console.log((err as Error).message);
+    return { data: "error", message: (err as Error).message };
+  }
+};
+
+export const updateById = async ({
+  id,
+  token,
+  updatedRoute,
+  newUdatedInfo,
+}: {
+  id: string;
+  token: string;
+  updatedRoute: string;
+  newUdatedInfo: IProjectType | IExperienceType | ISkillType | null;
+}) => {
+  try {
+    if (!newUdatedInfo) throw new Error("updated info was not valid!!!");
+
+    const formData = new FormData();
+    // switch (updatedRoute) {
+    //   case "experiences":
+       
+    //     break;
+    //   case "project":
+    //     break;
+    //   case "skills":
+    //     break;
+    //   default:
+    //     break;
+    // }
+    Object.entries(newUdatedInfo).forEach(([key, value]) => {
+      formData.append(key, value);
+    });
+    const response = await fetch(`${URL_SERVER}/${newUdatedInfo}/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
+    if (!response.ok) {
+      throw new Error(`updating ${updatedRoute} failed!!`);
     }
     const data = await response.json();
     console.log(data);

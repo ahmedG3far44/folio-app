@@ -233,41 +233,45 @@ router.get("/:userId/project/:projectId", async (req, res) => {
   }
 });
 
-router.put("/project/:projectId", async (req, res) => {
-  try {
-    const { projectId } = req.params;
-    const user = req.user;
-    const payload = req.body;
-    const validProjectData = projectSchema.safeParse(payload);
-    if (!validProjectData.success) {
+router.put(
+  "/project/:projectId",
+  verifyAccessToken,
+  upload.none(),
+  async (req, res) => {
+    try {
+      const { projectId } = req.params;
+      const user = req.user;
+      const payload = req.body;
+
+      const validProjectData = projectSchema.safeParse(payload);
+
+      if (!validProjectData.success) {
+        console.log(validProjectData.error.flatten().fieldErrors);
+        return res
+          .status(404)
+          .json(new Exceptions(404, "Bad request not a valid data."));
+      }
+      const { title, description, sourceUrl } = validProjectData.data;
+      await prisma.projects.update({
+        where: {
+          id: projectId,
+          usersId: user.id,
+        },
+        data: {
+          title,
+          description,
+          source: sourceUrl,
+        },
+      });
+
       return res
-        .status(404)
-        .json(new Exceptions(404, "Bad request not a valid data."));
+        .status(200)
+        .json(new Exceptions(200, "updated project info success."));
+    } catch (error) {
+      return res.status(500).json(new Exceptions(500, error.message));
     }
-
-    const { title, thumbnail, likes, views, description } =
-      validProjectData.data;
-    await prisma.projects.update({
-      where: {
-        id: projectId,
-        usersId: user.id,
-      },
-      data: {
-        title,
-        thumbnail,
-        description,
-        likes,
-        views,
-      },
-    });
-
-    return res
-      .status(200)
-      .json(new Exceptions(200, "updated project info success."));
-  } catch (error) {
-    return res.status(500).json(new Exceptions(500, error.message));
   }
-});
+);
 
 router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
   const user = req.user;

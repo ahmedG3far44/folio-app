@@ -16,15 +16,20 @@ import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
 import ShowListCard from "../cards/ShowListCard";
 import Loader from "../loader";
+import { ISkillType } from "@/lib/types";
+import { useNavigate } from "react-router-dom";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function SkillForm() {
   const { token } = useAuth();
   const { skills, pending } = useUser();
+  const navigate = useNavigate();
   const { activeTheme } = useTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isUpdating, setIsUdating] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const [updateSkill, setUpdateSkill] = useState<ISkillType | null>(null);
 
   const {
     register,
@@ -35,6 +40,7 @@ function SkillForm() {
   } = useForm<z.infer<typeof skillsSchema>>({
     resolver: zodResolver(skillsSchema),
   });
+
   return (
     <>
       <div className="flex flex-col items-center w-full">
@@ -49,51 +55,74 @@ function SkillForm() {
             onSubmit={handleSubmit(async () => {
               const values = getValues();
               const formData = new FormData();
-              formData.append("file", file!);
+              if (file) {
+                formData.append("file", file!);
+              }
               formData.append("skillName", values.skillName);
 
               try {
-                const response = await fetch(`${URL_SERVER}/skills`, {
-                  method: "POST",
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                  body: formData,
-                });
+                const response = await fetch(
+                  `${URL_SERVER}/skills/${isUpdating ? updateSkill?.id : ""}`,
+                  {
+                    method: isUpdating ? "PUT" : "POST",
+                    headers: {
+                      Authorization: `Bearer ${token}`,
+                    },
+                    body: formData,
+                  }
+                );
 
                 if (!response.ok) {
                   throw new Error("adding a new skill failed!!");
                 }
                 const data = await response.json();
-                setFile(null);
+                console.log(data);
                 reset();
                 toast.success("a new skill was created success!!");
-                return data;
+                return navigate(0);
               } catch (err) {
                 console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
+              } finally {
+                setIsOpen(false);
+                setFile(null);
+                setIsUdating(false);
               }
             })}
             className="w-full p-2 flex flex-col gap-4"
           >
             <Card className="w-full">
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {file ? (
+                {updateSkill?.skillLogo !== "" || file ? (
                   <div
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
                   >
                     <img
                       className="w-30 h-30 object-cover rounded-2xl"
-                      src={file ? URL.createObjectURL(file) : ""}
+                      src={
+                        file
+                          ? URL.createObjectURL(file)
+                          : updateSkill !== null
+                          ? updateSkill.skillLogo
+                          : ""
+                      }
                       alt="compnay logo image"
                     />
                     {!isSubmitting && (
                       <Button
+                        type="button"
                         variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
-                        onClick={() => setFile(null)}
+                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        onClick={() => {
+                          if (updateSkill)
+                            setUpdateSkill({
+                              ...updateSkill,
+                              skillLogo: "",
+                            });
+                          setFile(null);
+                        }}
                       >
                         <XIcon size={20} />
                       </Button>
@@ -126,6 +155,7 @@ function SkillForm() {
                 type="text"
                 id="skillName"
                 placeholder="skillName"
+                defaultValue={updateSkill ? updateSkill.skillName : ""}
                 {...register("skillName")}
               />
               {errors.skillName && (
@@ -164,6 +194,12 @@ function SkillForm() {
                       title={skill.skillName}
                       image={skill.skillLogo}
                       sectionName={"skills"}
+                      setUpdate={() => {
+                        setUpdateSkill({ ...skill });
+                        setIsOpen(true);
+                        setIsUdating(true);
+                        console.log(updateSkill);
+                      }}
                     />
                   );
                 })}

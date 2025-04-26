@@ -14,6 +14,9 @@ import ThemesForm from "./components/forms/ThemesForm";
 import TestimonialsForm from "./components/forms/TestimonialsForm";
 import UserFeedBack from "./components/UserFeedBack";
 import { Routes, Route } from "react-router-dom";
+import Insights from "./components/admin/Insights";
+import UsersList from "./components/admin/UsersList";
+import ThemesList from "./components/admin/ThemesList";
 
 function App() {
   return (
@@ -25,9 +28,9 @@ function App() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
       <Route path="/dashboard" element={<ProtectedAdminRoute />}>
-        <Route path="insights" element={<h1>Dashboard Admin Insights</h1>} />
-        <Route path="users" element={<h1>Dashboard Admin Insights</h1>} />
-        <Route path="themes" element={<h1>Dashboard Admin Insights</h1>} />
+        <Route path="insights" element={<Insights />} />
+        <Route path="users" element={<UsersList />} />
+        <Route path="themes" element={<ThemesList />} />
       </Route>
       <Route path="/profile" element={<ProtectedUserRoute />}>
         <Route path="bio" element={<BioForm />} />

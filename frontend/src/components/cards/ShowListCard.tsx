@@ -5,6 +5,7 @@ import Loader from "../loader";
 import { useAuth } from "@/contexts/AuthProvider";
 import { deleteById } from "@/lib/handlers";
 import toast from "react-hot-toast";
+// import { ISkillType } from "@/lib/types";
 // import { useNavigate } from "react-router-dom";
 
 function ShowListCard({
@@ -15,6 +16,7 @@ function ShowListCard({
   position,
   feedback,
   vertical,
+  setUpdate,
 }: {
   sectionName: string;
   id: string;
@@ -23,6 +25,7 @@ function ShowListCard({
   position?: string;
   feedback?: string;
   vertical?: boolean;
+  setUpdate?: () => void;
 }) {
   const { activeTheme } = useTheme();
   const { token } = useAuth();
@@ -45,31 +48,31 @@ function ShowListCard({
       setPending(false);
     }
   };
-  const handleUpdate = async (id: string) => {
-    try {
-      setPending(true);
-      switch (sectionName) {
-        case "experiences":
-          console.log("update experience ", id);
-          break;
-        case "projects":
-          console.log("update project ", id);
-          break;
-        case "skills":
-          console.log("update skills ", id);
-          break;
-        case "testimonials":
-          console.log("update testimonials ", id);
-          break;
-        default:
-          break;
-      }
-    } catch (err) {
-      console.log((err as Error).message);
-    } finally {
-      setPending(false);
-    }
-  };
+  // const handleUpdate = async (id: string) => {
+  //   try {
+  //     setPending(true);
+  //     switch (sectionName) {
+  //       case "experiences":
+  //         console.log("update experience ", id);
+  //         break;
+  //       case "projects":
+  //         console.log("update project ", id);
+  //         break;
+  //       case "skills":
+  //         console.log("update skills ", id);
+  //         break;
+  //       case "testimonials":
+  //         console.log("update testimonials ", id);
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   } catch (err) {
+  //     console.log((err as Error).message);
+  //   } finally {
+  //     setPending(false);
+  //   }
+  // };
   return (
     <div
       style={{
@@ -111,14 +114,16 @@ function ShowListCard({
       </div>
       {feedback && <p className="line-clamp-3 my-2">{feedback}</p>}
       <div className="space-x-4">
-        <Button
-          className="disabled:cursor-not-allowed"
-          type="button"
-          disabled={pending}
-          onClick={() => handleUpdate(id)}
-        >
-          update
-        </Button>
+        {sectionName !== "feedback" && (
+          <Button
+            className="disabled:cursor-not-allowed"
+            type="button"
+            disabled={pending}
+            onClick={setUpdate}
+          >
+            update
+          </Button>
+        )}
         <Button
           className="disabled:cursor-not-allowed"
           type="button"

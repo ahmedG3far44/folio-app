@@ -8,16 +8,18 @@ import Hero from "@/components/sections/Hero";
 import ProjectSection from "@/components/sections/ProjectSection";
 import SkillSection from "@/components/sections/SkillSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
+import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 // import { useTheme } from "@/contexts/ThemeProvider";
 // import { useAuth } from "@/contexts/AuthProvider";
 import { useUser } from "@/contexts/UserProvider";
 // import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 // const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function UserPage() {
+  const { user } = useAuth();
   const params = useParams();
   const { userId } = params;
   const { activeTheme } = useTheme();
@@ -37,6 +39,7 @@ function UserPage() {
   //     getUserInfo(params.userId);
   //   }
   // }, [params.userId]);
+  if (user.role === "ADMIN") return <Navigate to={"/dashboard/insights"} />;
 
   return (
     <div

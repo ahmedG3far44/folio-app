@@ -111,15 +111,16 @@ router.post(
 );
 router.put(
   "/experiences/:experience_id",
+  upload.single("file"),
   verifyAccessToken,
   async (req, res) => {
     try {
       const { experience_id } = req.params;
       const user = req.user;
       const payload = req.body;
+      const image = req.file;
 
       console.log(payload);
-      // const image = req.file;
 
       const experience = await prisma.experiences.findUnique({
         where: {
@@ -130,35 +131,35 @@ router.put(
 
       if (!experience) throw new Error("This experience not exist");
 
+      if (image) {
+        const experienceImageKey = getImageKey(experience.cLogo);
+        const resizedExperienceImage = await resizedImage(
+          image.buffer,
+          50,
+          50,
+          80
+        );
+
+        const command = new PutObjectCommand({
+          Bucket: BUCKET_NAME,
+          Key: experienceImageKey,
+          Body: resizedExperienceImage,
+          ContentType: image.mimetype,
+        });
+
+        const uploadResult = await s3Client.send(command);
+
+        if (uploadResult.$metadata.httpStatusCode !== 200)
+          throw new Error("upload new company image failed!!");
+        console.log("company Logo image updated");
+      }
+
       const validExperiencePayload = experienceSchema.safeParse(payload);
       console.log(validExperiencePayload.data);
       if (!validExperiencePayload.success) {
         console.log(validExperiencePayload.error.flatten().fieldErrors);
-
         throw new Error("not a valid experience data");
       }
-
-      // const experienceImageKey = getImageKey(experience.cLogo);
-      // const resizedExperienceImage = await resizedImage(
-      //   image.buffer,
-      //   50,
-      //   50,
-      //   80
-      // );
-
-      // const command = new PutObjectCommand({
-      //   Bucket: BUCKET_NAME,
-      //   Key: experienceImageKey,
-      //   Body: resizedExperienceImage,
-      //   ContentType: image.mimetype,
-      // });
-
-      // const uploadResult = await s3Client.send(command);
-
-      // if (uploadResult.$metadata.httpStatusCode !== 200)
-      //   throw new Error("upload new company image failed!!");
-
-      // console.log("company Logo image updated");
 
       await prisma.experiences.update({
         where: {
@@ -169,7 +170,7 @@ router.put(
       });
 
       res
-        .status(204)
+        .status(200)
         .json(
           new Exceptions(200, "experience information was updated successfully")
         );
