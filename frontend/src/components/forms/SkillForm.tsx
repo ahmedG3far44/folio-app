@@ -77,7 +77,6 @@ function SkillForm() {
                 }
                 const data = await response.json();
                 console.log(data);
-                reset();
                 toast.success("a new skill was created success!!");
                 return navigate(0);
               } catch (err) {
@@ -87,6 +86,7 @@ function SkillForm() {
               } finally {
                 setIsOpen(false);
                 setFile(null);
+                reset();
                 setIsUdating(false);
               }
             })}
@@ -94,7 +94,7 @@ function SkillForm() {
           >
             <Card className="w-full">
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {updateSkill?.skillLogo !== "" || file ? (
+                {updateSkill || file ? (
                   <div
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
@@ -104,9 +104,7 @@ function SkillForm() {
                       src={
                         file
                           ? URL.createObjectURL(file)
-                          : updateSkill !== null
-                          ? updateSkill.skillLogo
-                          : ""
+                          : updateSkill?.skillLogo
                       }
                       alt="compnay logo image"
                     />
@@ -114,7 +112,7 @@ function SkillForm() {
                       <Button
                         type="button"
                         variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        className="cursor-pointer hover:opacity-70 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
                         onClick={() => {
                           if (updateSkill)
                             setUpdateSkill({
