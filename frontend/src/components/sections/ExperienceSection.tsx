@@ -3,6 +3,8 @@ import ExperienceCard from "../cards/ExperienceCard";
 import { Link } from "react-router-dom";
 import { Button } from "../ui/button";
 import { useAuth } from "@/contexts/AuthProvider";
+import { ChagneLayoutForm } from "./ProjectSection";
+import { ApplyLayout } from "./SkillSection";
 
 function ExperienceSection({
   experiences,
@@ -10,25 +12,21 @@ function ExperienceSection({
   experiences: IExperienceType[];
 }) {
   const { isLogged } = useAuth();
+
   return (
     <>
+      {isLogged && <ChagneLayoutForm sectionName={"expLayout"} />}
       {experiences.length > 0 ? (
-        <div className="w-full grid grid-cols-1 lg:grid-cols-2 grid-flow-row gap-4 p-4">
+        <ApplyLayout sectionName="expLayout" type="parent">
           {experiences.map((exp: IExperienceType) => {
             return (
               <ExperienceCard
                 key={exp.id}
-                id={exp.id}
-                cName={exp.cName}
-                cLogo={exp.cLogo}
-                position={exp.position}
-                duration={exp.duration}
-                role={exp.role}
-                location={exp.location}
+                exp={exp}
               />
             );
           })}
-        </div>
+        </ApplyLayout>
       ) : (
         <div className="w-full flex items-center  justify-center">
           {isLogged && (

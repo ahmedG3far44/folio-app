@@ -82,7 +82,7 @@ function ShowListCard({
       className={`w-full flex p-2 rounded-2xl border  ${
         vertical
           ? "flex-col justify-start items-start gap-2"
-          : "justify-between items-center  "
+          : "lg:justify-between lg:items-center  lg:flex-row flex-col justify-start items-start  gap-2"
       }`}
     >
       <div className="flex justify-center items-center gap-4">
@@ -113,7 +113,7 @@ function ShowListCard({
         </div>
       </div>
       {feedback && <p className="line-clamp-3 my-2">{feedback}</p>}
-      <div className="space-x-4">
+      <div className="space-x-2 lg:space-x-4">
         {sectionName !== "feedback" && (
           <Button
             className="disabled:cursor-not-allowed"

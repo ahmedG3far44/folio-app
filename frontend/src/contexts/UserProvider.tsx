@@ -44,12 +44,20 @@ export const UserContext = createContext<UserInfoContextType>({
   },
   pending: false,
   error: "",
+  setLayouts: () => {},
   getUserInfo: async () => Promise.resolve({} as UserInfoContextType),
+  // handleUserInfo: () => {},
+  setBio: () => {},
+  setExperiences: () => {},
+  setProjects: () => {},
+  setSkills: () => {},
+  setTestimonials: () => {},
+  setContacts: () => {},
 });
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user } = useAuth();
-  const params = useParams();
+  const { userId } = useParams();
 
   const [bio, setBio] = useState<IBioType>();
   const [experiences, setExperiences] = useState<IExperienceType[]>();
@@ -57,7 +65,13 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const [skills, setSkills] = useState<ISkillType[]>();
   const [testimonials, setTestimonials] = useState<ITestimonialType[]>();
   const [userContacts, setContacts] = useState<IContactType>();
-  const [userLayouts, setLayouts] = useState<ILayoutType>();
+  const [userLayouts, setLayouts] = useState<ILayoutType>({
+    id: "1",
+    heroLayout: "1",
+    expLayout: "1",
+    projectsLayout: "1",
+    skillsLayout: "1",
+  });
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const getUserInfoById = async (id: string) => {
@@ -73,17 +87,32 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  // const handleUserInfo = async (userId: string) => {
+  //   try {
+  //     const data = await getUserInfoById(userId);
+  //     const { bio, user, contacts, layouts } = data;
+  //     setBio({ ...bio });
+  //     setExperiences(user.ExperiencesList);
+  //     setProjects(user.ProjectsList);
+  //     setSkills(user.SkillsList);
+  //     setTestimonials(user.Testimonials);
+  //     setContacts({ ...contacts });
+  //     setLayouts({ ...layouts });
+  //     return data;
+  //   } catch (err) {
+  //     setError((err as Error).message);
+  //     return;
+  //   }
+  // };
   useEffect(() => {
-    if (!user?.id) return;
-
-    getUserInfoById((params.userId as string) || user.id)
+    getUserInfoById(userId ? userId : user?.id)
       .then((data) => {
         const { bio, user, contacts, layouts } = data;
         setBio({ ...bio });
-        setExperiences(user.ExperiencesList);
-        setProjects(user.ProjectsList);
-        setSkills(user.SkillsList);
-        setTestimonials(user.Testimonials);
+        setExperiences(user?.ExperiencesList);
+        setProjects(user?.ProjectsList);
+        setSkills(user?.SkillsList);
+        setTestimonials(user?.Testimonials);
         setContacts({ ...contacts });
         setLayouts({ ...layouts });
       })
@@ -91,7 +120,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         setError(error.message);
         return;
       });
-  }, [user?.id, params.userId]);
+  }, [user?.id, userId]);
 
   return (
     <UserContext.Provider
@@ -105,7 +134,16 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         layouts: userLayouts as ILayoutType,
         pending,
         error: error || "",
-        getUserInfo: () => getUserInfoById(user?.id || ""),
+        setLayouts: (newLayout: ILayoutType) => setLayouts({ ...newLayout }),
+        getUserInfo: (userId: string) => getUserInfoById(userId),
+        setBio: (bio: IBioType) => setBio({ ...bio }),
+        setExperiences: (experience: IExperienceType[]) =>
+          setExperiences(experience),
+        setProjects: (projects: IProjectType[]) => setProjects(projects),
+        setSkills: (skills: ISkillType[]) => setSkills(skills),
+        setTestimonials: (testimonials: ITestimonialType[]) =>
+          setTestimonials(testimonials),
+        setContacts: (contacts: IContactType) => setContacts({ ...contacts }),
       }}
     >
       {children}

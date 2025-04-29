@@ -1,0 +1,67 @@
+{
+  "heroLayout": {
+    "parent": {
+      "default": "w-full flex flex-col items-center justify-center gap-4",
+      "meduim": "w-full flex items-center justify-start gap-4",
+      "minimal": "flex flex-col items-center justify-center gap-4 ",
+      "wizzard": "bg-gradiant from-blue-500 to-purple-600 flex flex-col items-center justify-center gap-4 ",
+      "accent": "bg-gradiant from-blue-500 to-purple-600 flex  items-center justify-center gap-4 border"
+    },
+    "child": {
+      "default": "w-full flex flex-col items-center justify-between gap-8",
+      "meduim": "w-full flex items-center justify-start gap-4",
+      "minimal": "flex flex-col items-center justify-center gap-4 ",
+      "wizzard": "bg-gradiant from-blue-500 to-purple-600 flex flex-col items-center justify-center gap-4 ",
+      "accent": "bg-gradiant from-blue-500 to-purple-600 flex  items-center justify-center gap-4 "
+    }
+  },
+  "expLayout": {
+    "parent": {
+      "default": "grid grid-cols-1 lg:grid-cols-2  gap-2 ",
+      "meduim": "flex flex-col items-start justify-start gap-4",
+      "minimal": "flex flex-col  items-start justify-start gap-4",
+      "wizzard": "grid grid-cols-2 lg:grid-cols-3 grid-flow-row gap-2",
+      "accent": "flex  items-center justify-center gap-4"
+    },
+    "child": {
+      "default": "flex flex-col items-start justify-start gap-4",
+      "meduim": "flex flex-col items-start justify-start gap-4",
+      "minimal": " flex flex-col items-start justify-start gap-4",
+      "wizzard": " flex flex-col items-start justify-start gap-4",
+      "accent": "!border-l-4 flex flex-col  items-start justify-start gap-4"
+    }
+  },
+  "projectsLayout": {
+    "parent": {
+      "default": "grid grid-cols-1 lg:grid-cols-2 grid-flow-row  gap-2 ",
+      "meduim": "grid grid-cols-2 lg:grid-cols-3 grid-flow-row  gap-2 ",
+      "minimal": "grid grid-cols-2 lg:grid-cols-4 grid-flow-row  gap-2  ",
+      "wizzard": "grid grid-cols-1 lg:grid-cols-2 grid-flow-row  gap-2 ",
+      "accent": " flex  items-center justify-center gap-4 "
+    },
+    "child": {
+      "default": "flex flex-col items-center justify-between",
+      "meduim": " flex items-center justify-start gap-4",
+      "minimal": "flex flex-col items-center justify-center gap-4 ",
+      "wizzard": "flex  items-center justify-center gap-4 ",
+      "accent": " flex  items-center justify-center gap-4 "
+    }
+  },
+
+  "skillsLayout": {
+    "parent": {
+      "default": "w-full grid grid-cols-2 lg:grid-cols-5 gap-4 grid-flow-row",
+      "meduim": "w-full grid grid-cols-2 lg:grid-cols-5 gap-4 grid-flow-row",
+      "minimal": "w-full grid grid-cols-2 lg:grid-cols-5 gap-4 grid-flow-row",
+      "wizzard": "w-full flex  items-center justify-start gap-4 flex-wrap",
+      "accent": "w-full flex justify-around items-center flex-wrap"
+    },
+    "child": {
+      "default": "flex flex-col items-center justify-between",
+      "meduim": " w-full flex items-center justify-center gap-4",
+      "minimal": "flex flex-col items-center justify-center gap-4 ",
+      "wizzard": " flex items-center justify-start gap-2",
+      "accent": "flex items-center justify-center gap-4"
+    }
+  }
+}

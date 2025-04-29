@@ -28,7 +28,15 @@ export interface UserInfoContextType {
   contacts: IContactType;
   pending: boolean;
   error: string;
-  getUserInfo: () => Promise<UserInfoContextType>;
+  setLayouts: (newLayout: ILayoutType) => void;
+  getUserInfo: (userId: string) => Promise<UserInfoContextType>;
+  // handleUserInfo: (id: string) => void;
+  setBio: (bio: IBioType) => void;
+  setExperiences: (newExperience: IExperienceType[]) => void;
+  setProjects: (newProjects: IProjectType[]) => void;
+  setSkills: (newSkill: ISkillType[]) => void;
+  setTestimonials: (newTestimonials: ITestimonialType[]) => void;
+  setContacts: (contacts: IContactType) => void;
 }
 
 export interface IBioType {
@@ -102,7 +110,7 @@ export interface UploadFileType {
   type: string;
 }
 export interface IThemeType {
-  id: string;
+  id?: string;
   backgroundColor: string;
   cardColor: string;
   primaryText: string;

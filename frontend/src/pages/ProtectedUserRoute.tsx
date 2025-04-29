@@ -28,16 +28,27 @@ function ProtectedUserRoute() {
         }}
         className="w-full overflow-hidden absolute top-0 right-0 min-h-screen lg:w-[75%] p-4 space-y-2"
       >
-        <h1 className="text-2xl font-black my-4">User Dashboard</h1>
-        <span
-          role="button"
-          onClick={() => {
-            setIsOpen(!isOpen);
+        <div
+          style={{
+            backgroundColor: activeTheme.backgroundColor,
+            color: activeTheme.primaryText,
+            border: `1px solid ${activeTheme.borderColor}`,
           }}
-          className="lg:hidden w-full  flex justify-end items-center cursor-pointer ml-auto"
+          className="p-4 w-full rounded-md flex items-center justify-start gap-2  text-sm  "
         >
-          {isOpen ? <Menu /> : <XIcon />}
-        </span>
+          <h1 className="text-xl lg:text-4xl text-nowrap font-black my-4">
+            User Dashboard
+          </h1>
+          <span
+            role="button"
+            onClick={() => {
+              setIsOpen(!isOpen);
+            }}
+            className="lg:hidden w-full  flex justify-end items-center cursor-pointer ml-auto"
+          >
+            {isOpen ? <Menu /> : <XIcon />}
+          </span>
+        </div>
         <div
           style={{
             backgroundColor: activeTheme.backgroundColor,

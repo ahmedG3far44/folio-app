@@ -13,7 +13,6 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
 
-
 function Sidebar({
   isOpen,
   setIsOpen,
@@ -105,12 +104,17 @@ function Sidebar({
           <h4>{user.email}</h4>
         </div>
       </div>
+
       <div className="flex flex-col justify-between min-h-full items-center w-full h-full p-4 mt-10">
-        <ul>
+        <ul className=" flex justify-center items-center flex-col">
           {profileLinks.map((url) => {
             return (
               <Link
                 style={{
+                  backgroundColor:
+                    url.path === activeLink
+                      ? activeTheme.cardColor
+                      : activeTheme.backgroundColor,
                   color:
                     url.path === activeLink
                       ? activeTheme.secondaryText
@@ -119,7 +123,7 @@ function Sidebar({
                 to={`${
                   url.path === "/" ? `/${user.id}` : `/profile/${url.path}`
                 }`}
-                className={` p-4 w-full  transition-all duration-150 cursor-pointer flex items-center gap-4 font-bold `}
+                className={`rounded-md p-4 w-full  transition-all duration-150 cursor-pointer flex items-center gap-4 font-bold `}
                 key={url.id}
               >
                 <span>{url.icon}</span>

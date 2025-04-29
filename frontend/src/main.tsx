@@ -8,6 +8,7 @@ import UploadProvider from "./contexts/UploadProvider.tsx";
 import App from "./App.tsx";
 import "./index.css";
 import ThemeProvider from "./contexts/ThemeProvider.tsx";
+import LayoutProvider from "./contexts/LayoutProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -16,8 +17,10 @@ createRoot(document.getElementById("root")!).render(
         <ThemeProvider>
           <UserProvider>
             <UploadProvider>
-              <Toaster position="top-right" />
-              <App />
+              <LayoutProvider>
+                <Toaster position="top-right" />
+                <App />
+              </LayoutProvider>
             </UploadProvider>
           </UserProvider>
         </ThemeProvider>
