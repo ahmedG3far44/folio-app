@@ -29,13 +29,11 @@ function ExperienceForm() {
   const { activeTheme } = useTheme();
   const { experiences, pending } = useUser();
 
-
   const [updateThisExperience, setUpdateThisExperience] =
     useState<IExperienceType | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
-
 
   const {
     register,
@@ -47,7 +45,6 @@ function ExperienceForm() {
     resolver: zodResolver(experienceSchema),
   });
 
-  
   return (
     <>
       <div className="w-full flex flex-col gap-4 my-4">
@@ -286,14 +283,7 @@ function ExperienceForm() {
           </form>
         )}
       </div>
-      <Card
-        className="w-full p-4 border"
-        style={{
-          color: activeTheme.primaryText,
-          backgroundColor: activeTheme.backgroundColor,
-          borderColor: activeTheme.borderColor,
-        }}
-      >
+      <>
         {pending ? (
           <div className="w-full min-h-[400px] flex items-center justify-center">
             <Loader size="md" />
@@ -301,7 +291,15 @@ function ExperienceForm() {
         ) : (
           <>
             {experiences.length > 0 && (
-              <div className="flex flex-col justify-start items-start gap-1">
+              <Card
+                
+                style={{
+                  color: activeTheme.primaryText,
+                  backgroundColor: activeTheme.backgroundColor,
+                  borderColor: activeTheme.borderColor,
+                }}
+                className="w-full p-4 border flex flex-col justify-start items-start gap-1"
+              >
                 {experiences.map((exp) => {
                   return (
                     <ShowListCard
@@ -320,11 +318,11 @@ function ExperienceForm() {
                     />
                   );
                 })}
-              </div>
+              </Card>
             )}
           </>
         )}
-      </Card>
+      </>
     </>
   );
 }

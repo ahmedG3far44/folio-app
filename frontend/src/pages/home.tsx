@@ -2,9 +2,8 @@ import Container from "@/components/Container";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTheme } from "@/contexts/ThemeProvider";
-import { IFeatureType } from "@/lib/types";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { IFeatureType, IProjectType } from "@/lib/types";
 import {
   Atom,
   BookAIcon,
@@ -20,7 +19,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthProvider";
 
 function LandingPage() {
-  const { activeTheme } = useTheme();
+  // const { activeTheme } = useTheme();
   const { isLogged } = useAuth();
   const featuresCard: IFeatureType[] = [
     {
@@ -54,24 +53,37 @@ function LandingPage() {
       text: "Easily customize and reorder sections like About Me, Work Experience, and Projects.",
     },
   ];
+  const project: IProjectType = {
+    id: "1",
+    thumbnail:
+      "https://cdn.dribbble.com/userupload/31715740/file/original-14e1787118d0682a81e76edf4b1a54ef.png?resize=1024x768&vertical=center",
+    title: "project title",
+    description: "lorem",
+    ImagesList: [
+      {
+        id: "1",
+        url: "https://cdn.dribbble.com/userupload/31715773/file/original-fea36c2dbe1b311e3633ed7d8e779777.png?resize=1024x768&vertical=center",
+      },
+    ],
+    source: "",
+    tags: [
+      {
+        id: "1",
+        tagName: "tags",
+      },
+    ],
+  };
   const [activeState, setActive] = useState<boolean>(false);
   const [scrollY, setScrollY] = useState<number>(0);
   console.log(activeState);
   useEffect(() => {
     window.addEventListener("scroll", () => {
       setScrollY(window.scrollY);
-      setActive(window.scrollY >= 800 && window.scrollY <= 1250 ? true : false);
+      setActive(window.scrollY >= 800 && window.scrollY <= 1650 ? true : false);
     });
   });
   return (
-    <div
-      style={{
-        backgroundColor: activeTheme.backgroundColor,
-        color: activeTheme.primaryText,
-      }}
-      className="w-full flex flex-col justify-between items-center  m-auto min-h-screen overflow-hidden"
-    >
-      {/* <h1 className="fixed top-20 left-20">{Math.floor(scrollY / 10)}</h1> */}
+    <div className="w-full flex flex-col justify-between items-center  m-auto min-h-screen overflow-hidden bg-zinc-950 text-white">
       <Container>
         <Header />
         <section className="lg:h-screen p-4  flex flex-col items-center justify-center lg:gap-4 relative">
@@ -88,7 +100,6 @@ function LandingPage() {
             <motion.h1
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              style={{ color: activeTheme.secondaryText }}
               className="lg:text-6xl text-3xl flex flex-col items-center justify-center font-black "
             >
               <motion.span
@@ -99,19 +110,14 @@ function LandingPage() {
                 Build a Portfolio,
               </motion.span>{" "}
               <motion.span
+                className=" text-white"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                style={{ color: activeTheme.primaryText }}
               >
                 Share What You Do Best
               </motion.span>
             </motion.h1>
-            <p
-              className=" text-sm lg:w-1/2 w-3/4  text-center"
-              style={{
-                color: activeTheme.secondaryText,
-              }}
-            >
+            <p className=" text-sm lg:w-1/2 w-3/4  text-center text-zinc-400">
               Easily create a digital profile that reflects your talents and
               experience. Share your skills, feedback, and success stories with
               a style that’s totally you
@@ -126,19 +132,14 @@ function LandingPage() {
                 target="_blank"
                 to={"https://github.com/ahmedG3far44/Presento-Online-Platform"}
               >
-                <Button >
+                <Button>
                   <Github size={20} />
                   Github Source
                 </Button>
               </Link>
             </div>
             <div>
-              <p
-                style={{
-                  color: activeTheme.secondaryText,
-                }}
-                className="lg:text-sm text-[12px] mt-2"
-              >
+              <p className="lg:text-sm text-[12px] mt-2 text-zinc-400">
                 Designed & created by Developer{" "}
                 <Link
                   target="_blank"
@@ -184,6 +185,7 @@ function LandingPage() {
           >
             Video Section{" "}
           </motion.h1>
+
           <div className="hidden w-[700px] h-[700px]  lg:block opacity-25 blur-3xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full z-1"></div>
           <motion.div
             initial={{ opacity: 0, scaleY: 0.5, scaleX: 0.5, translateY: 20 }}
@@ -191,43 +193,41 @@ function LandingPage() {
             transition={{ duration: 0.5, ease: easeInOut }}
             className={`p-4  w-full h-auto lg:w-3/4 lg:h-auto rounded-2xl shadow-xl lg:my-20 z-5  relative `}
           >
-            <Card
-              style={{
-                backgroundColor: activeTheme.cardColor,
-                borderColor: activeTheme.borderColor,
-                rotate: "45deg",
-                left: `${Math.ceil(scrollY / 10000)}`,
-              }}
-              className={`${
+            <div
+              className={` bg-zinc-800 rounded-2xl ${
                 activeState ? "animate-fade-reverse block" : "hidden"
-              } absolute  p-8 border  w-96 h-96 -z-1 shadow-2xl`}
-            ></Card>
-            <Card
-              style={{
-                backgroundColor: activeTheme.cardColor,
-                borderColor: activeTheme.borderColor,
-                rotate: "-45deg",
-              }}
-              className={` ${
+              } absolute   w-96 h-96 -z-1 shadow-2xl`}
+            >
+              <img
+                className="w-full h-full object-cover rounded-2xl"
+                src={project.thumbnail}
+                alt="project thumbnail image"
+              />
+            </div>
+            <div
+              className={` bg-zinc-800 rounded-2xl  ${
                 activeState ? "animate-fade block" : "hidden"
-              } absolute p-8 border w-96 h-96 -z-1 shadow-2xl`}
-            ></Card>
+              } absolute  w-96 h-96 -z-1 shadow-2xl`}
+            >
+              <img
+                className="w-full h-full object-cover rounded-2xl"
+                src={project.ImagesList[0].url}
+                alt="project thumbnail image"
+              />
+            </div>
             <video
               preload="true"
               autoPlay
               muted
               loop
-              className="w-full h-full rounded-2xl object-cover z-4"
+              className="w-full h-full rounded-2xl object-cover z-4 shadow-2xl"
               src="https://cdn.dribbble.com/userupload/15153126/file/original-e020287a0dc270092df19c2738aff2c0.mp4"
             ></video>
           </motion.div>
         </section>
 
         <section className="w-full lg:h-[700px] h-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2  gap-4 p-4">
-          <div
-            style={{ borderColor: activeTheme.borderColor }}
-            className=" border rounded-2xl  lg:col-start-1 lg:col-end-3"
-          >
+          <div className=" border rounded-2xl  lg:col-start-1 lg:col-end-3  border-zinc-900">
             <video
               preload="true"
               autoPlay
@@ -238,10 +238,7 @@ function LandingPage() {
             ></video>
           </div>
 
-          <div
-            style={{ borderColor: activeTheme.borderColor }}
-            className="border rounded-2xl"
-          >
+          <div className="border rounded-2xl  border-zinc-900">
             <video
               preload="true"
               autoPlay
@@ -251,10 +248,7 @@ function LandingPage() {
               src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4"
             ></video>
           </div>
-          <div
-            style={{ borderColor: activeTheme.borderColor }}
-            className="border rounded-2xl lg:col-start-1 lg:col-end-2"
-          >
+          <div className="border rounded-2xl lg:col-start-1 lg:col-end-2  border-zinc-900">
             <video
               preload="true"
               autoPlay
@@ -264,10 +258,7 @@ function LandingPage() {
               src="https://cdn.dribbble.com/userupload/15153126/file/original-e020287a0dc270092df19c2738aff2c0.mp4"
             ></video>
           </div>
-          <div
-            style={{ borderColor: activeTheme.borderColor }}
-            className="border rounded-2xl lg:col-start-2 lg:col-end-4"
-          >
+          <div className="border rounded-2xl lg:col-start-2 lg:col-end-4  border-zinc-900">
             <video
               preload="true"
               autoPlay
@@ -296,45 +287,23 @@ function LandingPage() {
                 transition={{ duration: 0.2, ease: easeInOut }}
                 className="cursor-pointer"
               >
-                <Card
-                  className="border w-full h-full"
-                  style={{
-                    backgroundColor: activeTheme.cardColor,
-                    color: activeTheme.primaryText,
-                    borderColor: activeTheme.borderColor,
-                  }}
-                >
+                <Card className="border flex flex-col  w-full h-full p-4">
                   <CardHeader>
-                    <CardTitle className="font-black text-xl flex justify-start items-center gap-4 md:flex-wrap">
-                      <span
-                        style={{
-                          borderColor: activeTheme.cardColor,
-                          backgroundColor: activeTheme.backgroundColor,
-                        }}
-                        className="p-2 border rounded-lg"
-                      >
+                    <CardTitle className="w-full font-black  flex justify-start items-center gap-4 md:flex-wrap">
+                      <span className="border rounded-lg p-2">
                         {feature.icon}
                       </span>{" "}
-                      <h1>{feature.title}</h1>
+                      <h1 >{feature.title}</h1>
                     </CardTitle>
                   </CardHeader>
-                  <CardContent style={{ color: activeTheme.secondaryText }}>
-                    {feature.text}
-                  </CardContent>
+                  <p className="text-sm text-zinc-300 ">{feature.text}</p>
                 </Card>
               </motion.div>
             );
           })}
         </section>
         <section className="w-full lg:h-96  p-4  flex flex-col items-center justify-center gap-4">
-          <Card
-            style={{
-              backgroundColor: activeTheme.cardColor,
-              color: activeTheme.primaryText,
-              borderColor: activeTheme.borderColor,
-            }}
-            className="p-4 border"
-          >
+          <Card className="p-4 border">
             <h1>Hero</h1>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora

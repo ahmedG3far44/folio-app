@@ -19,7 +19,11 @@ function ContactsCard({ contacts }) {
             rel={"user twitter profile link"}
             target="_blank"
             href={contacts?.twitter}
+            id="twitter_link"
           >
+            <label className="hidden" htmlFor="twitter_link">
+              Twitter Link
+            </label>
             <span>
               <RiTwitterXFill size={20} />
             </span>
@@ -36,7 +40,11 @@ function ContactsCard({ contacts }) {
             rel={"user linkedin profile link"}
             target="_blank"
             href={contacts?.linkedin}
+            id="linkedin_link"
           >
+            <label className="hidden" htmlFor="linkedin_link">
+              Linkedin Link
+            </label>
             <span>
               <AiOutlineLinkedin size={20} />
             </span>
@@ -53,7 +61,11 @@ function ContactsCard({ contacts }) {
             rel={"user youtube link"}
             target="_blank"
             href={contacts?.youtube}
+            id="youtube_link"
           >
+            <label className="hidden" htmlFor="youtube_link">
+              Youtube Link
+            </label>
             <span>
               <AiOutlineYoutube size={20} />
             </span>
@@ -70,7 +82,11 @@ function ContactsCard({ contacts }) {
             rel={"user github profile link"}
             target="_blank"
             href={contacts?.github}
+            id="github_link"
           >
+            <label className="hidden" htmlFor="github_link">
+              Github Link
+            </label>
             <span>
               <AiOutlineGithub size={20} />
             </span>

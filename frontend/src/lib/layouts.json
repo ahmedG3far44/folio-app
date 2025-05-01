@@ -52,7 +52,7 @@
     "parent": {
       "default": "w-full grid grid-cols-2 lg:grid-cols-5 gap-4 grid-flow-row",
       "medium": "w-full grid grid-cols-2 lg:grid-cols-5 gap-4 grid-flow-row",
-      "minimal": "w-full grid grid-cols-2 lg:grid-cols-5 gap-4 grid-flow-row",
+      "minimal": "w-full flex justify-center items-center gap-4 flex-wrap",
       "wizzard": "w-full flex  items-center justify-center gap-2 flex-wrap",
       "accent": "w-full flex justify-center items-center gap-4 flex-wrap"
     },

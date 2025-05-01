@@ -9,9 +9,6 @@ import Resume from "../cards/Resume";
 import ShowUserContacts from "../cards/ShowUserContacts";
 import { ApplyLayout, ChangeLayoutForm } from "../layouts/Layouts";
 
-
-
-
 function Hero({
   bioInfo,
   contacts,
@@ -29,6 +26,10 @@ function Hero({
           <div className=" flex justify-around items-center gap-8 lg:gap-16 flex-wrap lg:flex-nowrap ">
             <div className="w-[250px] h-[250px] rounned-4xl overflow-hidden ">
               <img
+                loading="lazy"
+                property="true"
+                width={250}
+                height={250}
                 className="w-full h-full object-cover rounded-4xl"
                 src={bioInfo?.heroImage}
                 alt={bioInfo?.bio}

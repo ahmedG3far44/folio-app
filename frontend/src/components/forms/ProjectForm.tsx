@@ -314,7 +314,7 @@ function ProjectForm() {
                               onClick={() =>
                                 setTags([
                                   ...tags.filter(
-                                    (tag, filterIndex) => index !== filterIndex
+                                    (_, filterIndex) => index !== filterIndex
                                   ),
                                 ])
                               }
