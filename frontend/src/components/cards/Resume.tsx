@@ -13,7 +13,7 @@ function Resume() {
   return (
     <>
       {isLogged && (
-        <div className="w-full">
+        <div className="w-3/4 lg:w-full md:w-full my-2">
           {user?.resume && (
             <Button
               style={{

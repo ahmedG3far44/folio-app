@@ -3,17 +3,15 @@ import { Card } from "../ui/card";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 function TestimonialsCard({
-  id,
   profile,
   name,
   position,
   feedback,
   video,
-  createdAt,
 }: ITestimonialType) {
   const { activeTheme } = useTheme();
-  const date = new Date(createdAt);
-  console.log(id, date);
+  // const date = new Date(createdAt);
+  
   return (
     <Card
       className="p-4 flex flex-col items-start justify-start gap-2"

@@ -129,3 +129,20 @@ export interface ThemeContextType {
   themesList: IThemeType[];
   switchTheme: ({ newActiveTheme }: { newActiveTheme: IThemeType }) => void;
 }
+
+export interface IActiveLayout {
+  parent: {
+    default: string;
+    medium: string;
+    minimal: string;
+    wizzard: string;
+    accent: string;
+  };
+  child: {
+    default: string;
+    medium: string;
+    minimal: string;
+    wizzard: string;
+    accent: string;
+  };
+}

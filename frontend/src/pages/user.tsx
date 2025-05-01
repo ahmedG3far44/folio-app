@@ -99,7 +99,7 @@ function UserPage() {
                 <Loader size="md" />
               </div>
             ) : (
-              <div className="w-full flex flex-col items-center justify-around space-y-20">
+              <div className="w-full flex flex-col items-center justify-around gap-20 p-4 lg:p-8">
                 <Header />
                 <Hero bioInfo={bio} contacts={contacts} />
                 <ExperienceSection experiences={experiences} />

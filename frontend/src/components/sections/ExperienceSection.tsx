@@ -1,10 +1,14 @@
 import { IExperienceType } from "@/lib/types";
-import ExperienceCard from "../cards/ExperienceCard";
-import { Link } from "react-router-dom";
+
 import { Button } from "../ui/button";
+import { Link } from "react-router-dom";
+
 import { useAuth } from "@/contexts/AuthProvider";
-import { ChagneLayoutForm } from "./ProjectSection";
-import { ApplyLayout } from "./SkillSection";
+
+
+import ExperienceCard from "../cards/ExperienceCard";
+import { ApplyLayout, ChangeLayoutForm } from "../layouts/Layouts";
+
 
 function ExperienceSection({
   experiences,
@@ -15,16 +19,11 @@ function ExperienceSection({
 
   return (
     <>
-      {isLogged && <ChagneLayoutForm sectionName={"expLayout"} />}
+      {isLogged && <ChangeLayoutForm sectionName={"expLayout"} />}
       {experiences.length > 0 ? (
         <ApplyLayout sectionName="expLayout" type="parent">
           {experiences.map((exp: IExperienceType) => {
-            return (
-              <ExperienceCard
-                key={exp.id}
-                exp={exp}
-              />
-            );
+            return <ExperienceCard key={exp.id} exp={exp} />;
           })}
         </ApplyLayout>
       ) : (

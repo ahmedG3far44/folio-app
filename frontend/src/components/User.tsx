@@ -24,14 +24,14 @@ function User({ dashboard }: { dashboard?: boolean }) {
             <>
               {dashboard ? (
                 <div className="flex flex-col items-end ">
-                  <h1 className="text-xl font-semibold  duration-150 transition-all">
+                  <h1 className="hidden lg:block md:block text-xl font-semibold  duration-150 transition-all">
                     <span>{user.name}</span>
                   </h1>
                   <span className="text-sm">{user.email}</span>
                 </div>
               ) : (
                 <Link
-                  className="text-xl font-semibold  duration-150 transition-all hover:opacity-75 "
+                  className="hidden lg:block md:block text-xl font-semibold  duration-150 transition-all hover:opacity-75 "
                   to={`/${user.id}`}
                 >
                   {user.name}
