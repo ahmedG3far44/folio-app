@@ -14,7 +14,6 @@ const LOCAL_DOMAIN = import.meta.env.VITE_LOCAL_DOMAIN as string;
 const PRODUCTION_DOMAIN = import.meta.env.VITE_LOCAL_DOMAIN as string;
 const ENV = import.meta.env.VITE_ENV as string;
 
-
 function Header() {
   const { isLogged, user } = useAuth();
   const { activeTheme } = useTheme();
@@ -41,8 +40,9 @@ function Header() {
   };
   return (
     <div
+      style={{ backgroundColor: activeTheme.backgroundColor }}
       className={`${
-        isScroll && " border-b z-[999]"
+        isScroll && " border-b z-[999] "
       } w-full border-b-0 flex justify-between items-center px-4 py-8 sticky top-0 z-[999]`}
     >
       <Logo />
@@ -50,7 +50,10 @@ function Header() {
         {isLogged ? (
           <div className="flex items-center space-x-4">
             <User dashboard={false} />
-            <Button className="flex items-center justify-center" onClick={handleSharePortfolio}>
+            <Button
+              className="flex items-center justify-center"
+              onClick={handleSharePortfolio}
+            >
               {isCopied ? <CopyCheck size={20} /> : <Share2 size={20} />}
             </Button>
           </div>

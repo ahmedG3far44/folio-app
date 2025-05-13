@@ -69,8 +69,8 @@ export interface ITestimonialType {
   id: string;
   profile: string;
   name: string;
-  feedback: string;
-  video: string;
+  feedback?: string;
+  video?: string;
   position: string;
   createdAt: Date;
 }

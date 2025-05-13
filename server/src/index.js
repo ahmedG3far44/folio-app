@@ -39,5 +39,9 @@ app.get("/", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT || 4000}`);
+  console.log(
+    `Server running on port ${PORT || 4000} calling ${
+      ENV === "development" ? LOCAL_CLIENT_URL : PRODUCTION_CLIENT_URL
+    }`
+  );
 });

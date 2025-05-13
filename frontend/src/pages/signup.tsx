@@ -10,6 +10,7 @@ import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
 import ErrorMessage from "@/components/ErrorMessage";
+import Logo from "@/components/Logo";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -85,12 +86,15 @@ function SignUpPage() {
       }}
       className="w-full min-h-screen flex items-center justify-center"
     >
-      <Card className="p-4 ">
-        <CardTitle className="self-center text-2xl font-bold">
-          Create A New Account
+      <Card className="px-4 py-8 ">
+        <CardTitle className="flex items-center justify-center flex-col gap-2 my-8">
+          <Logo />
+          <h1 className="text-lg font-bold text-start">
+            Welcome, create new account now
+          </h1>
         </CardTitle>
         <form
-          className="w-[400px] flex flex-col items-start gap-4"
+          className="w-[400px] flex flex-col items-start gap-4 mt-4"
           onSubmit={handleLogin}
         >
           <div className="self-center">
@@ -154,7 +158,7 @@ function SignUpPage() {
               setRegisterUser({ ...registerUser, name: e.target.value })
             }
             type="text"
-            placeholder="Full Name"
+            placeholder="name"
           />
 
           <input
@@ -176,7 +180,7 @@ function SignUpPage() {
               color: activeTheme.primaryText,
               borderColor: activeTheme.borderColor,
             }}
-            className="w-full flex items-center justify-between  rounded-md "
+            className="w-full flex items-center justify-between  rounded-md relative"
           >
             <input
               style={{
@@ -184,7 +188,7 @@ function SignUpPage() {
                 color: activeTheme.primaryText,
                 borderColor: activeTheme.borderColor,
               }}
-              className="w-full h-full p-2 rounded-tl-md rounded-bl-md"
+              className="w-full h-full p-2 rounded-md relative"
               onChange={(e) =>
                 setRegisterUser({ ...registerUser, password: e.target.value })
               }
@@ -193,11 +197,9 @@ function SignUpPage() {
             />
             <span
               style={{
-                backgroundColor: activeTheme.backgroundColor,
                 color: activeTheme.primaryText,
-                borderColor: activeTheme.borderColor,
               }}
-              className="hover:opacity-80 duration-150 cursor-pointer p-2 rounded-tr-md rounded-br-md"
+              className="hover:opacity-80 duration-150 cursor-pointer p-2 rounded-md  absolute right-0"
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -206,9 +208,14 @@ function SignUpPage() {
           <SubmitButton className="w-full" loading={pending} type="submit">
             Create Account
           </SubmitButton>
+          <div className="w-full flex items-center justify-center">
+            <div className="w-full h-[1px] bg-zinc-700"></div>
+            <p className="text-sm text-zinc-500 px-4">Or</p>
+            <div className="w-full h-[1px] bg-zinc-700"></div>
+          </div>
           <div
             style={{ color: activeTheme.secondaryText }}
-            className="p-2 text-sm"
+            className="p-2 text-sm text-center self-center"
           >
             <p>
               I have already account{" "}

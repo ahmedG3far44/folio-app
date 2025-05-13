@@ -35,7 +35,16 @@ function App() {
       <Route path="/profile" element={<ProtectedUserRoute />}>
         <Route path="bio" element={<BioForm />} />
         <Route path="experiences" element={<ExperienceForm />} />
-        <Route path="projects" element={<ProjectForm />} />
+        <Route path="projects" element={<ProjectForm />}>
+          <Route
+            path="update/:projectId"
+            element={
+              <div>
+                <h1>Update Element Project</h1>
+              </div>
+            }
+          />
+        </Route>
         <Route path="skills" element={<SkillForm />} />
         <Route path="testimonials" element={<TestimonialsForm />} />
         <Route path="themes" element={<ThemesForm />} />

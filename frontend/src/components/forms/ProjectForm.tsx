@@ -18,12 +18,13 @@ import { useUser } from "@/contexts/UserProvider";
 import ShowListCard from "../cards/ShowListCard";
 import Loader from "../loader";
 import { IProjectImagesType, IProjectType } from "@/lib/types";
-import { useNavigate } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ProjectForm() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { token } = useAuth();
   const { activeTheme } = useTheme();
   const { projects, pending } = useUser();
@@ -33,9 +34,11 @@ function ProjectForm() {
   );
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [thumbnail, setThumbnail] = useState<File | string | null>(null);
+  const [thumbnail, setThumbnail] = useState<File | string | null>(
+    updatedProject ? updatedProject.thumbnail : null
+  );
   const [images, setImages] = useState<File[] | IProjectImagesType[] | null>(
-    null
+    updatedProject ? updatedProject.ImagesList : null
   );
   const [tags, setTags] = useState<string[] | []>([]);
   const [oneTag, setOneTag] = useState<string | null>(null);
@@ -67,8 +70,8 @@ function ProjectForm() {
         {isOpen && (
           <form
             onSubmit={handleSubmit(async () => {
-              const formData = new FormData();
 
+              const formData = new FormData();
               if (isUpdating && updatedProject) {
                 const { title, description, sourceUrl } = getValues();
                 formData.append("title", title);
@@ -96,14 +99,13 @@ function ProjectForm() {
                   }
                 }
               }
+              console.log(formData)
 
               try {
                 const response = await fetch(
-                  `${URL_SERVER}/project/${
-                    isUpdating ? updatedProject?.id : ""
-                  }`,
+                  `${URL_SERVER}/project`,
                   {
-                    method: isUpdating ? "PUT" : "POST",
+                    method: "POST",
                     headers: {
                       Authorization: `Bearer ${token}`,
                     },
@@ -121,7 +123,7 @@ function ProjectForm() {
 
                 toast.success(data.message);
 
-                return navigate(0);
+                return data;
               } catch (err) {
                 console.log((err as Error).message);
                 toast.error((err as Error).message);
@@ -139,7 +141,7 @@ function ProjectForm() {
           >
             <Card className="w-full">
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {updatedProject?.thumbnail !== "" || thumbnail ? (
+                {thumbnail ? (
                   <div
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
@@ -147,13 +149,13 @@ function ProjectForm() {
                     <img
                       className="w-30 h-30 object-cover rounded-2xl"
                       src={
-                        thumbnail
-                          ? URL.createObjectURL(thumbnail as File)
-                          : updatedProject
-                          ? (updatedProject.thumbnail as string)
+                        typeof thumbnail === "string"
+                          ? thumbnail
+                          : typeof thumbnail === "object"
+                          ? URL.createObjectURL(thumbnail!)
                           : ""
                       }
-                      alt="compnay logo image"
+                      alt="company logo image"
                     />
                     {!isSubmitting && (
                       <Button
@@ -190,45 +192,65 @@ function ProjectForm() {
             </Card>
             <Card className="w-full">
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {updatedProject ? (
+                {images !== null ? (
                   <div className="flex flex-wrap items-start justify-center gap-4 p-4">
-                    {updatedProject.ImagesList?.map((img) => {
-                      return (
-                        <div
-                          key={img.id}
-                          style={{ borderColor: activeTheme.borderColor }}
-                          className="relative w-30 h-30 rounded-2xl border p-2 flex items-center justify-center"
-                        >
-                          <img
-                            className="w-25  h-25  lg:w-full lg:h-full object-cover rounded-2xl"
-                            src={img && img.url}
-                            alt="compnay logo image"
-                          />
-                          {!isSubmitting && (
-                            <Button
-                              variant={"destructive"}
-                              type="button"
-                              className="cursor-pointer z-[50] hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
-                              // When filtering images during update
-                              onClick={() => {
-                                if (updatedProject) {
-                                  setUpdatedProject({
-                                    ...updatedProject,
-                                    ImagesList:
-                                      updatedProject.ImagesList.filter(
-                                        (filteredImg) =>
-                                          filteredImg.id !== img.id
-                                      ),
-                                  });
-                                }
-                              }}
-                            >
-                              <XIcon size={20} />
-                            </Button>
-                          )}
-                        </div>
-                      );
-                    })}
+                    <>
+                      {images?.map((img: IProjectImagesType | File, index) => {
+                        return (
+                          <div
+                            key={index}
+                            style={{ borderColor: activeTheme.borderColor }}
+                            className="relative w-30 h-30 rounded-2xl border p-2 flex items-center justify-center"
+                          >
+                            <img
+                              className="w-25  h-25  lg:w-full lg:h-full object-cover rounded-2xl"
+                              src={
+                                img instanceof File
+                                  ? URL.createObjectURL(img as File)
+                                  : ((img as IProjectImagesType).url as string)
+                              }
+                              alt="company logo image"
+                            />
+                            {!isSubmitting && (
+                              <Button
+                                variant={"destructive"}
+                                type="button"
+                                className="cursor-pointer z-[50] hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
+                                // When filtering images during update
+                                onClick={() => {
+                                  if (updatedProject) {
+                                    setUpdatedProject({
+                                      ...updatedProject,
+                                      ImagesList:
+                                        updatedProject.ImagesList.filter(
+                                          (filteredImg) =>
+                                            filteredImg.id !==
+                                            (img as IProjectImagesType).id
+                                        ),
+                                    });
+                                  } else {
+                                    const filteredImages = images.filter(
+                                      (filteredImg, innerIndex) => {
+                                        if (img instanceof File) {
+                                          return index !== innerIndex;
+                                        }
+                                        return (
+                                          (img as IProjectImagesType).id !==
+                                          (filteredImg as IProjectImagesType).id
+                                        );
+                                      }
+                                    );
+                                    setImages(filteredImages as File[] | IProjectImagesType[] | null);
+                                  }
+                                }}
+                              >
+                                <XIcon size={20} />
+                              </Button>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </>
                   </div>
                 ) : (
                   <UploadHere inputId="images" />
@@ -240,9 +262,11 @@ function ProjectForm() {
                   accept="image/*"
                   className="hidden"
                   multiple
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setImages(Array.from(e.target.files || []))
-                  }
+                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.files) {
+                      setImages([...e.target.files]);
+                    }
+                  }}
                 />
               </div>
             </Card>
@@ -370,7 +394,7 @@ function ProjectForm() {
                   borderColor: activeTheme.borderColor,
                 }}
                 readOnly={isSubmitting}
-                className="p-2 border rounded-md"
+                className="w-full p-2 border rounded-md"
                 type="text"
                 id="sourceUrl"
                 placeholder="sourceUrl"
@@ -412,44 +436,49 @@ function ProjectForm() {
           </form>
         )}
       </div>
-      <Card
-        className="p-4 border"
-        style={{
-          color: activeTheme.primaryText,
-          backgroundColor: activeTheme.backgroundColor,
-          borderColor: activeTheme.borderColor,
-        }}
-      >
-        {pending ? (
-          <div className="w-full min-h-[400px] flex items-center justify-center">
-            <Loader size="md" />
-          </div>
-        ) : (
-          <>
-            {projects.length > 0 && (
-              <div className="flex flex-col justify-start items-start gap-1">
-                {projects.map((project) => {
-                  return (
-                    <ShowListCard
-                      id={project.id}
-                      key={project.id}
-                      title={project.title}
-                      image={project.thumbnail}
-                      sectionName={"project"}
-                      setUpdate={() => {
-                        setIsOpen(true);
-                        setUpdatedProject(project);
-                        setIsUpdating(true);
-                        console.log(project);
-                      }}
-                    />
-                  );
-                })}
+      <div>
+        <Outlet />
+      </div>
+      <>
+        {projects.length > 0 && (
+          <Card
+            className="p-4 border"
+            style={{
+              color: activeTheme.primaryText,
+              backgroundColor: activeTheme.backgroundColor,
+              borderColor: activeTheme.borderColor,
+            }}
+          >
+            {pending ? (
+              <div className="w-full min-h-[400px] flex items-center justify-center">
+                <Loader size="md" />
               </div>
+            ) : (
+              <>
+                <div className="flex flex-col justify-start items-start gap-1">
+                  {projects.map((project) => {
+                    return (
+                      <ShowListCard
+                        id={project.id}
+                        key={project.id}
+                        title={project.title}
+                        image={project.thumbnail}
+                        sectionName={"project"}
+                        setUpdate={() => {
+                          setIsOpen(true);
+                          setUpdatedProject(project);
+                          setIsUpdating(true);
+                          console.log(project);
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+              </>
             )}
-          </>
+          </Card>
         )}
-      </Card>
+      </>
     </>
   );
 }

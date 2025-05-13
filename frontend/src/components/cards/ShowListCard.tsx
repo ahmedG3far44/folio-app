@@ -5,6 +5,8 @@ import Loader from "../loader";
 import { useAuth } from "@/contexts/AuthProvider";
 import { deleteById } from "@/lib/handlers";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+// import { Link, PrefetchPageLinks } from "react-router-dom";
 // import { ISkillType } from "@/lib/types";
 // import { useNavigate } from "react-router-dom";
 
@@ -40,6 +42,7 @@ function ShowListCard({
         deleteRoute: sectionName,
       });
       toast.success(deleteResult.message);
+      // <PrefetchPageLinks page={`/${sectionName}`} />
       return;
     } catch (err) {
       console.log((err as Error).message);
@@ -121,7 +124,11 @@ function ShowListCard({
             disabled={pending}
             onClick={setUpdate}
           >
-            update
+            {sectionName === "project" ? (
+              <Link to={`update/${id}`}>update</Link>
+            ) : (
+              "update"
+            )}
           </Button>
         )}
         <Button

@@ -123,8 +123,5 @@ export const feedbackSchema = z.object({
     .string()
     .min(1, { message: "this field is required" })
     .max(100, { message: "too long input field" }),
-  feedback: z
-    .string()
-    .min(1, { message: "this field is required" })
-    .max(200, { message: "too long input field" }),
+  feedback: z.string().optional(),
 });

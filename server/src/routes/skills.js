@@ -170,7 +170,7 @@ router.put(
         console.log("Skill image updated successfully");
       }
 
-      await prisma.skills.update({
+      const skills = await prisma.skills.update({
         where: {
           id: skillId,
           usersId: user.id,
@@ -181,9 +181,7 @@ router.put(
         },
       });
 
-      return res
-        .status(200)
-        .json(new Exceptions(200, "Skill updated successfully"));
+      return res.status(200).json({ data: skills });
     } catch (err) {
       console.error("Error updating skill:", err);
       return res.status(500).json(new Exceptions(500, err.message));
@@ -228,9 +226,9 @@ router.delete("/skills/:skillId", verifyAccessToken, async (req, res) => {
       },
     });
 
-    return res
-      .status(200)
-      .json(new Exceptions(200, "skill deleted successful."));
+    console.log(skillDelete);
+
+    return res.status(200).json({ data: skillDelete });
   } catch (err) {
     return res.status(500).json(new Exceptions(500, err.message));
   }

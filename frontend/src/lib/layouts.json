@@ -2,17 +2,17 @@
   "heroLayout": {
     "parent": {
       "default": "w-full flex flex-col items-center justify-center gap-4",
-      "medium": "w-full flex items-center justify-start gap-4",
+      "medium": "flex items-center justify-center gap-10",
       "minimal": "flex flex-col items-center justify-center gap-4 ",
-      "wizzard": "bg-gradiant from-blue-500 to-purple-600 flex flex-col items-center justify-center gap-4 ",
-      "accent": "bg-gradiant from-blue-500 to-purple-600 flex  items-center justify-center gap-4 border"
+      "wizzard": "flex flex-col justify-center items-center gap-4",
+      "accent": "w-full flex items-center justify-center gap-10"
     },
     "child": {
-      "default": "w-full flex flex-col items-center justify-between gap-8",
-      "medium": "w-full flex items-center justify-start gap-4",
-      "minimal": "flex flex-col items-center justify-center gap-4 ",
-      "wizzard": "bg-gradiant from-blue-500 to-purple-600 flex flex-col items-center justify-center gap-4 ",
-      "accent": "bg-gradiant from-blue-500 to-purple-600 flex  items-center justify-center gap-4 "
+      "default": "w-full flex flex-col items-center justify-between gap-2",
+      "medium": "w-3/4 flex  items-center justify-center gap-10",
+      "minimal": "flex items-center justify-center gap-8 ",
+      "wizzard": "flex flex-row-reverse items-center justify-center gap-8",
+      "accent": "w-3/4 flex flex-row-reverse items-center justify-center gap-10"
     }
   },
   "expLayout": {
@@ -36,14 +36,14 @@
       "default": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row  gap-2 ",
       "medium": "grid grid-cols-1  lg:grid-cols-3 gap-2  ",
       "minimal": "grid grid-cols-1 lg:grid-cols-4 grid-flow-row  gap-2  ",
-      "wizzard": "grid grid-cols-1 lg:grid-cols-2 grid-flow-row  gap-2 ",
+      "wizzard": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-flow-row  gap-2 ",
       "accent": "grid grid-cols-1 lg:grid-cols-3 gap-2"
     },
     "child": {
-      "default": "w-[350px] flex flex-col items-center justify-between gap-4 rounded-md shadow-md",
+      "default": "flex itesm-start justify-start gap-4 rounded-md shadow-md",
       "medium": "w-[350px] flex flex-col justify-between items-center  gap-4 rounded-md",
       "minimal": "flex flex-col items-center justify-center gap-4 ",
-      "wizzard": "w-[450px] h-[400px] grid grid-rows-2 grid-flow-row gap-4 rounded-md",
+      "wizzard": "w-full grid grid-flow-row gap-4 rounded-md",
       "accent": "flex flex-col  items-center justify-center gap-4  rounded-xl"
     }
   },

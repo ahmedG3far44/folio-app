@@ -1,6 +1,10 @@
+import { useTheme } from "@/contexts/ThemeProvider";
+
 function Loader({ size }: { size?: string | "sm" | "md" | "lg" | "xl" }) {
+  const { activeTheme } = useTheme();
   return (
     <div
+      style={{ borderColor: activeTheme.secondaryText }}
       className={`${
         size === "sm"
           ? "w-4 h-4"
@@ -11,7 +15,7 @@ function Loader({ size }: { size?: string | "sm" | "md" | "lg" | "xl" }) {
           : size === "xl"
           ? "w-20 h-20"
           : "w-4 h-4"
-      }  rounded-full bg-transparent border-2 border-zinc-600 border-r-transparent animate-spin`}
+      } rounded-full animate-spin border-r border-t bg-transparent`}
     ></div>
   );
 }

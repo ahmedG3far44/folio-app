@@ -27,9 +27,11 @@ function SkillForm() {
   const navigate = useNavigate();
   const { activeTheme } = useTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [isUpdating, setIsUdating] = useState<boolean>(false);
-  const [file, setFile] = useState<File | null>(null);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [updateSkill, setUpdateSkill] = useState<ISkillType | null>(null);
+  const [file, setFile] = useState<File | string | null>(
+    updateSkill ? updateSkill.skillLogo : null
+  );
 
   const {
     register,
@@ -87,14 +89,14 @@ function SkillForm() {
                 setIsOpen(false);
                 setFile(null);
                 reset();
-                setIsUdating(false);
+                setIsUpdating(false);
               }
             })}
             className="w-full p-2 flex flex-col gap-4"
           >
             <Card className="w-full">
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {updateSkill || file ? (
+                {file ? (
                   <div
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
@@ -102,11 +104,13 @@ function SkillForm() {
                     <img
                       className="w-30 h-30 object-cover rounded-2xl"
                       src={
-                        file
-                          ? URL.createObjectURL(file)
-                          : updateSkill?.skillLogo
+                        typeof file === "string"
+                          ? file
+                          : typeof file === "object"
+                          ? URL.createObjectURL(file!)
+                          : ""
                       }
-                      alt="compnay logo image"
+                      alt="company logo image"
                     />
                     {!isSubmitting && (
                       <Button
@@ -114,12 +118,13 @@ function SkillForm() {
                         variant={"destructive"}
                         className="cursor-pointer hover:opacity-70 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
                         onClick={() => {
-                          if (updateSkill)
+                          if (updateSkill) {
+                            setFile(null);
                             setUpdateSkill({
                               ...updateSkill,
                               skillLogo: "",
                             });
-                          setFile(null);
+                          }
                         }}
                       >
                         <XIcon size={20} />
@@ -141,7 +146,7 @@ function SkillForm() {
                 />
               </div>
             </Card>
-            <Card className="p-4">
+            <Card className="w-full p-4">
               <input
                 style={{
                   backgroundColor: activeTheme.backgroundColor,
@@ -149,7 +154,7 @@ function SkillForm() {
                   borderColor: activeTheme.borderColor,
                 }}
                 readOnly={isSubmitting}
-                className="p-2 border rounded-md"
+                className="w-full p-2 border rounded-md"
                 type="text"
                 id="skillName"
                 placeholder="skillName"
@@ -195,7 +200,7 @@ function SkillForm() {
                       setUpdate={() => {
                         setUpdateSkill({ ...skill });
                         setIsOpen(true);
-                        setIsUdating(true);
+                        setIsUpdating(true);
                         console.log(updateSkill);
                       }}
                     />

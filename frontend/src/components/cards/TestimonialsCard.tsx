@@ -8,10 +8,16 @@ function TestimonialsCard({
   position,
   feedback,
   video,
+  createdAt,
 }: ITestimonialType) {
   const { activeTheme } = useTheme();
-  // const date = new Date(createdAt);
-  
+  const date = new Date(createdAt);
+  // const options = {
+  //   weekday: "long",
+  //   year: "numeric",
+  //   month: "long",
+  //   day: "numeric",
+  // };
   return (
     <Card
       className="p-4 flex flex-col items-start justify-start gap-2"
@@ -32,25 +38,47 @@ function TestimonialsCard({
         </div>
         <div className="flex flex-col items-start justify-start ">
           <h2 className="font-bold">{name}</h2>
-          <h3 style={{ color: activeTheme.secondaryText }} className="text-[12px] ">
+          <h3
+            style={{ color: activeTheme.secondaryText }}
+            className="text-[12px] "
+          >
             {position}
           </h3>
+          <span
+            style={{ color: activeTheme.secondaryText }}
+            className="text-[12px]"
+          >
+            {date.toLocaleDateString(undefined, {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </span>
         </div>
       </div>
-      <div className="w-full">
-        {feedback && (
-          <p className="text-sm line-clamp-4" style={{ color: activeTheme.secondaryText }}>
+      <div className="w-full mx-auto">
+        {feedback ? (
+          <p
+            className="text-sm line-clamp-4"
+            style={{ color: activeTheme.secondaryText }}
+          >
             {feedback}
           </p>
-        )}
-        {video && (
-          <video
-            className="w-full h-full rounded-xl"
-            src={video}
-            autoPlay
-            muted
-            loop
-          />
+        ) : (
+          <div>
+            <video
+              width={200}
+              height={200}
+              className="w-full h-full rounded-xl"
+              autoPlay
+              muted
+              loop
+              controls
+            >
+              <source src={video} type="video/mp4" />
+            </video>
+          </div>
         )}
       </div>
     </Card>

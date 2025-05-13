@@ -49,6 +49,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
             "can't get themes list, please check your connection!!"
           );
         const themes = await response.json();
+        
         const { data } = themes;
 
         setThemesList([...data]);
@@ -62,7 +63,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
     getThemesList();
   }, [user]);
   const switchTheme = ({ newActiveTheme }: { newActiveTheme: IThemeType }) => {
-    console.log(newActiveTheme);
+    // console.log(newActiveTheme);
     localStorage.setItem("theme", JSON.stringify(newActiveTheme));
     setActiveTheme({ ...newActiveTheme });
   };

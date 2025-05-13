@@ -143,8 +143,9 @@ html {
   animation: fade 1s ease-in-out forwards;
 }
 .animate-fade-reverse {
-  animation: fade-reverse 1s ease-in-out forwards ;
+  animation: fade-reverse 1s ease-in-out forwards;
 }
+
 
 @keyframes scale {
   0% {

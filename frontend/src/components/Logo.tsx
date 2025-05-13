@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import favicon from "@/assets/favicon.svg";
+import favicon from "@/assets/favicon-1.svg";
 
 function Logo() {
   return (

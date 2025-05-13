@@ -5,7 +5,7 @@ import s3Client from "../s3/s3Client.js";
 
 import { upload } from "./skills.js";
 import { uploadToS3 } from "./projects.js";
-import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { feedbackSchema } from "../utils/schemas.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
@@ -45,8 +45,18 @@ router.post(
         clientVideoKey = `${crypto.randomUUID()}`;
         console.log(clientVideoKey);
         const videoFile = video[0];
-        const result = await uploadToS3(videoFile, clientVideoKey);
-        console.log(result);
+        try {
+          await s3Client.send(
+            new PutObjectCommand({
+              Bucket: BUCKET_NAME,
+              Key: clientVideoKey,
+              Body: videoFile.buffer,
+              ContentType: videoFile.mimetyep,
+            })
+          );
+        } catch (err) {
+          res.status(500).json(new Exceptions(500, err.message));
+        }
       }
 
       clientProfileKey = `${crypto.randomUUID()}`;

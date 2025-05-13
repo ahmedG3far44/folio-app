@@ -42,7 +42,7 @@ function ProjectCard({
             : "1"
         }`}
     >
-      <div className="flex-1 rounded-md overflow-hidden">
+      <div className="flex-1 min-w-1/2 rounded-md overflow-hidden">
         <img
           property="true"
           loading="lazy"

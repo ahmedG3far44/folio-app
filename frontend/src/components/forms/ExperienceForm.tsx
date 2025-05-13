@@ -11,7 +11,7 @@ import { XIcon } from "lucide-react";
 
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { IExperienceType } from "@/lib/types";
 
 import Loader from "../loader";
@@ -24,7 +24,7 @@ import ShowListCard from "../cards/ShowListCard";
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ExperienceForm() {
-  const router = useNavigate();
+  // const router = useNavigate();
   const { token } = useAuth();
   const { activeTheme } = useTheme();
   const { experiences, pending } = useUser();
@@ -33,7 +33,9 @@ function ExperienceForm() {
     useState<IExperienceType | null>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File | string | null>(
+    updateThisExperience ? updateThisExperience.cLogo : null
+  );
 
   const {
     register,
@@ -90,7 +92,7 @@ function ExperienceForm() {
 
                 reset();
                 toast.success(`a new experience was success!!`);
-                return router(0);
+                return data;
               } catch (err) {
                 console.log((err as Error).message);
                 toast.error((err as Error).message);
@@ -112,7 +114,7 @@ function ExperienceForm() {
               className="w-full"
             >
               <div className="w-full flex items-center justify-center gap-4 flex-col">
-                {updateThisExperience?.cLogo !== "" || file ? (
+                {file ? (
                   <div
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
@@ -120,13 +122,13 @@ function ExperienceForm() {
                     <img
                       className="w-30 h-30 object-cover rounded-2xl"
                       src={
-                        file
-                          ? URL.createObjectURL(file)
-                          : updateThisExperience !== null
-                          ? updateThisExperience.cLogo
+                        typeof file === "string"
+                          ? file
+                          : typeof file === "object"
+                          ? URL.createObjectURL(file!)
                           : ""
                       }
-                      alt="compnay logo image"
+                      alt="company logo image"
                     />
                     {!isSubmitting && (
                       <Button
@@ -134,12 +136,12 @@ function ExperienceForm() {
                         variant={"destructive"}
                         className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
                         onClick={() => {
-                          if (updateThisExperience)
+                          if (updateThisExperience) {
+                            setFile(null);
                             setUpdateThisExperience({
                               ...updateThisExperience,
-                              cLogo: "",
                             });
-                          setFile(null);
+                          }
                         }}
                       >
                         <XIcon size={20} />
@@ -199,7 +201,7 @@ function ExperienceForm() {
                 defaultValue={
                   updateThisExperience ? updateThisExperience.position : ""
                 }
-                className="p-2 border rounded-md"
+                className="w-full p-2 border rounded-md"
                 type="text"
                 id="position"
                 placeholder="position"
@@ -217,7 +219,7 @@ function ExperienceForm() {
                   borderColor: activeTheme.borderColor,
                 }}
                 readOnly={isSubmitting}
-                className="p-2 border rounded-md"
+                className="w-full p-2 border rounded-md"
                 type="text"
                 id="duration"
                 defaultValue={
@@ -258,7 +260,7 @@ function ExperienceForm() {
                   borderColor: activeTheme.borderColor,
                 }}
                 readOnly={isSubmitting}
-                className="p-2 border rounded-md"
+                className="w-full p-2 border rounded-md"
                 type="text"
                 id="location"
                 placeholder="location"
@@ -283,16 +285,15 @@ function ExperienceForm() {
           </form>
         )}
       </div>
-      <>
-        {pending ? (
-          <div className="w-full min-h-[400px] flex items-center justify-center">
-            <Loader size="md" />
-          </div>
-        ) : (
-          <>
-            {experiences.length > 0 && (
+      {experiences.length > 0 && (
+        <>
+          {pending ? (
+            <div className="w-full min-h-[400px] flex items-center justify-center">
+              <Loader size="md" />
+            </div>
+          ) : (
+            <>
               <Card
-                
                 style={{
                   color: activeTheme.primaryText,
                   backgroundColor: activeTheme.backgroundColor,
@@ -319,10 +320,10 @@ function ExperienceForm() {
                   );
                 })}
               </Card>
-            )}
-          </>
-        )}
-      </>
+            </>
+          )}
+        </>
+      )}
     </>
   );
 }

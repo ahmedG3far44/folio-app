@@ -10,7 +10,11 @@ import getImageKey from "../utils/getImageKey.js";
 
 import { upload } from "./skills.js";
 import { projectSchema } from "../utils/schemas.js";
-import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import {
+  PutObjectCommand,
+  DeleteObjectCommand,
+  EncryptionFilterSensitiveLog,
+} from "@aws-sdk/client-s3";
 
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
@@ -26,9 +30,10 @@ router.post(
     try {
       const user = req.user;
       const payload = req.body;
-      const projectImages = req.files;
+      const images = req.files;
       let keysArray = [];
 
+      console.log(user);
       console.log(payload);
 
       const projectNumbers = await prisma.projects.count({
@@ -50,28 +55,50 @@ router.post(
           .json(new Exceptions(400, "not valid project data."));
       }
 
-      console.log(projectImages);
+      console.log(images);
 
       console.log(validProjectData.data);
 
       const { title, description, sourceUrl, tags } = validProjectData?.data;
-
+      console.log(title, description, sourceUrl, tags);
       let thumbnailKey;
       let imageKey;
 
-      projectImages.map(async (image, index) => {
+      // images?.map(async (image) => {
+      //   if (image.fieldname === "image") {
+      //     imageKey = `${crypto.randomUUID()}`;
+      //     keysArray.push(imageKey);
+      //   } else {
+      //     thumbnailKey = `thumbnail-${crypto.randomUUID()}`;
+      //   }
+      //   await uploadToS3(
+      //     image,
+      //     image.fieldname === "image" ? imageKey : thumbnailKey
+      //   );
+      // });
+      for (const image of images) {
         if (image.fieldname === "image") {
-          imageKey = `original-${index + 1}-${crypto.randomUUID()}`;
+          imageKey = `${crypto.randomUUID()}`;
           keysArray.push(imageKey);
         } else {
-          thumbnailKey = `thumb-${crypto.randomUUID()}`;
+          thumbnailKey = `${crypto.randomUUID()}`;
         }
-        await uploadToS3(
-          image,
-          image.fieldname === "image" ? imageKey : thumbnailKey
-        );
-      });
 
+        try {
+          await s3Client.send(
+            new PutObjectCommand({
+              Bucket: BUCKET_NAME,
+              Key: image.fieldname === "image" ? imageKey : thumbnailKey,
+              Body: image.buffer,
+              ContentType: image.mimetype,
+            })
+          );
+        } catch (err) {
+          res
+            .status(500)
+            .json({ erro: "uploadin error", message: err.message });
+        }
+      }
       await prisma.projects.create({
         data: {
           title,
@@ -151,15 +178,15 @@ router.get("/project", verifyAccessToken, async (req, res) => {
   }
 });
 
-router.get("/project/:userId", async (req, res) => {
+router.get("/project/:id", async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { id } = req.params;
 
-    if (!userId) throw new Error("user not found!!");
+    if (!id) throw new Error("project id not valid !!");
 
-    const projectsList = await prisma.projects.findMany({
+    const project = await prisma.projects.findUnique({
       where: {
-        usersId: userId,
+        id,
       },
       select: {
         id: true,
@@ -184,9 +211,9 @@ router.get("/project/:userId", async (req, res) => {
       },
     });
 
-    if (!projectsList) throw new Error("not found projects!!");
+    if (!project) throw new Error("not found projects!!");
 
-    res.status(200).json(projectsList);
+    res.status(200).json(project);
   } catch (error) {
     res.status(500).json(new Exceptions(500, error.message));
   }
@@ -369,6 +396,7 @@ export async function uploadToS3(image, path) {
     Body: result,
     ContentType: image.mimetype,
   };
+
   try {
     const command = new PutObjectCommand(params);
 

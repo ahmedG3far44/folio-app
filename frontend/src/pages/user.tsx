@@ -1,29 +1,24 @@
-// import Footer from "@/components/Footer";
-import ErrorMessage from "@/components/ErrorMessage";
+import { useAuth } from "@/contexts/AuthProvider";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { useUser } from "@/contexts/UserProvider";
+import { useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Loader from "@/components/loader";
-// import NavigationMenu from "@/components/NavigationMenu";
-import ExperienceSection from "@/components/sections/ExperienceSection";
 import Hero from "@/components/sections/Hero";
+import ErrorMessage from "@/components/ErrorMessage";
+import ExperienceSection from "@/components/sections/ExperienceSection";
 import ProjectSection from "@/components/sections/ProjectSection";
 import SkillSection from "@/components/sections/SkillSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
-import { useAuth } from "@/contexts/AuthProvider";
-import { useTheme } from "@/contexts/ThemeProvider";
-// import { useTheme } from "@/contexts/ThemeProvider";
-// import { useAuth } from "@/contexts/AuthProvider";
-import { useUser } from "@/contexts/UserProvider";
-import { useEffect, useState } from "react";
-// import { useEffect } from "react";
-import { Navigate, useParams } from "react-router-dom";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function UserPage() {
   const { isAdmin } = useAuth();
   const { userId } = useParams();
-  // const { userId } = params;
   const { activeTheme } = useTheme();
   const {
     bio,
@@ -96,7 +91,7 @@ function UserPage() {
           <>
             {pending ? (
               <div className="min-h-screen w-full flex items-center justify-center">
-                <Loader size="md" />
+                <Loader size="lg" />
               </div>
             ) : (
               <div className="w-full flex flex-col items-center justify-around gap-20 p-4 lg:p-8">

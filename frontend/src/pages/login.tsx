@@ -73,11 +73,11 @@ function LoginPage() {
       }}
       className="w-full min-h-screen flex items-center justify-center"
     >
-      <Card className="p-8">
-        <CardTitle className="flex items-center justify-center flex-col gap-2 my-2">
+      <Card className="px-4 py-8">
+        <CardTitle className="flex items-center justify-center flex-col gap-2 my-8">
           <Logo />
-          <h1 className="text-2xl font-semibold text-center">
-            login to your account
+          <h1 className="text-lg font-bold">
+            Welcome back, login to your account
           </h1>
         </CardTitle>
         <form
@@ -102,7 +102,7 @@ function LoginPage() {
               color: activeTheme.primaryText,
               borderColor: activeTheme.borderColor,
             }}
-            className="w-full flex items-center justify-between  rounded-md"
+            className="w-full flex items-center justify-between  rounded-md relative"
           >
             <input
               style={{
@@ -110,7 +110,7 @@ function LoginPage() {
                 color: activeTheme.primaryText,
                 borderColor: activeTheme.borderColor,
               }}
-              className="w-full h-full  p-2 rounded-tl-md rounded-bl-md"
+              className="w-full h-full  p-2 rounded-md relative"
               onChange={(e) =>
                 setUser({ ...loginUser, password: e.target.value })
               }
@@ -119,11 +119,9 @@ function LoginPage() {
             />
             <span
               style={{
-                backgroundColor: activeTheme.backgroundColor,
                 color: activeTheme.primaryText,
-                borderColor: activeTheme.borderColor,
               }}
-              className="hover:opacity-75 duration-150 cursor-pointer p-2 rounded-tr-md rounded-br-md"
+              className="absolute right-0  hover:opacity-75 duration-150 cursor-pointer rounded-r-md p-2 "
               onClick={() => setShowPassword(!showPassword)}
             >
               {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -134,13 +132,18 @@ function LoginPage() {
             Login
           </SubmitButton>
         </form>
-        <CardFooter className="w-full">
+        <div className="w-full flex items-center justify-center my-4">
+          <div className="w-full h-[1px] bg-zinc-700"></div>
+          <p className="text-sm text-zinc-500 px-4">Or</p>
+          <div className="w-full h-[1px] bg-zinc-700"></div>
+        </div>
+        <CardFooter className="w-full self-center text-center my-4">
           <div
             style={{ color: activeTheme.secondaryText }}
-            className="w-full flex items-center justify-start gap-2"
+            className="w-full flex items-center justify-center gap-2"
           >
             <p
-              className="text-sm text-start w-full 
+              className="text-sm w-full 
           "
             >
               I don't have an account yet

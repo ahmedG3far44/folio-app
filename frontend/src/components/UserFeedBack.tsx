@@ -41,7 +41,7 @@ function UserFeedBack() {
     >
       {isFeedBackAdded ? (
         <Card
-          className="flex flex-col items-center border shadow-md justify-center gap-2"
+          className="flex flex-col items-center border shadow-md justify-center gap-1"
           style={{
             color: activeTheme.primaryText,
             backgroundColor: activeTheme.backgroundColor,
@@ -73,16 +73,19 @@ function UserFeedBack() {
             onSubmit={handleSubmit(async () => {
               try {
                 const values = getValues();
-                const { name, position, feedback } = values;
                 const formData = new FormData();
+                // Object.keys(values).forEach(([key, values]) => {
+                //   formData.append(key, values);
+                // });
+                const { name, position } = values;
                 formData.append("profile", profile!);
                 formData.append("name", name);
                 formData.append("position", position);
-                if (video) {
-                  formData.append("video", video);
-                } else {
-                  formData.append("feedback", feedback);
+                if (!video) {
+                  formData.append("feedback", values.feedback!);
                 }
+                formData.append("video", video!);
+
                 const response = await fetch(
                   `${URL_SERVER}/feedback/${userId}`,
                   {
@@ -235,13 +238,15 @@ function UserFeedBack() {
                         className="w-full h-full rounded-2xl"
                         src={URL.createObjectURL(video)}
                       ></video>
-                      <Button
-                        onClick={() => setFeedBackVideo(null)}
-                        className="absolute -top-2 -right-2"
-                        type="button"
-                      >
-                        <XIcon size={20}></XIcon>
-                      </Button>
+                      {!isSubmitting && (
+                        <Button
+                          onClick={() => setFeedBackVideo(null)}
+                          className="absolute -top-2 -right-2"
+                          type="button"
+                        >
+                          <XIcon size={20}></XIcon>
+                        </Button>
+                      )}
                     </div>
                   ) : (
                     <div className="w-full flex items-center justify-center">
@@ -249,7 +254,7 @@ function UserFeedBack() {
                       <input
                         id="feedbackVideo"
                         type="file"
-                        accept="video/*"
+                        accept="video/mp4"
                         className="hidden"
                         readOnly={isSubmitting}
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>

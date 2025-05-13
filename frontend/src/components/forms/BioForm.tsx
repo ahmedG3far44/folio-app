@@ -100,7 +100,7 @@ function BioForm() {
                 }}
                 defaultValue={bio.jobTitle}
                 readOnly={isSubmitting}
-                className="p-2  w-full rounded-md"
+                className="w-full p-2 rounded-md"
                 type="text"
                 id="jobTitle"
                 placeholder="Job title"
@@ -112,14 +112,14 @@ function BioForm() {
                 />
               )}
               <input
-              style={{
-                backgroundColor: activeTheme.backgroundColor,
-                color: activeTheme.primaryText,
-                borderColor: activeTheme.borderColor,
-              }}
+                style={{
+                  backgroundColor: activeTheme.backgroundColor,
+                  color: activeTheme.primaryText,
+                  borderColor: activeTheme.borderColor,
+                }}
                 defaultValue={bio.bioName}
                 readOnly={isSubmitting}
-                className="p-2  rounded-md"
+                className="w-full p-2 rounded-md"
                 type="text"
                 id="name"
                 placeholder="name"
@@ -138,7 +138,7 @@ function BioForm() {
                 }}
                 defaultValue={bio.bio}
                 readOnly={isSubmitting}
-                className="w-full p-2  rounded-md"
+                className="w-full p-2 rounded-md"
                 id="bio"
                 placeholder="bio"
                 {...register("summary")}
@@ -170,11 +170,7 @@ function BioForm() {
             {!isContactOpen ? <UserPen size={20} /> : "cancel"}
           </Button>
         </div>
-        {isContactOpen && (
-          
-            <ContactForm />
-          
-        )}
+        {isContactOpen && <ContactForm />}
       </div>
       <div className="w-full p-4 flex flex-col justify-start items-center gap-4">
         <div className="flex justify-between items-center w-full ">
