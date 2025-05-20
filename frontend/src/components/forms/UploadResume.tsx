@@ -53,7 +53,6 @@ function UploadResume() {
       });
       return data;
     } catch (err) {
-      console.log((err as Error).message);
       setUploadState({ ...uploadState, error: (err as Error).message });
       return;
     } finally {

@@ -67,7 +67,22 @@ function ProjectDetails() {
               <Undo2 size={20} />
             </Button>
 
-            <div className="w-full flex flex-col items-center justify-center lg:w-[60%]">
+            <div className="w-full flex flex-col items-center justify-center lg:w-[60%] relative">
+              <Card
+                style={{
+                  color: activeTheme.secondaryText,
+                  backgroundColor: activeTheme.cardColor,
+                  border: `1px solid ${activeTheme.borderColor}`,
+                }}
+                className="text-start text-sm  my-8 p-4 rounded-2xl"
+              >
+                <p
+                  className="editor-content"
+                  dangerouslySetInnerHTML={{
+                    __html: project?.description as string,
+                  }}
+                />
+              </Card>
               {project?.ImagesList ? (
                 <div className="w-full flex flex-col items-center justify-center gap-4">
                   {project?.ImagesList.map((image) => {
@@ -146,14 +161,7 @@ function ProjectDetails() {
                   </div>
                 )}
               </div>
-              <div
-                style={{
-                  color: activeTheme.secondaryText,
-                }}
-                className="text-start text-sm"
-              >
-                <p>{project?.description}</p>
-              </div>
+
               {project?.source && (
                 <Link
                   className="w-full cursor-pointer "

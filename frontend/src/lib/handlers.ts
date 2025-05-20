@@ -167,7 +167,7 @@ export const deleteById = async ({
     }
     const data = await response.json();
     console.log(data);
-    return { data: data.type, message: data.message };
+    return data;
   } catch (err) {
     console.log((err as Error).message);
     return { data: "error", message: (err as Error).message };
@@ -191,7 +191,7 @@ export const updateById = async ({
     const formData = new FormData();
     // switch (updatedRoute) {
     //   case "experiences":
-       
+
     //     break;
     //   case "project":
     //     break;

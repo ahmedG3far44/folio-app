@@ -29,7 +29,6 @@ function ContactForm() {
   });
   return (
     <form
-      
       className="w-full flex flex-col justify-start items-start gap-2"
       onSubmit={handleSubmit(async () => {
         const values = getValues();
@@ -54,13 +53,10 @@ function ContactForm() {
           if (!response.ok) {
             throw new Error("can't update contacts info!!");
           }
-          //   const data = await response.json();
-          //   console.log(data);
           reset();
           toast.success("contact inof was updated success");
           return;
         } catch (err) {
-          console.log((err as Error).message);
           toast.error((err as Error).message);
           return;
         }
@@ -74,11 +70,11 @@ function ContactForm() {
         className={"w-full p-4"}
       >
         <input
-            style={{
-              backgroundColor: activeTheme.backgroundColor,
-              color: activeTheme.primaryText,
-              borderColor: activeTheme.borderColor,
-            }}
+          style={{
+            backgroundColor: activeTheme.backgroundColor,
+            color: activeTheme.primaryText,
+            borderColor: activeTheme.borderColor,
+          }}
           {...register("github")}
           defaultValue={contacts.github}
           readOnly={isSubmitting}
@@ -90,7 +86,7 @@ function ContactForm() {
           <ErrorMessage message={errors.github.message?.toString() as string} />
         )}
         <input
-           style={{
+          style={{
             backgroundColor: activeTheme.backgroundColor,
             color: activeTheme.primaryText,
             borderColor: activeTheme.borderColor,
@@ -108,7 +104,7 @@ function ContactForm() {
           />
         )}
         <input
-           style={{
+          style={{
             backgroundColor: activeTheme.backgroundColor,
             color: activeTheme.primaryText,
             borderColor: activeTheme.borderColor,
@@ -126,7 +122,7 @@ function ContactForm() {
           />
         )}
         <input
-           style={{
+          style={{
             backgroundColor: activeTheme.backgroundColor,
             color: activeTheme.primaryText,
             borderColor: activeTheme.borderColor,

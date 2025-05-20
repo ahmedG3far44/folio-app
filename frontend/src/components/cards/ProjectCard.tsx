@@ -62,9 +62,8 @@ function ProjectCard({
         <p
           style={{ color: activeTheme.secondaryText }}
           className="line-clamp-3 text-sm"
-        >
-          {description}
-        </p>
+          dangerouslySetInnerHTML={{ __html: description }}
+        />
       </div>
     </div>
   );

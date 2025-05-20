@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useTheme } from "@/contexts/ThemeProvider";
+
 import ErrorMessage from "@/components/ErrorMessage";
 import Logo from "@/components/Logo";
 
@@ -17,7 +17,6 @@ const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 function SignUpPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const { activeTheme } = useTheme();
   const [profile, setProfile] = useState<File | null>(null);
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -79,14 +78,8 @@ function SignUpPage() {
     }
   };
   return (
-    <div
-      style={{
-        backgroundColor: activeTheme.backgroundColor,
-        color: activeTheme.primaryText,
-      }}
-      className="w-full min-h-screen flex items-center justify-center"
-    >
-      <Card className="px-4 py-8 ">
+    <div className="w-full min-h-screen flex items-center justify-center bg-zinc-950 ">
+      <Card className="px-4 py-8 bg-zinc-700 text-white">
         <CardTitle className="flex items-center justify-center flex-col gap-2 my-8">
           <Logo />
           <h1 className="text-lg font-bold text-start">
@@ -99,10 +92,7 @@ function SignUpPage() {
         >
           <div className="self-center">
             {profile ? (
-              <div
-                style={{ borderColor: activeTheme.borderColor }}
-                className="w-20 h-20 rounded-full  flex items-center justify-center border-2 relative"
-              >
+              <div className="w-20 h-20 rounded-full  flex items-center justify-center border-2 relative">
                 <img
                   loading="lazy"
                   className="w-full h-full rounded-full object-cover"
@@ -123,12 +113,7 @@ function SignUpPage() {
             ) : (
               <>
                 <label
-                  style={{
-                    backgroundColor: activeTheme.backgroundColor,
-                    color: activeTheme.primaryText,
-                    borderColor: activeTheme.borderColor,
-                  }}
-                  className="w-20 h-20 rounded-full   border border-dashed   flex items-center justify-center cursor-pointer hover:opacity-70 duration-150"
+                  className="w-20 h-20 rounded-full bg-zinc-950   border border-dashed   flex items-center justify-center cursor-pointer hover:opacity-70 duration-150"
                   htmlFor="profile"
                 >
                   <LucideUser size={40} />
@@ -148,12 +133,7 @@ function SignUpPage() {
 
           {error && <ErrorMessage className={"text-center"} message={error} />}
           <input
-            style={{
-              backgroundColor: activeTheme.backgroundColor,
-              color: activeTheme.primaryText,
-              borderColor: activeTheme.borderColor,
-            }}
-            className="w-full p-2 rounded-md "
+            className="w-full p-2 rounded-md  border border-zinc-800 bg-zinc-950  "
             onChange={(e) =>
               setRegisterUser({ ...registerUser, name: e.target.value })
             }
@@ -162,33 +142,16 @@ function SignUpPage() {
           />
 
           <input
-            style={{
-              backgroundColor: activeTheme.backgroundColor,
-              color: activeTheme.primaryText,
-              borderColor: activeTheme.borderColor,
-            }}
-            className="w-full p-2 rounded-md "
+            className="w-full p-2 rounded-md  border border-zinc-800 bg-zinc-950  "
             onChange={(e) =>
               setRegisterUser({ ...registerUser, email: e.target.value })
             }
             type="email"
             placeholder="email"
           />
-          <div
-            style={{
-              backgroundColor: activeTheme.backgroundColor,
-              color: activeTheme.primaryText,
-              borderColor: activeTheme.borderColor,
-            }}
-            className="w-full flex items-center justify-between  rounded-md relative"
-          >
+          <div className="w-full flex items-center justify-between  rounded-md relative">
             <input
-              style={{
-                backgroundColor: activeTheme.backgroundColor,
-                color: activeTheme.primaryText,
-                borderColor: activeTheme.borderColor,
-              }}
-              className="w-full h-full p-2 rounded-md relative"
+              className="w-full h-full p-2 rounded-md relative border border-zinc-800 bg-zinc-950  "
               onChange={(e) =>
                 setRegisterUser({ ...registerUser, password: e.target.value })
               }
@@ -196,9 +159,6 @@ function SignUpPage() {
               placeholder="password"
             />
             <span
-              style={{
-                color: activeTheme.primaryText,
-              }}
               className="hover:opacity-80 duration-150 cursor-pointer p-2 rounded-md  absolute right-0"
               onClick={() => setShowPassword(!showPassword)}
             >
@@ -213,10 +173,7 @@ function SignUpPage() {
             <p className="text-sm text-zinc-500 px-4">Or</p>
             <div className="w-full h-[1px] bg-zinc-700"></div>
           </div>
-          <div
-            style={{ color: activeTheme.secondaryText }}
-            className="p-2 text-sm text-center self-center"
-          >
+          <div className="p-2 text-sm text-center self-center">
             <p>
               I have already account{" "}
               <Link

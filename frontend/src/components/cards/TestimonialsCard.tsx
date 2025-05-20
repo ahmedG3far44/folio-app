@@ -12,12 +12,6 @@ function TestimonialsCard({
 }: ITestimonialType) {
   const { activeTheme } = useTheme();
   const date = new Date(createdAt);
-  // const options = {
-  //   weekday: "long",
-  //   year: "numeric",
-  //   month: "long",
-  //   day: "numeric",
-  // };
   return (
     <Card
       className="p-4 flex flex-col items-start justify-start gap-2"

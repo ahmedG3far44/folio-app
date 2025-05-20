@@ -7,6 +7,7 @@ import { ChevronRight, Menu, XIcon } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import { useTheme } from "@/contexts/ThemeProvider";
 
+
 function ProtectedUserRoute() {
   const { isLogged } = useAuth();
   const { activeTheme } = useTheme();
@@ -63,6 +64,7 @@ function ProtectedUserRoute() {
           </span>
           <span>{activePathName}</span>
         </div>
+       
         <div
           style={{
             backgroundColor: activeTheme.backgroundColor,

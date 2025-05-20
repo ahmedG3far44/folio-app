@@ -18,25 +18,35 @@ import { useUser } from "@/contexts/UserProvider";
 import ShowListCard from "../cards/ShowListCard";
 import Loader from "../loader";
 import { IProjectImagesType, IProjectType } from "@/lib/types";
-import { Outlet } from "react-router-dom";
-// import { useNavigate } from "react-router-dom";
+import checkUploadedImages from "@/lib/checkUploadedImages";
+import Tiptap from "../Tiptap";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
+export type ProjectFormData = {
+  title: string;
+  sourceUrl: string;
+  description: string;
+  tags: string[];
+  thumbnail: File;
+  images: File[];
+};
 function ProjectForm() {
-  // const navigate = useNavigate();
   const { token } = useAuth();
   const { activeTheme } = useTheme();
-  const { projects, pending } = useUser();
+  const { projects, setProjects, pending } = useUser();
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [updatedProject, setUpdatedProject] = useState<IProjectType | null>(
     null
   );
 
+  const [description, setDescription] = useState<string>("");
+
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [thumbnail, setThumbnail] = useState<File | string | null>(
     updatedProject ? updatedProject.thumbnail : null
   );
+  const [error, setError] = useState<string | null>(null);
   const [images, setImages] = useState<File[] | IProjectImagesType[] | null>(
     updatedProject ? updatedProject.ImagesList : null
   );
@@ -58,6 +68,41 @@ function ProjectForm() {
       setOneTag(null);
     }
   };
+  const addNewProject = async (data: ProjectFormData) => {
+    const formData = new FormData();
+    const { title, sourceUrl, description, tags, thumbnail, images } = data;
+    formData.append("title", title);
+    formData.append("sourceUrl", sourceUrl);
+    formData.append("description", description);
+    formData.append("thumbnail", thumbnail);
+    tags.map((tag) => {
+      formData.append("tags", tag as string);
+    });
+    images.map((img) => {
+      formData.append("image", img as File);
+    });
+    // console.log(formData);
+
+    try {
+      const response = await fetch(`${URL_SERVER}/project`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add new project");
+      }
+      const data = await response.json();
+      setProjects(data.data);
+      return data.data;
+    } catch (error) {
+      setError((error as Error).message as string);
+      return error;
+    }
+  };
   return (
     <>
       <div className="w-full flex flex-col gap-4 my-4">
@@ -67,79 +112,55 @@ function ProjectForm() {
             {!isOpen ? "create project" : "cancel"}
           </Button>
         </div>
-        {isOpen && (
+        {isOpen && !isUpdating && (
           <form
             onSubmit={handleSubmit(async () => {
+              const { title, sourceUrl } = getValues();
+              const projectData = {
+                title,
+                sourceUrl,
+                description: description.trim(),
+                tags,
+                thumbnail,
+                images,
+              };
 
-              const formData = new FormData();
-              if (isUpdating && updatedProject) {
-                const { title, description, sourceUrl } = getValues();
-                formData.append("title", title);
-                formData.append("description", description);
-                formData.append("sourceUrl", sourceUrl as string);
-              } else {
-                const values = getValues();
-                if (thumbnail) {
-                  formData.append("thumbnail", thumbnail!);
-                }
-
-                Object.entries(values).forEach(([key, value]) => {
-                  formData.append(key, value);
-                });
-
-                if (tags && tags.length > 0) {
-                  for (const tag of tags) {
-                    formData.append("tags", tag);
-                  }
-                }
-
-                if (images) {
-                  for (const image of images) {
-                    formData.append("image", image as File);
-                  }
-                }
+              if (!thumbnail) {
+                throw new Error("You must upload a thumbnail");
               }
-              console.log(formData)
 
+              if (!checkUploadedImages(images as File[])) {
+                throw new Error("You uploaded more than 5 images");
+              }
+
+              console.log(projectData);
               try {
-                const response = await fetch(
-                  `${URL_SERVER}/project`,
-                  {
-                    method: "POST",
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                    body: formData,
-                  }
+                const newProject = await addNewProject(
+                  projectData as ProjectFormData
                 );
-
-                if (!response.ok) {
-                  throw new Error("adding a new project failed!!");
+                if (!newProject) {
+                  throw new Error("Failed to add new project");
                 }
-
-                const data = await response.json();
-
-                console.log(data);
-
-                toast.success(data.message);
-
-                return data;
-              } catch (err) {
-                console.log((err as Error).message);
-                toast.error((err as Error).message);
-                return;
-              } finally {
-                setThumbnail(null);
-                setImages([]);
-                setTags([]);
+                setProjects(newProject);
                 reset();
                 setIsOpen(false);
-                setIsUpdating(false);
+                setTags([]);
+                setImages([]);
+                setDescription("");
+                setThumbnail(null);
+                setError(null);
+                toast.success("Project added successfully");
+                return;
+              } catch (error) {
+                toast.error((error as Error).message as string);
+                setError((error as Error).message as string);
+                return;
               }
             })}
             className="w-full p-2 flex flex-col justify-start items-center gap-2"
           >
             <Card className="w-full">
+              {error && <ErrorMessage message={error} />}
               <div className="w-full flex items-center justify-center gap-4 flex-col">
                 {thumbnail ? (
                   <div
@@ -240,7 +261,12 @@ function ProjectForm() {
                                         );
                                       }
                                     );
-                                    setImages(filteredImages as File[] | IProjectImagesType[] | null);
+                                    setImages(
+                                      filteredImages as
+                                        | File[]
+                                        | IProjectImagesType[]
+                                        | null
+                                    );
                                   }
                                 }}
                               >
@@ -362,13 +388,12 @@ function ProjectForm() {
                             borderColor: activeTheme.borderColor,
                           }}
                           key={index}
-                          className="relative p-1 px-4 w-fit rounded-2xl border "
+                          className="relative p-1 px-4 w-fit rounded-2xl border my-4"
                         >
                           {!isSubmitting && (
-                            <Button
+                            <button
                               type="button"
-                              variant={"destructive"}
-                              className="cursor-pointer duration-150 absolute -top-4  -right-4  rounded-xl flex items-center justify-center"
+                              className="bg-red-500 hover:bg-red-700  text-white p-2 rounded-full cursor-pointer duration-150 absolute -top-2 -right-4  flex items-center justify-center"
                               onClick={() =>
                                 setTags([
                                   ...tags.filter(
@@ -378,7 +403,7 @@ function ProjectForm() {
                               }
                             >
                               <XIcon size={12} />
-                            </Button>
+                            </button>
                           )}
                           <span>{tag}</span>
                         </div>
@@ -406,55 +431,37 @@ function ProjectForm() {
                   message={errors.sourceUrl.message?.toString() as string}
                 />
               )}
-
-              <textarea
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                readOnly={isSubmitting}
-                className="w-full p-2 border rounded-md"
-                id="description"
-                placeholder="description"
-                defaultValue={updatedProject ? updatedProject.description : ""}
-                {...register("description")}
-              />
-              {errors.description && (
-                <ErrorMessage
-                  message={errors.description.message?.toString() as string}
-                />
-              )}
+            </Card>
+            <Card className="p-4 w-full">
+              <Tiptap content={description} setContent={setDescription} />
             </Card>
             <SubmitButton
               className="w-full"
               loading={isSubmitting}
               type="submit"
             >
-              Submit
+              create project
             </SubmitButton>
           </form>
         )}
       </div>
-      <div>
-        <Outlet />
-      </div>
+
       <>
-        {projects.length > 0 && (
-          <Card
-            className="p-4 border"
-            style={{
-              color: activeTheme.primaryText,
-              backgroundColor: activeTheme.backgroundColor,
-              borderColor: activeTheme.borderColor,
-            }}
-          >
-            {pending ? (
-              <div className="w-full min-h-[400px] flex items-center justify-center">
-                <Loader size="md" />
-              </div>
-            ) : (
-              <>
+        {pending ? (
+          <div className="w-full min-h-[400px] flex items-center justify-center">
+            <Loader size="md" />
+          </div>
+        ) : (
+          <>
+            {projects?.length > 0 ? (
+              <Card
+                className="p-4 border"
+                style={{
+                  color: activeTheme.primaryText,
+                  backgroundColor: activeTheme.backgroundColor,
+                  borderColor: activeTheme.borderColor,
+                }}
+              >
                 <div className="flex flex-col justify-start items-start gap-1">
                   {projects.map((project) => {
                     return (
@@ -468,15 +475,18 @@ function ProjectForm() {
                           setIsOpen(true);
                           setUpdatedProject(project);
                           setIsUpdating(true);
-                          console.log(project);
                         }}
                       />
                     );
                   })}
                 </div>
-              </>
+              </Card>
+            ) : (
+              <div className="w-full min-h-[400px] flex items-center justify-center">
+                <p>No projects found</p>
+              </div>
             )}
-          </Card>
+          </>
         )}
       </>
     </>

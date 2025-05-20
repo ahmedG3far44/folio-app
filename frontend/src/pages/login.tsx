@@ -6,7 +6,6 @@ import SubmitButton from "@/components/submit-button";
 import { useAuth } from "@/contexts/AuthProvider";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
-import { useTheme } from "@/contexts/ThemeProvider";
 import ErrorMessage from "@/components/ErrorMessage";
 import Logo from "@/components/Logo";
 
@@ -15,7 +14,7 @@ const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 function LoginPage() {
   const navigate = useNavigate();
   const { isLogged, user, login } = useAuth();
-  const { activeTheme } = useTheme();
+  // const { activeTheme } = useTheme();
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -66,14 +65,8 @@ function LoginPage() {
   if (isLogged) return <Navigate to={`/${user.id}`} />;
 
   return (
-    <div
-      style={{
-        backgroundColor: activeTheme.backgroundColor,
-        color: activeTheme.secondaryText,
-      }}
-      className="w-full min-h-screen flex items-center justify-center"
-    >
-      <Card className="px-4 py-8">
+    <div className="bg-zinc-950 w-full min-h-screen flex items-center justify-center">
+      <Card className="px-4 py-8 text-white shadow-lg bg-zinc-900">
         <CardTitle className="flex items-center justify-center flex-col gap-2 my-8">
           <Logo />
           <h1 className="text-lg font-bold">
@@ -81,36 +74,19 @@ function LoginPage() {
           </h1>
         </CardTitle>
         <form
-          className="w-[400px] flex flex-col items-start gap-4"
+          className="w-[400px] flex flex-col items-start gap-4  "
           onSubmit={handleLogin}
         >
           {error && <ErrorMessage message={error} className={"text-center"} />}
           <input
-            style={{
-              backgroundColor: activeTheme.backgroundColor,
-              color: activeTheme.primaryText,
-              borderColor: activeTheme.borderColor,
-            }}
-            className="w-full p-2 rounded-md "
+            className="w-full p-2 rounded-md bg-zinc-950 border border-zinc-800"
             onChange={(e) => setUser({ ...loginUser, email: e.target.value })}
             type="email"
             placeholder="email"
           />
-          <div
-            style={{
-              backgroundColor: activeTheme.backgroundColor,
-              color: activeTheme.primaryText,
-              borderColor: activeTheme.borderColor,
-            }}
-            className="w-full flex items-center justify-between  rounded-md relative"
-          >
+          <div className="w-full flex items-center justify-between  rounded-md relative">
             <input
-              style={{
-                backgroundColor: activeTheme.backgroundColor,
-                color: activeTheme.primaryText,
-                borderColor: activeTheme.borderColor,
-              }}
-              className="w-full h-full  p-2 rounded-md relative"
+              className="w-full h-full  p-2 rounded-md relative bg-zinc-950 border border-zinc-800  "
               onChange={(e) =>
                 setUser({ ...loginUser, password: e.target.value })
               }
@@ -118,9 +94,6 @@ function LoginPage() {
               placeholder="password"
             />
             <span
-              style={{
-                color: activeTheme.primaryText,
-              }}
               className="absolute right-0  hover:opacity-75 duration-150 cursor-pointer rounded-r-md p-2 "
               onClick={() => setShowPassword(!showPassword)}
             >
@@ -138,10 +111,7 @@ function LoginPage() {
           <div className="w-full h-[1px] bg-zinc-700"></div>
         </div>
         <CardFooter className="w-full self-center text-center my-4">
-          <div
-            style={{ color: activeTheme.secondaryText }}
-            className="w-full flex items-center justify-center gap-2"
-          >
+          <div className="w-full flex items-center justify-center gap-2">
             <p
               className="text-sm w-full 
           "

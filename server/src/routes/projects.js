@@ -5,16 +5,11 @@ import Exceptions from "../utils/Exceptions.js";
 import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import s3Client from "../s3/s3Client.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
-// import resizedImage from "../utils/resizeImage.js";
 import getImageKey from "../utils/getImageKey.js";
 
 import { upload } from "./skills.js";
 import { projectSchema } from "../utils/schemas.js";
-import {
-  PutObjectCommand,
-  DeleteObjectCommand,
-  EncryptionFilterSensitiveLog,
-} from "@aws-sdk/client-s3";
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
@@ -63,19 +58,6 @@ router.post(
       console.log(title, description, sourceUrl, tags);
       let thumbnailKey;
       let imageKey;
-
-      // images?.map(async (image) => {
-      //   if (image.fieldname === "image") {
-      //     imageKey = `${crypto.randomUUID()}`;
-      //     keysArray.push(imageKey);
-      //   } else {
-      //     thumbnailKey = `thumbnail-${crypto.randomUUID()}`;
-      //   }
-      //   await uploadToS3(
-      //     image,
-      //     image.fieldname === "image" ? imageKey : thumbnailKey
-      //   );
-      // });
       for (const image of images) {
         if (image.fieldname === "image") {
           imageKey = `${crypto.randomUUID()}`;
@@ -127,12 +109,17 @@ router.post(
         },
       });
       console.log("project basic info was created ");
-
-      return res
-        .status(201)
-        .json(new Exceptions(201, "a new project was created"));
+      const newProject = await prisma.projects.findMany({
+        where: {
+          usersId: user.id,
+        },
+      });
+      res.status(201).json({
+        data: newProject,
+        message: "a new project was created.",
+      });
     } catch (error) {
-      return res.status(500).json(new Exceptions(500, error.message));
+      res.status(500).json(new Exceptions(500, error.message));
     }
   }
 );
@@ -290,12 +277,16 @@ router.put(
           source: sourceUrl,
         },
       });
-
-      return res
+      const newProject = await prisma.projects.findMany({
+        where: {
+          usersId: user.id,
+        },
+      });
+      res
         .status(200)
-        .json(new Exceptions(200, "updated project info success."));
+        .json({ data: newProject, message: "updated project info success." });
     } catch (error) {
-      return res.status(500).json(new Exceptions(500, error.message));
+      res.status(500).json(new Exceptions(500, error.message));
     }
   }
 );
@@ -330,7 +321,7 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
       deletedProjectImageUrls.push(key);
     });
 
-    console.log(deletedProjectImageUrls);
+    // console.log(deletedProjectImageUrls);
 
     deletedProjectImageUrls.map(async (keyUrl) => {
       const command = new DeleteObjectCommand({
@@ -366,7 +357,15 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
     });
     console.log("the project deleted successful");
 
-    res.status(200).json(new Exceptions(200, "project deleted successful."));
+    const newProject = await prisma.projects.findMany({
+      where: {
+        usersId: user.id,
+      },
+    });
+
+    res
+      .status(200)
+      .json({ data: newProject, message: "project deleted successful." });
   } catch (error) {
     console.log(error.message);
     res.status(500).json(new Exceptions(500, error.message));

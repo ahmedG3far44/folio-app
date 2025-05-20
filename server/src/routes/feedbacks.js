@@ -68,7 +68,7 @@ router.post(
         throw new Error("not valid data inputs");
       }
 
-      const feedback = await prisma.testimonials.create({
+      await prisma.testimonials.create({
         data: {
           ...validFeedbackData.data,
           feedback: payload.feedback ? payload?.feedback : null,
@@ -79,10 +79,14 @@ router.post(
           usersId: userId,
         },
       });
-
+      const newFeedback = await prisma.testimonials.findMany({
+        where: {
+          usersId: userId,
+        },
+      });
       res.status(201).json({
-        uploadedState: "uploaded profile & video success",
-        feedback,
+        data: newFeedback,
+        message: "a new experiences was added.",
       });
     } catch (error) {
       console.log(error.message);
@@ -145,12 +149,16 @@ router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
       },
     });
     console.log("feedback deleted successful");
-
-    return res
+    const newFeedback = await prisma.testimonials.findMany({
+      where: {
+        usersId: user.id,
+      },
+    });
+    res
       .status(200)
-      .json(new Exceptions(200, "feedback deleted successful."));
+      .json({ data: newFeedback, message: "feedback deleted successful." });
   } catch (error) {
-    return res.status(500).json(new Exceptions(500, error.message));
+    res.status(500).json(new Exceptions(500, error.message));
   }
 });
 

@@ -63,7 +63,6 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
     getThemesList();
   }, [user]);
   const switchTheme = ({ newActiveTheme }: { newActiveTheme: IThemeType }) => {
-    // console.log(newActiveTheme);
     localStorage.setItem("theme", JSON.stringify(newActiveTheme));
     setActiveTheme({ ...newActiveTheme });
   };

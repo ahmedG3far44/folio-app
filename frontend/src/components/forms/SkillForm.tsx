@@ -10,21 +10,19 @@ import ErrorMessage from "../ErrorMessage";
 import { useAuth } from "@/contexts/AuthProvider";
 import { XIcon } from "lucide-react";
 import toast from "react-hot-toast";
-// import { useParams } from "react-router-dom";
+
 import UploadHere from "../cards/UploadHere";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
 import ShowListCard from "../cards/ShowListCard";
 import Loader from "../loader";
 import { ISkillType } from "@/lib/types";
-import { useNavigate } from "react-router-dom";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function SkillForm() {
   const { token } = useAuth();
-  const { skills, pending } = useUser();
-  const navigate = useNavigate();
+  const { skills, setSkills, pending } = useUser();
   const { activeTheme } = useTheme();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
@@ -78,11 +76,10 @@ function SkillForm() {
                   throw new Error("adding a new skill failed!!");
                 }
                 const data = await response.json();
-                console.log(data);
                 toast.success("a new skill was created success!!");
-                return navigate(0);
+                setSkills(data.data);
+                return data;
               } catch (err) {
-                console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
               } finally {
@@ -173,21 +170,21 @@ function SkillForm() {
           </form>
         )}
       </div>
-      <Card
-        className="p-4 border"
-        style={{
-          color: activeTheme.primaryText,
-          backgroundColor: activeTheme.backgroundColor,
-          borderColor: activeTheme.borderColor,
-        }}
-      >
+      <>
         {pending ? (
           <div className="w-full min-h-[400px] flex items-center justify-center">
             <Loader size="md" />
           </div>
         ) : (
-          <>
-            {skills.length > 0 && (
+          <Card
+            className="p-4 border"
+            style={{
+              color: activeTheme.primaryText,
+              backgroundColor: activeTheme.backgroundColor,
+              borderColor: activeTheme.borderColor,
+            }}
+          >
+            {skills.length > 0 ? (
               <div className="flex flex-col justify-start items-start gap-1">
                 {skills.map((skill) => {
                   return (
@@ -201,16 +198,19 @@ function SkillForm() {
                         setUpdateSkill({ ...skill });
                         setIsOpen(true);
                         setIsUpdating(true);
-                        console.log(updateSkill);
-                      }}
+                          }}
                     />
                   );
                 })}
               </div>
+            ) : (
+              <div className="w-full min-h-[400px] flex items-center justify-center">
+                <p>No skills found</p>
+              </div>
             )}
-          </>
+          </Card>
         )}
-      </Card>
+      </>
     </>
   );
 }

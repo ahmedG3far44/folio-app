@@ -5,12 +5,11 @@ import { AuthProvider } from "./contexts/AuthProvider.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
-
 import ThemeProvider from "./contexts/ThemeProvider.tsx";
-import UploadProvider from "./contexts/UploadProvider.tsx";
 
 import App from "./App.tsx";
 import "./index.css";
+import AdminProvider from "./contexts/AdminProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -18,10 +17,10 @@ createRoot(document.getElementById("root")!).render(
       <AuthProvider>
         <ThemeProvider>
           <UserProvider>
-            <UploadProvider>
-                <Toaster position="top-right" />
-                <App />
-            </UploadProvider>
+            <AdminProvider>
+              <Toaster position="top-right" />
+              <App />
+            </AdminProvider>
           </UserProvider>
         </ThemeProvider>
       </AuthProvider>

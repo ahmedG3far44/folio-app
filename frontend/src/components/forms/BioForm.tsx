@@ -23,7 +23,6 @@ function BioForm() {
   const [isBioOpen, setIsBioOpen] = useState<boolean>(false);
   const [isContactOpen, setIsContactOpen] = useState<boolean>(false);
   const [isResumeOpen, setIsResumeOpen] = useState<boolean>(false);
-  // const [heroImage, setHeroImage] = useState<File | null>(null);
   const { bio } = useUser();
   const { activeTheme } = useTheme();
   const { token } = useAuth();
@@ -78,7 +77,6 @@ function BioForm() {
                 toast.success("bio info was updated success!!");
                 return data;
               } catch (err) {
-                console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
               }

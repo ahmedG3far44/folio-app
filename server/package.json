@@ -28,8 +28,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@prisma/client": "^6.6.0",
+    "@prisma/client": "^6.8.2",
     "nodemon": "^3.1.9",
-    "prisma": "^6.6.0"
+    "prisma": "^6.8.2"
   }
 }

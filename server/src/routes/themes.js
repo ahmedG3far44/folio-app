@@ -29,13 +29,11 @@ router.put("/theme/:themeId", verifyAdminAccessToken, async (req, res) => {
     const { themeId } = req.params;
     const newTheme = req.body;
 
-
     if (user.role !== "ADMIN")
       throw new Error("your not authorized to do this action");
 
-
     if (!themeId) throw new Error("theme id is required!!");
-    
+
     const theme = await prisma.theme.update({
       where: {
         id: themeId,
@@ -54,19 +52,11 @@ router.put("/theme/:themeId", verifyAdminAccessToken, async (req, res) => {
 
 router.get("/theme", async (req, res) => {
   try {
-    const themes = await prisma.theme.findMany({
-      select: {
-        id: true,
-        backgroundColor: true,
-        cardColor: true,
-        primaryText: true,
-        secondaryText: true,
-        borderColor: true,
-      },
-    });
+    // const user = req.user;
+    const newTheme = await prisma.theme.findMany();
     res
       .status(200)
-      .json({ data: [...themes], message: "all theme available themes" });
+      .json({ data: newTheme, message: "all theme available themes" });
   } catch (err) {
     res.status(500).json({ data: "error", message: err.message });
   }
@@ -75,7 +65,7 @@ router.get("/theme", async (req, res) => {
 router.delete("/theme/:themeId", verifyAdminAccessToken, async (req, res) => {
   try {
     const user = req.user;
-    
+
     if (user.role !== "ADMIN")
       throw new Error("your not authorized to do this action");
 
@@ -91,15 +81,20 @@ router.delete("/theme/:themeId", verifyAdminAccessToken, async (req, res) => {
 
     if (!isThemeFound) throw new Error("this theme is not exist!!");
 
-    const themes = await prisma.theme.delete({
+    await prisma.theme.delete({
       where: {
         id: themeId,
       },
     });
     console.log("theme deleted success");
+    const newTheme = await prisma.theme.findMany({
+      where: {
+        usersId: user.id,
+      },
+    });
     res
       .status(204)
-      .json({ data: themes,  message: "this theme was deleted!!" });
+      .json({ data: newTheme, message: "this theme was deleted!!" });
   } catch (err) {
     res.status(500).json({ data: "error", message: err.message });
   }

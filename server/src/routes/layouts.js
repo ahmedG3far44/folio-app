@@ -43,12 +43,10 @@ router.put("/layouts/:id", verifyAccessToken, async (req, res) => {
     const validLayoutsPayload = layoutsSchema.safeParse(payload);
 
     if (!validLayoutsPayload.success) {
-      return res
-        .status(400)
-        .json(new Exceptions(400, "Bad request not valid data"));
+          res.status(400).json(new Exceptions(400, "Bad request not valid data"));
     }
 
-    await prisma.layouts.update({
+    const newLayout = await prisma.layouts.update({
       where: {
         usersId: user.id,
         id,
@@ -56,11 +54,12 @@ router.put("/layouts/:id", verifyAccessToken, async (req, res) => {
       data: { ...validLayoutsPayload.data },
     });
 
-    return res
-      .status(200)
-      .json(new Exceptions(200, "layout info was updated successfully"));
+    res.status(200).json({
+      data: newLayout,
+      message: "layout info was updated successfully",
+    });
   } catch (error) {
-    return res.status(500).json(new Exceptions(500, error.message));
+    res.status(500).json(new Exceptions(500, error.message));
   }
 });
 

@@ -97,19 +97,22 @@ router.post(
       if (uploadImageResult.$metadata.httpStatusCode !== 200)
         throw new Error("upload skill image error !!");
       console.log("uploaded success");
-      const newSkill = await prisma.skills.create({
+      await prisma.skills.create({
         data: {
           skillName: payload.skillName,
           skillLogo: `${BUCKET_DOMAIN}/${nameKey}`,
           usersId: user.id,
         },
       });
-      return res.status(201).json({ newSkill, success: "a new skill added" });
+      const newSkill = await prisma.skills.findMany({
+        where: {
+          usersId: user.id,
+        },
+      });
+      res.status(201).json({ data: newSkill, message: "a new skill added" });
     } catch (err) {
       console.log(err.message);
-      return res
-        .status(200)
-        .json({ data: "failed not upload", message: err.message });
+      res.status(200).json({ data: "failed not upload", message: err.message });
     }
   }
 );
@@ -170,7 +173,7 @@ router.put(
         console.log("Skill image updated successfully");
       }
 
-      const skills = await prisma.skills.update({
+      await prisma.skills.update({
         where: {
           id: skillId,
           usersId: user.id,
@@ -181,7 +184,13 @@ router.put(
         },
       });
 
-      return res.status(200).json({ data: skills });
+      const newSkill = await prisma.skills.findMany({
+        where: {
+          usersId: user.id,
+        },
+          });
+
+      return res.status(200).json({ data: newSkill });
     } catch (err) {
       console.error("Error updating skill:", err);
       return res.status(500).json(new Exceptions(500, err.message));
@@ -219,16 +228,19 @@ router.delete("/skills/:skillId", verifyAccessToken, async (req, res) => {
       }
     }
 
-    const skillDelete = await prisma.skills.delete({
+    await prisma.skills.delete({
       where: {
         id: skillId,
         usersId: user.id,
       },
     });
+    const newSkill = await prisma.skills.findMany({
+      where: {
+        usersId: user.id,
+      },
+    });
 
-    console.log(skillDelete);
-
-    return res.status(200).json({ data: skillDelete });
+    return res.status(200).json({ data: newSkill });
   } catch (err) {
     return res.status(500).json(new Exceptions(500, err.message));
   }

@@ -7,13 +7,14 @@ function Card({ className, ...props }: React.ComponentProps<"div">) {
   const { activeTheme } = useTheme();
   return (
     <div
+      data-slot="card"
       style={{
         backgroundColor: activeTheme.cardColor,
         border: `1px solid ${activeTheme.borderColor}`,
+        color: activeTheme.primaryText,
       }}
-      data-slot="card"
       className={cn(
-        "p-4 space-x-2 space-y-2  rounded-2xl border shadow-md ",
+        "bg-card text-card-foreground flex flex-col gap-1 rounded-xl border py-6 shadow-sm p-4",
         className
       )}
       {...props}
@@ -35,10 +36,8 @@ function CardHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function CardTitle({ className, ...props }: React.ComponentProps<"div">) {
-  const { activeTheme } = useTheme();
   return (
     <div
-      style={{ color: activeTheme.primaryText }}
       data-slot="card-title"
       className={cn("leading-none font-semibold", className)}
       {...props}

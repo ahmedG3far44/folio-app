@@ -5,6 +5,7 @@ import {
   ChevronRight,
   Home,
   LucideChartScatter,
+  LucideLogOut,
   LucideSunMoon,
   LucideUsers,
 } from "lucide-react";
@@ -15,7 +16,7 @@ import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 function ProtectedAdminRoute() {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const { activeTheme } = useTheme();
-  const { user, isLogged } = useAuth();
+  const { user, isLogged, logout } = useAuth();
   const location = useLocation();
   const active = location.pathname.split("/").pop();
   console.log(active);
@@ -117,6 +118,12 @@ function ProtectedAdminRoute() {
             );
           })}
         </ul>
+        <div className="w-full flex items-center justify-center mt-20 gap-2">
+          <Button className={"w-full"} variant={"outline"} onClick={() => logout()}>
+            <LucideLogOut size={20} />
+            Logout
+          </Button>
+        </div>
       </aside>
 
       <main

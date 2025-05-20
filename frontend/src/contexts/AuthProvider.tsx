@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IAuthContextType, IUserType } from "@/lib/types";
 import { createContext, ReactNode, useContext, useState } from "react";
 

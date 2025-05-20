@@ -11,9 +11,9 @@ import { Button } from "../ui/button";
 import Loader from "../loader";
 import ShowListCard from "../cards/ShowListCard";
 
+const ENV = import.meta.env.VITE_ENV as string;
 const LOCAL_DOMAIN = import.meta.env.VITE_LOCAL_DOMAIN as string;
 const PRODUCTION_DOMAIN = import.meta.env.VITE_PRODUCTION_DOMAIN as string;
-const ENV = import.meta.env.VITE_ENV as string;
 
 function TestimonialsForm() {
   const { user } = useAuth();
@@ -71,24 +71,24 @@ function TestimonialsForm() {
           </div>
         )}
       </div>
-      <Card
-        className="p-4 border"
-        style={{
-          color: activeTheme.primaryText,
-          backgroundColor: activeTheme.backgroundColor,
-          borderColor: activeTheme.borderColor,
-        }}
-      >
+      <>
         {pending ? (
           <div className="w-full min-h-[400px] flex items-center justify-center">
             <Loader size="md" />
           </div>
         ) : (
-          <>
-            {testimonials.length > 0 && (
+          <Card
+            className="p-4 border"
+            style={{
+              color: activeTheme.primaryText,
+              backgroundColor: activeTheme.backgroundColor,
+              borderColor: activeTheme.borderColor,
+            }}
+          >
+            {testimonials.length > 0 ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 grid-flow-row">
                 {testimonials.map(
-                  ({ id, name, profile, position, feedback }) => {
+                  ({ id, name, profile, position, feedback, video }) => {
                     return (
                       <ShowListCard
                         id={id}
@@ -97,6 +97,7 @@ function TestimonialsForm() {
                         image={profile}
                         position={position}
                         feedback={feedback}
+                        video={video}
                         vertical={true}
                         sectionName={"feedback"}
                       />
@@ -104,10 +105,14 @@ function TestimonialsForm() {
                   }
                 )}
               </div>
+            ) : (
+              <div className="w-full min-h-[400px] flex items-center justify-center">
+                <p>No testimonials found</p>
+              </div>
             )}
-          </>
+          </Card>
         )}
-      </Card>
+      </>
     </>
   );
 }

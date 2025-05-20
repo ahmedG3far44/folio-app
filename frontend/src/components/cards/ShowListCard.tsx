@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { Button } from "../ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
-import Loader from "../loader";
 import { useAuth } from "@/contexts/AuthProvider";
-import { deleteById } from "@/lib/handlers";
-import toast from "react-hot-toast";
+
+import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-// import { Link, PrefetchPageLinks } from "react-router-dom";
-// import { ISkillType } from "@/lib/types";
-// import { useNavigate } from "react-router-dom";
+
+import Loader from "../loader";
+import toast from "react-hot-toast";
+
+import { deleteById } from "@/lib/handlers";
+import { useUser } from "@/contexts/UserProvider";
 
 function ShowListCard({
   id,
@@ -18,6 +19,7 @@ function ShowListCard({
   position,
   feedback,
   vertical,
+  video,
   setUpdate,
 }: {
   sectionName: string;
@@ -27,11 +29,12 @@ function ShowListCard({
   position?: string;
   feedback?: string;
   vertical?: boolean;
+  video?: string;
   setUpdate?: () => void;
 }) {
   const { activeTheme } = useTheme();
   const { token } = useAuth();
-  // const navigate = useNavigate();
+  const { setExperiences, setProjects, setSkills, setTestimonials } = useUser();
   const [pending, setPending] = useState<boolean>(false);
   const handleDelete = async (id: string) => {
     try {
@@ -41,41 +44,31 @@ function ShowListCard({
         token,
         deleteRoute: sectionName,
       });
+      switch (sectionName) {
+        case "experiences":
+          setExperiences(deleteResult.data);
+          break;
+        case "project":
+          setProjects(deleteResult.data);
+          break;
+        case "skills":
+          setSkills(deleteResult.data);
+          break;
+        case "feedback":
+          setTestimonials(deleteResult.data);
+          break;
+        default:
+          break;
+      }
       toast.success(deleteResult.message);
-      // <PrefetchPageLinks page={`/${sectionName}`} />
-      return;
+      return deleteResult;
     } catch (err) {
-      console.log((err as Error).message);
+      toast.error((err as Error).message as string);
       return;
     } finally {
       setPending(false);
     }
   };
-  // const handleUpdate = async (id: string) => {
-  //   try {
-  //     setPending(true);
-  //     switch (sectionName) {
-  //       case "experiences":
-  //         console.log("update experience ", id);
-  //         break;
-  //       case "projects":
-  //         console.log("update project ", id);
-  //         break;
-  //       case "skills":
-  //         console.log("update skills ", id);
-  //         break;
-  //       case "testimonials":
-  //         console.log("update testimonials ", id);
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   } catch (err) {
-  //     console.log((err as Error).message);
-  //   } finally {
-  //     setPending(false);
-  //   }
-  // };
   return (
     <div
       style={{
@@ -84,8 +77,8 @@ function ShowListCard({
       }}
       className={`w-full flex p-2 rounded-2xl border  ${
         vertical
-          ? "flex-col justify-start items-start gap-2"
-          : "lg:justify-between lg:items-center  lg:flex-row flex-col justify-start items-start  gap-2"
+          ? "flex-col justify-start items-start gap-1"
+          : "lg:justify-between lg:items-center  lg:flex-row flex-col justify-start items-start  gap-1"
       }`}
     >
       <div className="flex justify-center items-center gap-4">
@@ -104,7 +97,15 @@ function ShowListCard({
           />
         </div>
         <div className="flex flex-col justify-start items-start gap-0">
-          <h1 className="text-lg font-bold">{title}</h1>
+          <h1 className="text-lg font-bold">
+            {sectionName === "project" ? (
+              <Link className="hover:underline" to={`/project/${id}`}>
+                {title}
+              </Link>
+            ) : (
+              title
+            )}
+          </h1>
           {position && (
             <h3
               className="text-sm"
@@ -116,6 +117,14 @@ function ShowListCard({
         </div>
       </div>
       {feedback && <p className="line-clamp-3 my-2">{feedback}</p>}
+      {video && (
+        <div className="w-full  flex justify-center items-center my-2">
+          <video
+            src={video}
+            className="w-full h-full object-cover rounded-2xl"
+          />
+        </div>
+      )}
       <div className="space-x-2 lg:space-x-4">
         {sectionName !== "feedback" && (
           <Button

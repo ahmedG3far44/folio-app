@@ -17,7 +17,7 @@ import TestimonialSection from "@/components/sections/TestimonialSection";
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function UserPage() {
-  const { isAdmin } = useAuth();
+  const { isAdmin, user } = useAuth();
   const { userId } = useParams();
   const { activeTheme } = useTheme();
   const {
@@ -45,16 +45,14 @@ function UserPage() {
       const info = await response.json();
       return info.data;
     } catch (err) {
-      return { data: "error", message: err };
+      return { data: "error", message: (err as Error).message };
     } finally {
       setPending(false);
     }
   };
-  console.log(userId, "my user params");
   useEffect(() => {
     getUserInfoById(userId as string)
       .then((data) => {
-        console.log(data);
         const { bio, user, contacts, layouts } = data;
         setBio({ ...bio });
         setExperiences(user.ExperiencesList);
@@ -66,10 +64,9 @@ function UserPage() {
       })
       .catch((err) => {
         setError(err.message);
-        console.log((err as Error).message);
         return;
       });
-  }, [userId]);
+  }, [userId, user.id]);
 
   if (isAdmin) return <Navigate to={"/dashboard/insights"} />;
   if (error) return <ErrorMessage message={error} />;

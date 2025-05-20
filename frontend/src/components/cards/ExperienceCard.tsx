@@ -1,5 +1,4 @@
 import { IExperienceType } from "@/lib/types";
-// import { Card } from "../ui/card";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { MapPin } from "lucide-react";
 
@@ -63,10 +62,10 @@ function ExperienceCard({ exp }: { exp: IExperienceType; className?: string }) {
         }}
         className="flex flex-col justify-start items-start gap-2 text-sm"
       >
-        <p>{role}</p>
+        <p className="editor-content" dangerouslySetInnerHTML={{ __html: role }} />
       </div>
 
-      <div className="flex justify-start items-center gap-2">
+      <div className="flex justify-start items-center gap-2 mt-auto">
         <span>
           <MapPin size={20} />
         </span>{" "}

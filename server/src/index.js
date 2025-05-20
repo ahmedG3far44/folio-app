@@ -4,7 +4,6 @@ import prisma from "./database/db.js";
 import rootRouter from "./routes/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-
 dotenv.config();
 
 const ENV = process.env.ENV;

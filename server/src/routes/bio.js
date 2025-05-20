@@ -15,7 +15,6 @@ import { getBioWithImage, processImage, uploadToS3, generateFileKey, updateBioIm
 
 const router = express.Router();
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
 router.get("/:userId/bio", async (req, res) => {

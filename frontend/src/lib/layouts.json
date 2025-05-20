@@ -27,7 +27,7 @@
       "default": "flex flex-col items-start justify-start gap-4 rounded-md border",
       "medium": "flex flex-col items-start justify-between rounded-md border",
       "minimal": " border-l-8 hover:translate-x-2   border border-zinc-100 flex flex-col items-start justify-start gap-4",
-      "wizzard": "flex flex-col items-satrt border-r-8 border-l-8 justify-center gap-4 hover:translate-x-2 ",
+      "wizzard": "flex flex-col  items-satrt border-r-8 border-l-8 justify-center gap-4 hover:translate-x-2 ",
       "accent": " flex flex-col  items-start justify-between border-t-8 gap-4 hover:border-b-8"
     }
   },

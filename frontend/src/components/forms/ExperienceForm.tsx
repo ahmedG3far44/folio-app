@@ -11,7 +11,7 @@ import { XIcon } from "lucide-react";
 
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
-// import { useNavigate } from "react-router-dom";
+
 import { IExperienceType } from "@/lib/types";
 
 import Loader from "../loader";
@@ -20,6 +20,8 @@ import ErrorMessage from "../ErrorMessage";
 import SubmitButton from "../submit-button";
 import UploadHere from "../cards/UploadHere";
 import ShowListCard from "../cards/ShowListCard";
+import Tiptap from "../Tiptap";
+// import { useEditor } from "@tiptap/react";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -27,7 +29,7 @@ function ExperienceForm() {
   // const router = useNavigate();
   const { token } = useAuth();
   const { activeTheme } = useTheme();
-  const { experiences, pending } = useUser();
+  const { experiences, setExperiences, pending } = useUser();
 
   const [updateThisExperience, setUpdateThisExperience] =
     useState<IExperienceType | null>(null);
@@ -36,6 +38,8 @@ function ExperienceForm() {
   const [file, setFile] = useState<File | string | null>(
     updateThisExperience ? updateThisExperience.cLogo : null
   );
+  const [content, setContent] = useState<string>("");
+  // const {cont} = useEditor();
 
   const {
     register,
@@ -70,7 +74,10 @@ function ExperienceForm() {
               Object.entries(values).forEach(([key, value]) => {
                 formData.append(key, value);
               });
-
+              formData.append("role", content);
+              // console.log(formData.get("role"));
+              // console.log(formData);
+              // return;
               try {
                 const response = await fetch(
                   `${URL_SERVER}/experiences/${
@@ -88,8 +95,9 @@ function ExperienceForm() {
                   throw new Error(`${"create a new"} experience failed!!`);
                 }
                 const data = await response.json();
-                console.log(data);
-
+                console.log(data.data);
+                setExperiences(data.data);
+                setContent("");
                 reset();
                 toast.success(`a new experience was success!!`);
                 return data;
@@ -233,26 +241,16 @@ function ExperienceForm() {
                   message={errors.duration.message?.toString() as string}
                 />
               )}
-              <textarea
+              <Card
                 style={{
                   backgroundColor: activeTheme.backgroundColor,
                   color: activeTheme.primaryText,
                   borderColor: activeTheme.borderColor,
                 }}
-                readOnly={isSubmitting}
-                className="w-full p-2 border rounded-md"
-                id="role"
-                placeholder="role"
-                defaultValue={
-                  updateThisExperience ? updateThisExperience.role : ""
-                }
-                {...register("role")}
-              />
-              {errors.role && (
-                <ErrorMessage
-                  message={errors.role.message?.toString() as string}
-                />
-              )}
+                className="w-full my-4 p-4 border rounded-md"
+              >
+                <Tiptap content={content} setContent={setContent} />
+              </Card>
               <input
                 style={{
                   backgroundColor: activeTheme.backgroundColor,
@@ -285,22 +283,23 @@ function ExperienceForm() {
           </form>
         )}
       </div>
-      {experiences.length > 0 && (
-        <>
-          {pending ? (
-            <div className="w-full min-h-[400px] flex items-center justify-center">
-              <Loader size="md" />
-            </div>
-          ) : (
-            <>
-              <Card
-                style={{
-                  color: activeTheme.primaryText,
-                  backgroundColor: activeTheme.backgroundColor,
-                  borderColor: activeTheme.borderColor,
-                }}
-                className="w-full p-4 border flex flex-col justify-start items-start gap-1"
-              >
+
+      <>
+        {pending ? (
+          <div className="w-full min-h-[400px] flex items-center justify-center">
+            <Loader size="md" />
+          </div>
+        ) : (
+          <Card
+            style={{
+              color: activeTheme.primaryText,
+              backgroundColor: activeTheme.backgroundColor,
+              borderColor: activeTheme.borderColor,
+            }}
+            className="w-full  border flex flex-col justify-start items-start "
+          >
+            {experiences.length > 0 ? (
+              <>
                 {experiences.map((exp) => {
                   return (
                     <ShowListCard
@@ -313,17 +312,19 @@ function ExperienceForm() {
                         setIsUpdating(true);
                         setIsOpen(true);
                         setUpdateThisExperience(exp);
-                        console.log(updateThisExperience);
-                        console.log(isUpdating);
                       }}
                     />
                   );
                 })}
-              </Card>
-            </>
-          )}
-        </>
-      )}
+              </>
+            ) : (
+              <div className="w-full min-h-[400px] flex items-center justify-center">
+                <p>No experiences found</p>
+              </div>
+            )}
+          </Card>
+        )}
+      </>
     </>
   );
 }

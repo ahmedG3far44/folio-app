@@ -17,14 +17,9 @@ export const bioSchema = z.object({
     .max(70, {
       message: "too long input value!!",
     }),
-  summary: z
-    .string()
-    .min(10, {
-      message: "bio feild is less than 10 characters!!",
-    })
-    .max(400, {
-      message: "too long input value!!",
-    }),
+  summary: z.string().min(10, {
+    message: "bio feild is less than 10 characters!!",
+  }),
 });
 export const experienceSchema = z.object({
   cName: z
@@ -46,15 +41,6 @@ export const experienceSchema = z.object({
   duration: z.string().min(4, {
     message: "duration feild is required!!",
   }),
-
-  role: z
-    .string()
-    .min(10, {
-      message: "short input value!!",
-    })
-    .max(500, {
-      message: "too long input value!!",
-    }),
   location: z
     .string()
     .min(5, {
@@ -70,10 +56,6 @@ export const projectSchema = z.object({
     .string()
     .min(5, { message: "short input value!!" })
     .max(60, { message: "too long input value!!" }),
-  description: z
-    .string()
-    .min(10, { message: "short input value!!" })
-    .max(350, { message: "too long input value!!" }),
   sourceUrl: z
     .string()
     .url({ message: "not a valid url!!" })
@@ -100,10 +82,10 @@ export const userSchema = z.object({
 });
 
 export const contactsSchema = z.object({
-  linkedin: z.string().url().optional(),
-  github: z.string().url().optional(),
-  youtube: z.string().url().optional(),
-  twitter: z.string().url().optional(),
+  linkedin: z.string().optional(),
+  github: z.string().optional(),
+  youtube: z.string().optional(),
+  twitter: z.string().optional(),
 });
 
 export const layoutsSchema = z.object({
@@ -114,6 +96,7 @@ export const layoutsSchema = z.object({
     .length(1, { message: "not valid projects layout" }),
   skillsLayout: z.string().length(1, { message: "not valid skills layout" }),
 });
+
 export const feedbackSchema = z.object({
   name: z
     .string()

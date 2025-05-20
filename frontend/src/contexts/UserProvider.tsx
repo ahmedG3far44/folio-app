@@ -46,7 +46,6 @@ export const UserContext = createContext<UserInfoContextType>({
   error: "",
   setLayouts: () => {},
   getUserInfo: async () => Promise.resolve({} as UserInfoContextType),
-  // handleUserInfo: () => {},
   setBio: () => {},
   setExperiences: () => {},
   setProjects: () => {},
@@ -87,7 +86,6 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
-  // const handleUserInfo = async (userId: string) => {
   //   try {
   //     const data = await getUserInfoById(userId);
   //     const { bio, user, contacts, layouts } = data;

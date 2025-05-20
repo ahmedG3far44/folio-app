@@ -12,7 +12,6 @@ function ThemeCard({
   return (
     <div
       style={{
-        // backgroundColor: activeTheme.borderColor,
         border: `1px solid ${activeTheme.borderColor}`
       }}
       className="flex items-center justify-center gap-1  p-2  rounded-md"

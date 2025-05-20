@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -57,19 +57,19 @@ model Experiences {
 
 //=========================================
 model Projects {
-  id          String       @id @default(cuid())
-  title       String
-  description String?
-  thumbnail   String?      @db.Text
-  tags        Tags[]
-  ImagesList  ImagesList[]
-  likes       Int          @default(0)
-  views       Float        @default(0.0)
-  source      String?
-  userId      Users        @relation(fields: [usersId], references: [id])
-  usersId     String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id         String       @id @default(cuid())
+  title      String
+  description String       @db.Text
+  thumbnail  String
+  tags       Tags[]
+  ImagesList ImagesList[]
+  likes      Int          @default(0)
+  views      Float        @default(0.0)
+  source     String?
+  userId     Users        @relation(fields: [usersId], references: [id])
+  usersId    String
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @updatedAt
 }
 
 model Tags {

@@ -23,6 +23,9 @@ router.get("/experiences", verifyAccessToken, async (req, res) => {
       where: {
         usersId: user.id,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     if (!experiencesList) {
       return res.status(200).json({ experiencesList: "not items found" });
@@ -62,8 +65,6 @@ router.post(
 
       const validExperiencePayload = experienceSchema.safeParse(payload);
 
-      console.log(validExperiencePayload.data);
-
       if (!validExperiencePayload.success) {
         const error = validExperiencePayload.error.flatten().fieldErrors;
         console.log(error);
@@ -101,9 +102,19 @@ router.post(
         },
       });
 
-      return res
-        .status(201)
-        .json(new Exceptions(201, "a new experiences was added."));
+      const newExperiences = await prisma.experiences.findMany({
+        where: {
+          usersId: user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+
+      return res.status(201).json({
+        data: newExperiences,
+        message: "a new experiences was added.",
+      });
     } catch (error) {
       return res.status(500).json(new Exceptions(500, error.message));
     }
@@ -155,7 +166,7 @@ router.put(
       }
 
       const validExperiencePayload = experienceSchema.safeParse(payload);
-      console.log(validExperiencePayload.data);
+
       if (!validExperiencePayload.success) {
         console.log(validExperiencePayload.error.flatten().fieldErrors);
         throw new Error("not a valid experience data");
@@ -168,12 +179,18 @@ router.put(
         },
         data: { ...validExperiencePayload.data },
       });
-
-      res
-        .status(200)
-        .json(
-          new Exceptions(200, "experience information was updated successfully")
-        );
+      const newExperience = await prisma.experiences.findMany({
+        where: {
+          usersId: user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      res.status(200).json({
+        data: newExperience,
+        message: "experience information was updated successfully",
+      });
     } catch (error) {
       res.status(500).json(new Exceptions(500, error.message));
     }
@@ -214,9 +231,18 @@ router.delete(
           usersId: user.id,
         },
       });
-      res
-        .status(200)
-        .json(new Exceptions(200, "experience was deleted successfully."));
+      const newExperience = await prisma.experiences.findMany({
+        where: {
+          usersId: user.id,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      });
+      res.status(200).json({
+        data: newExperience,
+        message: "experience was deleted successfully.",
+      });
     } catch (error) {
       res.status(500).json(new Exceptions(500, error.message));
     }

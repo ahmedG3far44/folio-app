@@ -28,8 +28,6 @@ function ThemesList() {
   });
   const handleColorChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    console.log(name, value);
-
     setNewTheme((prevTheme) => ({
       ...prevTheme,
       [name]: value,
@@ -43,7 +41,6 @@ function ThemesList() {
         pending: true,
         error: null,
       });
-      console.log(newTheme);
       const response = await fetch(`${URL_SERVER}/theme`, {
         method: "POST",
         headers: {
@@ -56,10 +53,9 @@ function ThemesList() {
       if (!response.ok) throw new Error("failed to add a new theme!!");
 
       const data = await response.json();
-      console.log(data);
-      // show toast success
+
       toast.success("a new theme was created success!!");
-      // reset form
+
       setNewTheme({
         backgroundColor: "",
         cardColor: "",
@@ -70,14 +66,12 @@ function ThemesList() {
 
       return data;
     } catch (err) {
-      console.log(err);
       toast.error((err as Error).message);
       setSubmitting({
         pending: false,
         error: (err as Error).message,
       });
     } finally {
-      console.log("first");
       setSubmitting({
         pending: false,
         error: null,

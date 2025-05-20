@@ -146,3 +146,31 @@ export interface IActiveLayout {
     accent: string;
   };
 }
+
+export interface AdminUsersList {
+  id: string;
+  name: string;
+  email: string;
+  picture: string;
+  role: string;
+  resume: string | null;
+  createdAt: string;
+}
+export interface AdminContextType {
+  insights: {
+    totalUsers?: number;
+    projects?: number;
+    feedbacks?: number;
+    totalThemes?: number;
+    totalSkills?: number;
+    totalExperiences?: number;
+  };
+  users: AdminUsersList[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface Insight {
+  name: string;
+  value: number;
+}

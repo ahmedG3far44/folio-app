@@ -82,8 +82,7 @@ router.get("/user/:userId", async (req, res) => {
         usersId: userId,
       },
     });
-    // console.log(bio);
-    // return;
+
     const contacts = await prisma.contacts.findFirst({
       where: {
         usersId: userId,
@@ -99,6 +98,7 @@ router.get("/user/:userId", async (req, res) => {
       message: "geting user data success ",
     });
   } catch (error) {
+    console.log(error.message);
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });
