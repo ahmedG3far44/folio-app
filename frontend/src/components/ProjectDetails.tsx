@@ -67,22 +67,7 @@ function ProjectDetails() {
               <Undo2 size={20} />
             </Button>
 
-            <div className="w-full flex flex-col items-center justify-center lg:w-[60%] relative">
-              <Card
-                style={{
-                  color: activeTheme.secondaryText,
-                  backgroundColor: activeTheme.cardColor,
-                  border: `1px solid ${activeTheme.borderColor}`,
-                }}
-                className="text-start text-sm  my-8 p-4 rounded-2xl"
-              >
-                <p
-                  className="editor-content"
-                  dangerouslySetInnerHTML={{
-                    __html: project?.description as string,
-                  }}
-                />
-              </Card>
+            <div className="w-full flex flex-col items-center justify-center lg:w-[50%] relative">
               {project?.ImagesList ? (
                 <div className="w-full flex flex-col items-center justify-center gap-4">
                   {project?.ImagesList.map((image) => {
@@ -122,7 +107,7 @@ function ProjectDetails() {
                 backgroundColor: activeTheme.cardColor,
                 border: `1px solid ${activeTheme.borderColor}`,
               }}
-              className="w-full lg:w-[40%] lg:sticky right-0 lg:top-20 px-4 py-8 lg:space-y-8 space-y-2"
+              className="w-full lg:w-[50%] lg:sticky right-0 lg:top-20 px-4 py-8 lg:space-y-4 space-y-2"
             >
               <h2
                 style={{
@@ -140,6 +125,7 @@ function ProjectDetails() {
                   alt={project?.title}
                 />
               </div>
+
               <div>
                 {project?.tags && (
                   <div className="flex items-center justify-start flex-wrap gap-2">
@@ -160,6 +146,17 @@ function ProjectDetails() {
                     })}
                   </div>
                 )}
+              </div>
+              <div
+                style={{ color: activeTheme.secondaryText }}
+                className="w-full  flex items-center justify-center"
+              >
+                <p
+                  className="editor-content"
+                  dangerouslySetInnerHTML={{
+                    __html: project?.description as string,
+                  }}
+                />
               </div>
 
               {project?.source && (

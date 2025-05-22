@@ -8,7 +8,7 @@ const BUCKET_DOMAIN = import.meta.env.VITE_BUCKET_DOMAIN as string;
 function Resume() {
   const { isLogged, user } = useAuth();
   const { activeTheme } = useTheme();
-  const resumeUrl = `${BUCKET_DOMAIN}/${user && user?.resume}`;
+  const resumeUrl = `${BUCKET_DOMAIN}/${user?.resume}`;
 
   return (
     <>

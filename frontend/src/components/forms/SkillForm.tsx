@@ -165,7 +165,7 @@ function SkillForm() {
               )}
             </Card>
             <SubmitButton loading={isSubmitting} type="submit">
-              Submit
+              create skill
             </SubmitButton>
           </form>
         )}

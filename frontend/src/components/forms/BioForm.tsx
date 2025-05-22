@@ -73,9 +73,9 @@ function BioForm() {
                 }
                 const data = await response.json();
 
+                toast.success(data.message);
                 reset();
-                toast.success("bio info was updated success!!");
-                return data;
+                return data.data;
               } catch (err) {
                 toast.error((err as Error).message);
                 return;
@@ -152,7 +152,7 @@ function BioForm() {
               loading={isSubmitting}
               type="submit"
             >
-              Submit
+              save changes
             </SubmitButton>
           </form>
         )}

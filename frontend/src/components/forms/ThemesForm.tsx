@@ -1,6 +1,7 @@
 import { useTheme } from "@/contexts/ThemeProvider"; // import { Card } from "../ui/card";
 import ThemeCard from "../cards/ThemeCard";
 import { easeInOut, motion } from "motion/react";
+import { Card } from "../ui/card";
 
 function ThemesForm() {
   const { activeTheme, themesList, switchTheme } = useTheme();
@@ -18,30 +19,43 @@ function ThemesForm() {
         />
       </div>
 
-      <h1 className="p-4 text-2xl font-semibold">Available Themes</h1>
       <div className="p-4 flex justify-start items-start flex-wrap gap-4 w-3/4">
-        {themesList.map((theme) => {
-          return (
-            <motion.div
-              initial={{ scale: 0.9 }}
-              whileHover={{ scale: 1 }}
-              transition={{ duration: 0.1, ease: easeInOut }}
-              onClick={() => switchTheme({ newActiveTheme: theme })}
-              role="button"
-              className="cursor-pointer duration-150 hover:opacity-75"
-              key={theme.id}
+        {themesList?.length > 0 ? (
+          <div className="w-full flex flex-col gap-4 justify-start items-start">
+            <h1 className="p-4 text-2xl font-semibold">Available Themes</h1>
+            {themesList.map((theme) => {
+              return (
+                <motion.div
+                  initial={{ scale: 0.9 }}
+                  whileHover={{ scale: 1 }}
+                  transition={{ duration: 0.1, ease: easeInOut }}
+                  onClick={() => switchTheme({ newActiveTheme: theme })}
+                  role="button"
+                  className="cursor-pointer duration-150 hover:opacity-75"
+                  key={theme.id}
+                >
+                  <ThemeCard
+                    id={theme.id}
+                    backgroundColor={theme.backgroundColor}
+                    cardColor={theme.cardColor}
+                    primaryText={theme.primaryText}
+                    secondaryText={theme.secondaryText}
+                    borderColor={theme.borderColor}
+                  />
+                </motion.div>
+              );
+            })}
+          </div>
+        ) : (
+          <Card className="p-4 flex justify-center items-center">
+            <p
+              style={{ color: activeTheme.secondaryText }}
+              className="text-sm font-semibold"
             >
-              <ThemeCard
-                id={theme.id}
-                backgroundColor={theme.backgroundColor}
-                cardColor={theme.cardColor}
-                primaryText={theme.primaryText}
-                secondaryText={theme.secondaryText}
-                borderColor={theme.borderColor}
-              />
-            </motion.div>
-          );
-        })}
+              There is no other themes are available right now
+            </p>
+          </Card>
+        )}
       </div>
     </div>
   );

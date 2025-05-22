@@ -145,7 +145,7 @@ function ContactForm() {
         loading={isSubmitting}
         type="submit"
       >
-        Submit
+        save changes
       </SubmitButton>
     </form>
   );
