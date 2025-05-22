@@ -1,22 +1,24 @@
 import express from "express";
 import prisma from "../database/db.js";
-import checkUser from "../middlewares/checkUser.js";
-import Exceptions from "../handlers/Exceptions.js";
-import jwt from "jsonwebtoken";
+import Exceptions from "../utils/Exceptions.js";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
 const router = express.Router();
 
-router.post("/user", checkUser, async (req, res) => {
+const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
+
+router.post("/user", verifyAccessToken, async (req, res) => {
   try {
-    const payload = req.body;
-    console.log(payload);
-    const userInfo = await prisma.users.findUnique({
-      where: { id: payload.id },
+    const user = req.user;
+    console.log(user.id);
+    const userInfo = await prisma.users.findFirst({
+      where: { id: user.id },
       select: {
         id: true,
         name: true,
         email: true,
         role: true,
+        Bio: true,
         ExperiencesList: true,
         ProjectsList: true,
         SkillsList: true,
@@ -24,31 +26,26 @@ router.post("/user", checkUser, async (req, res) => {
     });
     const bio = await prisma.bio.findFirst({
       where: {
-        usersId: payload.id,
+        usersId: user.id,
       },
     });
     const contacts = await prisma.contacts.findFirst({
       where: {
-        usersId: payload.id,
+        usersId: user.id,
       },
     });
     const layouts = await prisma.layouts.findFirst({
       where: {
-        usersId: payload.id,
+        usersId: user.id,
       },
     });
-    const newToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
-      expiresIn: "7d",
-    });
-    res.cookie("accessToken", newToken, { maxAge: 604800000 }); // expires in 7 days
-
     return res.status(200).json({ ...userInfo, bio, layouts, contacts });
   } catch (error) {
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });
 
-router.get("/:userId/user", async (req, res) => {
+router.get("/user/:userId", async (req, res) => {
   const { userId } = req.params;
   try {
     const user = await prisma.users.findFirst({
@@ -62,47 +59,46 @@ router.get("/:userId/user", async (req, res) => {
         resume: true,
         role: true,
         ExperiencesList: true,
-        ProjectsList: true,
+        ProjectsList: {
+          select: {
+            id: true,
+            thumbnail: true,
+            title: true,
+            description: true,
+            tags: true,
+            ImagesList: true,
+            source: true,
+            updatedAt: true,
+            createdAt: true,
+          },
+        },
         SkillsList: true,
         Testimonials: true,
         createdAt: true,
       },
     });
-    if (!user) {
-      return res
-        .status(404)
-        .json(new Exceptions(404, "this user doesn't exist"));
-    } else {
-      const bioInfo = await prisma.bio.findFirst({
-        where: {
-          usersId: userId,
-        },
-      });
-      const contacts = await prisma.contacts.findFirst({
-        where: {
-          usersId: userId,
-        },
-      });
-      const layouts = await prisma.layouts.findFirst({
-        where: {
-          usersId: userId,
-        },
-      });
+    const bio = await prisma.bio.findFirst({
+      where: {
+        usersId: userId,
+      },
+    });
 
-      const bio = {
-        ...bioInfo,
-        heroImage: `${process.env.AWS_S3_BUCKET_DOMAIN}/${bioInfo.heroImage}`,
-      };
-
-      const newToken = jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
-        expiresIn: "7d",
-      });
-
-      res.cookie("accessToken", newToken, { maxAge: 604800000 }); // expires in 7 days
-
-      return res.status(200).json({ ...user, bio, contacts, layouts });
-    }
+    const contacts = await prisma.contacts.findFirst({
+      where: {
+        usersId: userId,
+      },
+    });
+    const layouts = await prisma.layouts.findFirst({
+      where: {
+        usersId: userId,
+      },
+    });
+    return res.status(200).json({
+      data: { user, bio, layouts, contacts },
+      message: "geting user data success ",
+    });
   } catch (error) {
+    console.log(error.message);
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });

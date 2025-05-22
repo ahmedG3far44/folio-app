@@ -1,13 +1,16 @@
 import express from "express";
 import prisma from "../database/db.js";
-import Exceptions from "../handlers/Exceptions.js";
-import { contactsSchema } from "../schemas/validationSchemas.js";
+import Exceptions from "../utils/Exceptions.js";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+
+import { contactsSchema } from "../utils/schemas.js";
 
 const router = express.Router();
 
 router.get("/:userId/contacts", async (req, res) => {
   try {
     const { userId } = req.params;
+
     if (!userId) {
       return res.status(400).json(new Exceptions(400, "not valid user"));
     }
@@ -17,18 +20,23 @@ router.get("/:userId/contacts", async (req, res) => {
         usersId: userId,
       },
     });
+
     console.log("get user contacts");
+
     return res.status(200).json(contacts);
   } catch (error) {
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });
 
-router.put("/:userId/contacts/:contactsId", async (req, res) => {
+router.put("/contacts/:contactsId", verifyAccessToken, async (req, res) => {
   try {
-    const { userId, contactsId } = req.params;
+    const user = req.user;
     const payload = req.body;
+    const { contactsId } = req.params;
+
     const validContactsUrls = contactsSchema.safeParse(payload);
+
     if (!validContactsUrls.success) {
       return res
         .status(400)
@@ -37,7 +45,7 @@ router.put("/:userId/contacts/:contactsId", async (req, res) => {
 
     await prisma.contacts.update({
       where: {
-        usersId: userId,
+        usersId: user.id,
         id: contactsId,
       },
       data: {
@@ -45,11 +53,20 @@ router.put("/:userId/contacts/:contactsId", async (req, res) => {
       },
     });
     console.log("contacts info updated");
-    return res
+    const newContact = await prisma.contacts.findFirst({
+      where: {
+        usersId: user.id,
+        id: contactsId,
+      },
+    });
+    res
       .status(200)
-      .json(new Exceptions(200, "contact information was updated successful."));
+      .json({
+        data: newContact,
+        message: "contact information was updated successful.",
+      });
   } catch (error) {
-    return res.status(500).json(new Exceptions(500, error.message));
+    res.status(500).json(new Exceptions(500, error.message));
   }
 });
 

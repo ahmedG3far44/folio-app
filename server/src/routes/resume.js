@@ -1,15 +1,39 @@
 import express from "express";
-import checkAccessUser from "../middlewares/checkAccessUser.js";
-import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import prisma from "../database/db.js";
 import s3Client from "../s3/s3Client.js";
-import { PutObjectCommand, GetObjectCommand } from "@aws-sdk/client-s3";
-import { changeToSlug, upload } from "./skills.js";
-import dotenv from "dotenv";
-import Exceptions from "../handlers/Exceptions.js";
-dotenv.config();
+import Exceptions from "../utils/Exceptions.js";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+
+import { upload } from "./skills.js";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 const router = express.Router();
+
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
+
+router.get("/resume", verifyAccessToken, async (req, res) => {
+  try {
+    const user = req.user;
+    const resumeUrl = await prisma.users.findUnique({
+      where: {
+        id: user.id,
+      },
+      select: {
+        resume: true,
+      },
+    });
+    if (!resumeUrl.resume) {
+      return res.status(404).json(new Exceptions(404, "not found item"));
+    }
+    return res.status(200).json({
+      resume: `${BUCKET_DOMAIN}/${resumeUrl.resume}`,
+    });
+  } catch (error) {
+    return res.status(200).json(new Exceptions(500, error.message));
+  }
+});
+
 router.get("/:userId/resume", async (req, res) => {
   try {
     const { userId } = req.params;
@@ -31,49 +55,36 @@ router.get("/:userId/resume", async (req, res) => {
     return res.status(200).json(new Exceptions(500, error.message));
   }
 });
+
 router.post(
-  "/:userId/resume",
-  checkAccessUser,
-  upload.single("cv-file"),
+  "/resume",
+  verifyAccessToken,
+  upload.single("resume"),
   async (req, res) => {
-    const { userId } = req.params;
+    const user = req.user;
     const resumeFile = req.file;
     let resumeKeyName;
+
     console.log(resumeFile);
+
     if (!validResumeFile(resumeFile)) {
-      return res
-        .status(400)
-        .json(
-          new Exceptions(
-            400,
-            "file type that you uploaded not accepted, maybe the type file not supported or the file size is more than 4MB."
-          )
-        );
+      throw new Error("resume format not accepted!!");
     }
-    resumeKeyName = `${userId}/cv/${crypto.randomUUID()}`;
+    resumeKeyName = `resume-${crypto.randomUUID()}`;
 
     const command = new PutObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Bucket: BUCKET_NAME,
       Key: resumeKeyName,
       Body: resumeFile.buffer,
       ContentType: resumeFile.mimetype,
     });
     try {
-      await s3Client
-        .send(command)
-        .then(() => {
-          console.log("uploaded cv success");
-        })
-        .catch((error) => {
-          console.log("cv file not uploaded");
-          return res
-            .status(200)
-            .send({ error: "not upload", message: error.message });
-        });
+      await s3Client.send(command);
+      console.log("uploaded cv success");
 
       const resume = await prisma.users.update({
         where: {
-          id: userId,
+          id: user.id,
         },
         data: {
           resume: resumeKeyName,
@@ -83,79 +94,72 @@ router.post(
           resume: true,
         },
       });
-      const url = `${process.env.AWS_S3_BUCKET_DOMAIN}/${resumeKeyName}`;
+      const url = `${BUCKET_DOMAIN}/${resumeKeyName}`;
       console.log("updated cv key in db");
       console.log(url);
-      return res.status(201).json({
+      res.status(201).json({
         success: "a cv file uploaded successfully",
         ...resume,
         url,
       });
     } catch (error) {
-      return res.status(500).json(new Exceptions(500, error.message));
+      res.status(500).json(new Exceptions(500, error.message));
     }
   }
 );
 
 router.put(
-  "/:userId/resume",
-  checkAccessUser,
-  upload.single("cv-file"),
+  "/resume",
+  verifyAccessToken,
+  upload.single("resume"),
   async (req, res) => {
-    const { userId } = req.params;
+    const user = req.user;
     const newCvFile = req.file;
 
     let newKey;
+
     console.log(newCvFile);
+
     if (!validResumeFile(newCvFile)) {
-      return res
-        .status(400)
-        .json(
-          new Exceptions(
-            400,
-            "file type that you uploaded not accepted, maybe the type file not supported or the file size is more than 4MB."
-          )
-        );
+      throw new Error("resume format not accepted!!");
     }
+
     console.log("accepted file type");
+
     const userCvKeyName = await prisma.users.findUnique({
       where: {
-        id: userId,
+        id: user.id,
       },
       select: {
         resume: true,
       },
     });
     newKey = userCvKeyName.resume;
-    console.log(newKey, "old cv key");
 
     if (!userCvKeyName.resume) {
-      return res
-        .status(404)
-        .json(new Exceptions(404, "this file doesn't found"));
+      throw new Error("user cv not found");
     }
 
-    const updateResumeCommand = new PutObjectCommand({
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: newKey,
-      Body: newCvFile.buffer,
-      ContentType: newCvFile.mimetype,
-    });
     try {
+      const command = new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: newKey,
+        Body: newCvFile.buffer,
+        ContentType: newCvFile.mimetype,
+      });
       await s3Client
-        .send(updateResumeCommand)
+        .send(command)
         .then(() => {
           console.log(`updated cv ${newKey} success`);
         })
         .catch((error) => {
-          console.log("error cv file not updated");
           return res
             .status(200)
             .send({ error: "not upload", message: error.message });
         });
 
-      const url = `${process.env.AWS_S3_BUCKET_DOMAIN}/${newKey}`;
-      console.log(url);
+      const url = `${BUCKET_DOMAIN}/${newKey}`;
+
       return res.status(201).json({
         success: "a cv file updated",
         url,

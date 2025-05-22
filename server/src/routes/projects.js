@@ -1,88 +1,97 @@
+import sharp from "sharp";
 import express from "express";
 import prisma from "../database/db.js";
-import Exceptions from "../handlers/Exceptions.js";
-import checkAccessUser from "../middlewares/checkAccessUser.js";
-import { projectSchema } from "../schemas/validationSchemas.js";
+import Exceptions from "../utils/Exceptions.js";
 import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
-import { upload } from "./skills.js";
 import s3Client from "../s3/s3Client.js";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import getImageKey from "../utils/getImageKey.js";
+
+import { upload } from "./skills.js";
+import { projectSchema } from "../utils/schemas.js";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-// import sharp from "sharp";
-// import resizedImage from "../handlers/resizeImage.js";
-import dotenv from "dotenv";
-dotenv.config();
+
+const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
 const router = express.Router();
 
 router.post(
-  "/:userId/project",
+  "/project",
+  verifyAccessToken,
   upload.any(),
   checkUploadImageFormat,
   async (req, res) => {
     try {
+      const user = req.user;
       const payload = req.body;
-      const { userId } = req.params;
-      const projectImages = req.files;
-      const projectId = crypto.randomUUID();
+      const images = req.files;
       let keysArray = [];
+
+      console.log(user);
+      console.log(payload);
 
       const projectNumbers = await prisma.projects.count({
         where: {
-          usersId: userId,
+          usersId: user.id,
         },
       });
 
       if (projectNumbers > 10) {
-        return res
-          .status(400)
-          .json(
-            new Exceptions(
-              400,
-              "you where not be able to add more than 10 projects"
-            )
-          );
+        throw new Error("your are not able to add more  than 10 project!!");
       }
 
       const validProjectData = projectSchema.safeParse(payload);
 
       if (!validProjectData?.success) {
+        console.log(validProjectData.error.flatten().fieldErrors);
         return res
           .status(400)
           .json(new Exceptions(400, "not valid project data."));
       }
 
-      console.log(projectImages);
+      console.log(images);
 
       console.log(validProjectData.data);
 
       const { title, description, sourceUrl, tags } = validProjectData?.data;
-
+      console.log(title, description, sourceUrl, tags);
       let thumbnailKey;
       let imageKey;
-      projectImages.map(async (image, index) => {
-        if (image.fieldname === "images") {
-          imageKey = `${userId}/projects/${projectId}/photo-${index + 1}`;
+      for (const image of images) {
+        if (image.fieldname === "image") {
+          imageKey = `${crypto.randomUUID()}`;
           keysArray.push(imageKey);
         } else {
-          thumbnailKey = `${userId}/projects/${projectId}/thumbnail-photo`;
+          thumbnailKey = `${crypto.randomUUID()}`;
         }
-        await uploadToS3(
-          image,
-          image.fieldname === "images" ? imageKey : thumbnailKey
-        );
-      });
 
-      const project = await prisma.projects.create({
+        try {
+          await s3Client.send(
+            new PutObjectCommand({
+              Bucket: BUCKET_NAME,
+              Key: image.fieldname === "image" ? imageKey : thumbnailKey,
+              Body: image.buffer,
+              ContentType: image.mimetype,
+            })
+          );
+        } catch (err) {
+          res
+            .status(500)
+            .json({ erro: "uploadin error", message: err.message });
+        }
+      }
+      await prisma.projects.create({
         data: {
           title,
           description,
-          thumbnail: `${process.env.AWS_S3_BUCKET_DOMAIN}/${thumbnailKey}`,
+          thumbnail: `${BUCKET_DOMAIN}/${thumbnailKey}`,
           source: sourceUrl,
           ImagesList: {
             createMany: {
               data: keysArray.map((url) => {
                 return {
-                  url: `${process.env.AWS_S3_BUCKET_DOMAIN}/${url}`,
+                  url: `${BUCKET_DOMAIN}/${url}`,
                 };
               }),
             },
@@ -96,23 +105,110 @@ router.post(
               }),
             },
           },
-          usersId: userId,
+          usersId: user.id,
         },
       });
       console.log("project basic info was created ");
-      console.log(keysArray);
-      return res
-        .status(201)
-        .json(new Exceptions(201, "a new project was created"));
+      const newProject = await prisma.projects.findMany({
+        where: {
+          usersId: user.id,
+        },
+      });
+      res.status(201).json({
+        data: newProject,
+        message: "a new project was created.",
+      });
     } catch (error) {
-      return res.status(500).json(new Exceptions(500, error.message));
+      res.status(500).json(new Exceptions(500, error.message));
     }
   }
 );
 
+router.get("/project", verifyAccessToken, async (req, res) => {
+  try {
+    const user = req.user;
+
+    if (!user) throw new Error("user not found!!");
+
+    const projectsList = await prisma.projects.findMany({
+      where: {
+        usersId: user.id,
+      },
+      select: {
+        id: true,
+        title: true,
+        thumbnail: true,
+        description: true,
+        source: true,
+        tags: {
+          select: {
+            id: true,
+            tagName: true,
+          },
+        },
+        ImagesList: {
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+        likes: true,
+        views: true,
+      },
+    });
+
+    if (!projectsList) throw new Error("not found projects!!");
+
+    res.status(200).json(projectsList);
+  } catch (error) {
+    res.status(500).json(new Exceptions(500, error.message));
+  }
+});
+
+router.get("/project/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) throw new Error("project id not valid !!");
+
+    const project = await prisma.projects.findUnique({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        title: true,
+        thumbnail: true,
+        description: true,
+        source: true,
+        tags: {
+          select: {
+            id: true,
+            tagName: true,
+          },
+        },
+        ImagesList: {
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+        likes: true,
+        views: true,
+      },
+    });
+
+    if (!project) throw new Error("not found projects!!");
+
+    res.status(200).json(project);
+  } catch (error) {
+    res.status(500).json(new Exceptions(500, error.message));
+  }
+});
+
 router.get("/:userId/project/:projectId", async (req, res) => {
   try {
-    const { userId, projectId } = req.params;
+    const { projectId, userId } = req.params;
 
     const project = await prisma.projects.findUnique({
       where: {
@@ -151,200 +247,168 @@ router.get("/:userId/project/:projectId", async (req, res) => {
   }
 });
 
-router.get("/:userId/project", async (req, res) => {
-  try {
-    const { userId } = req.params;
-
-    const projectsList = await prisma.projects.findMany({
-      where: {
-        usersId: userId,
-      },
-      select: {
-        id: true,
-        title: true,
-        thumbnail: true,
-        description: true,
-        tags: {
-          select: {
-            id: true,
-            tagName: true,
-          },
-        },
-        ImagesList: {
-          select: {
-            id: true,
-            url: true,
-          },
-        },
-        likes: true,
-        views: true,
-      },
-    });
-    if (!projectsList) {
-      return res
-        .status(404)
-        .json(new Exceptions(404, "this project doesn't exist"));
-    }
-    return res.status(200).json(projectsList);
-  } catch (error) {
-    return res.status(500).json(new Exceptions(500, error.message));
-  }
-});
-
-router.put("/:userId/project/:projectId", checkAccessUser, async (req, res) => {
-  try {
-    const { userId, projectId } = req.params;
-    const payload = req.body;
-    const validProjectData = projectSchema.safeParse(payload);
-    if (!validProjectData.success) {
-      return res
-        .status(404)
-        .json(new Exceptions(404, "Bad request not a valid data."));
-    }
-
-    //==============================================
-    const { title, thumbnail, likes, views, description } =
-      validProjectData.data;
-    await prisma.projects.update({
-      where: {
-        id: projectId,
-        usersId: userId,
-      },
-      data: {
-        title,
-        thumbnail,
-        description,
-        likes,
-        views,
-      },
-    });
-
-    return res
-      .status(200)
-      .json(new Exceptions(200, "updated project info success."));
-  } catch (error) {
-    return res.status(500).json(new Exceptions(500, error.message));
-  }
-});
-
-router.delete(
-  "/:userId/project/:projectId",
-  checkAccessUser,
+router.put(
+  "/project/:projectId",
+  verifyAccessToken,
+  upload.none(),
   async (req, res) => {
-    const { userId, projectId } = req.params;
-
-    let deletedProjectImageUrls = [];
     try {
-      const project = await prisma.projects.findUnique({
-        where: {
-          id: projectId,
-          usersId: userId,
-        },
-        select: {
-          ImagesList: true,
-          id: true,
-          tags: true,
-          thumbnail: true,
-        },
-      });
+      const { projectId } = req.params;
+      const user = req.user;
+      const payload = req.body;
 
-      if (!project) {
+      const validProjectData = projectSchema.safeParse(payload);
+
+      if (!validProjectData.success) {
+        console.log(validProjectData.error.flatten().fieldErrors);
         return res
           .status(404)
-          .json(new Exceptions(404, "this project doesn't exist"));
+          .json(new Exceptions(404, "Bad request not a valid data."));
       }
-
-      // const deleteProjectImagesPath = project.thumbnail
-      //   .split("/")
-      //   .slice(0, 3)
-      //   .join("/");
-
-      deletedProjectImageUrls.push(splitImageUrl(project.thumbnail));
-
-      project.ImagesList.map((image) => {
-        let key = splitImageUrl(image?.url);
-        deletedProjectImageUrls.push(key);
-      });
-
-      console.log(deletedProjectImageUrls);
-
-      deletedProjectImageUrls.map(async (keyUrl) => {
-        const command = new DeleteObjectCommand({
-          Bucket: process.env.AWS_S3_BUCKET_NAME,
-          Key: keyUrl,
-        });
-
-        await s3Client
-          .send(command)
-          .then(async () => {
-            console.log(`${keyUrl}, was deleted from s3`);
-          })
-          .catch((s3Error) => {
-            return res.status(500).json(new Exceptions(500, s3Error.message));
-          });
-      });
-
-      await prisma.tags.deleteMany({
-        where: {
-          projectsId: projectId,
-        },
-      });
-      console.log("all tags deleted");
-      await prisma.imagesList.deleteMany({
-        where: {
-          projectsId: projectId,
-        },
-      });
-      console.log("all images deleted");
-
-      await prisma.projects.delete({
+      const { title, description, sourceUrl } = validProjectData.data;
+      await prisma.projects.update({
         where: {
           id: projectId,
-          usersId: userId,
+          usersId: user.id,
+        },
+        data: {
+          title,
+          description,
+          source: sourceUrl,
         },
       });
-      console.log("the project deleted successful");
-
-      return res
+      const newProject = await prisma.projects.findMany({
+        where: {
+          usersId: user.id,
+        },
+      });
+      res
         .status(200)
-        .json(new Exceptions(200, "project deleted successful"));
+        .json({ data: newProject, message: "updated project info success." });
     } catch (error) {
-      console.log(error.message);
-      return res.status(400).json(new Exceptions(400, error.message));
+      res.status(500).json(new Exceptions(500, error.message));
     }
   }
 );
 
+router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
+  const user = req.user;
+  const { projectId } = req.params;
+
+  let deletedProjectImageUrls = [];
+  try {
+    const project = await prisma.projects.findUnique({
+      where: {
+        id: projectId,
+        usersId: user.id,
+      },
+      select: {
+        ImagesList: true,
+        id: true,
+        tags: true,
+        thumbnail: true,
+      },
+    });
+
+    if (!project) {
+      throw new Error("This project doesn't exsit!!");
+    }
+
+    deletedProjectImageUrls.push(getImageKey(project.thumbnail));
+
+    project.ImagesList.map((image) => {
+      let key = getImageKey(image?.url);
+      deletedProjectImageUrls.push(key);
+    });
+
+    // console.log(deletedProjectImageUrls);
+
+    deletedProjectImageUrls.map(async (keyUrl) => {
+      const command = new DeleteObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: keyUrl,
+      });
+
+      try {
+        await s3Client.send(command);
+      } catch (err) {
+        res.status(500).json(new Exceptions(500, err.message));
+      }
+    });
+
+    await prisma.tags.deleteMany({
+      where: {
+        projectsId: projectId,
+      },
+    });
+
+    await prisma.imagesList.deleteMany({
+      where: {
+        projectsId: projectId,
+      },
+    });
+    console.log("all images deleted");
+
+    await prisma.projects.delete({
+      where: {
+        id: projectId,
+        usersId: user.id,
+      },
+    });
+    console.log("the project deleted successful");
+
+    const newProject = await prisma.projects.findMany({
+      where: {
+        usersId: user.id,
+      },
+    });
+
+    res
+      .status(200)
+      .json({ data: newProject, message: "project deleted successful." });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json(new Exceptions(500, error.message));
+  }
+});
+
 export default router;
 
 export async function uploadToS3(image, path) {
+  const result = await sharp(image.buffer)
+    .resize({
+      width: 800,
+      height: Math.round(800 * 0.5625),
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .toFormat("webp", {
+      quality: 80,
+      alphaQuality: 90,
+      effort: 6,
+    })
+    .toBuffer();
+
   const params = {
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Bucket: BUCKET_NAME,
     Key: path,
-    Body: image.buffer,
+    Body: result,
     ContentType: image.mimetype,
   };
+
   try {
     const command = new PutObjectCommand(params);
-    const uploadProjectImages = await s3Client
-      .send(command)
-      .then(() => {
-        console.log(
-          "image uploaded success",
-          image.originalname,
-          image.fieldname
-        );
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-    return uploadProjectImages;
+
+    const uploadProjectImages = await s3Client.send(command);
+
+    if (uploadProjectImages.$metadata.httpStatusCode !== 200) {
+      throw new Error("failed to upload img");
+    }
+
+    const imgURL = `${BUCKET_DOMAIN}/${path}`;
+    return imgURL;
   } catch (error) {
-    return console.log(error.message);
+    console.log(error.message);
+    return error;
   }
 }
-
-// function splitImageUrl(url) {
-//   let key = url.split(".com/")[1];
-//   return key;
-// }

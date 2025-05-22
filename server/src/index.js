@@ -4,24 +4,20 @@ import prisma from "./database/db.js";
 import rootRouter from "./routes/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-// import https from "https";
-// import fs from "fs";
+dotenv.config();
 
 const ENV = process.env.ENV;
-dotenv.config();
+const PORT = process.env.PORT;
+const LOCAL_CLIENT_URL = process.env.LOCAL_CLIENT_URL;
+const PRODUCTION_CLIENT_URL = process.env.PRODUCTION_CLIENT_URL;
 
 const app = express();
 
 const corsOptions = {
-  origin:
-    ENV === "development"
-      ? "http://localhost:3000"
-      : "https://presentoapp.kinde.com",
+  origin: ENV === "development" ? LOCAL_CLIENT_URL : PRODUCTION_CLIENT_URL,
   methods: "GET,POST, PUT, DELETE",
   allowedHeaders: ["Content-Type", "Authorization"],
 };
-
-
 
 prisma
   .$connect()
@@ -41,9 +37,10 @@ app.get("/", async (req, res) => {
   return res.send("APP is working....");
 });
 
-
-app.listen(process.env.PORT || 4000, () => {
-  console.log(`Server running on port ${process.env.PORT || 4000}`);
+app.listen(PORT, () => {
+  console.log(
+    `Server running on port ${PORT || 4000} calling ${
+      ENV === "development" ? LOCAL_CLIENT_URL : PRODUCTION_CLIENT_URL
+    }`
+  );
 });
-
-
