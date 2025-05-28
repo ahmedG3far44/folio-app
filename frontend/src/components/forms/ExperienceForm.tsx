@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { XIcon } from "lucide-react";
+import { CirclePlus, XIcon } from "lucide-react";
 
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
@@ -57,7 +57,13 @@ function ExperienceForm() {
         <div className="w-full flex justify-between items-center">
           <h1>Experience Form</h1>
           <Button onClick={() => setIsOpen(!isOpen)}>
-            {!isOpen ? "create Experience" : "cancel"}
+            {!isOpen ? (
+              <>
+                <CirclePlus size={20} /> {"add experience"}
+              </>
+            ) : (
+              "cancel"
+            )}
           </Button>
         </div>
         {isOpen && (
@@ -139,13 +145,12 @@ function ExperienceForm() {
                       alt="company logo image"
                     />
                     {!isSubmitting && (
-                      <Button
+                      <button
                         type="button"
-                        variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                         onClick={() => {
+                          setFile(null);
                           if (updateThisExperience) {
-                            setFile(null);
                             setUpdateThisExperience({
                               ...updateThisExperience,
                             });
@@ -153,7 +158,7 @@ function ExperienceForm() {
                         }}
                       >
                         <XIcon size={20} />
-                      </Button>
+                      </button>
                     )}
                   </div>
                 ) : (

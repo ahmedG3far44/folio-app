@@ -34,7 +34,9 @@ function UserPage() {
     setContacts,
     setProjects,
     setLayouts,
+    setTheme,
   } = useUser();
+  // const { setThemesList } = useTheme();
 
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -61,6 +63,7 @@ function UserPage() {
         setTestimonials(user.Testimonials);
         setContacts({ ...contacts });
         setLayouts({ ...layouts });
+        setTheme({ ...user.theme });
       })
       .catch((err) => {
         setError(err.message);

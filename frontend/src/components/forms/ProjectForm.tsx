@@ -4,7 +4,7 @@ import { projectSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { XIcon } from "lucide-react";
+import { CirclePlus, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
@@ -109,7 +109,13 @@ function ProjectForm() {
         <div className="w-full flex justify-between items-center">
           <h1>Project Form</h1>
           <Button onClick={() => setIsOpen(!isOpen)}>
-            {!isOpen ? "create project" : "cancel"}
+            {!isOpen ? (
+              <>
+                <CirclePlus size={20} /> {"add project"}
+              </>
+            ) : (
+              "cancel"
+            )}
           </Button>
         </div>
         {isOpen && !isUpdating && (
@@ -179,10 +185,9 @@ function ProjectForm() {
                       alt="company logo image"
                     />
                     {!isSubmitting && (
-                      <Button
+                      <button
                         type="button"
-                        variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                         onClick={() => {
                           if (updatedProject)
                             setUpdatedProject({
@@ -193,7 +198,7 @@ function ProjectForm() {
                         }}
                       >
                         <XIcon size={20} />
-                      </Button>
+                      </button>
                     )}
                   </div>
                 ) : (
@@ -233,10 +238,9 @@ function ProjectForm() {
                               alt="company logo image"
                             />
                             {!isSubmitting && (
-                              <Button
-                                variant={"destructive"}
+                              <button
                                 type="button"
-                                className="cursor-pointer z-[50] hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
+                                className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                                 onClick={() => {
                                   if (updatedProject) {
                                     setUpdatedProject({
@@ -271,7 +275,7 @@ function ProjectForm() {
                                 }}
                               >
                                 <XIcon size={20} />
-                              </Button>
+                              </button>
                             )}
                           </div>
                         );
@@ -393,7 +397,7 @@ function ProjectForm() {
                           {!isSubmitting && (
                             <button
                               type="button"
-                              className="bg-red-500 hover:bg-red-700  text-white p-2 rounded-full cursor-pointer duration-150 absolute -top-2 -right-4  flex items-center justify-center"
+                              className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                               onClick={() =>
                                 setTags([
                                   ...tags.filter(

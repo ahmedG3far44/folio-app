@@ -29,7 +29,7 @@ function ThemesForm() {
         </>
       </div>
 
-      <div className="p-4 flex justify-start items-start flex-wrap gap-4 w-3/4">
+      <div className="p-4 flex justify-start flex-col items-start flex-wrap gap-4 w-3/4">
         <h1 className="p-4 text-2xl font-semibold">Available Themes</h1>
         {themesList?.length > 0 ? (
           <div className="grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  my-4">

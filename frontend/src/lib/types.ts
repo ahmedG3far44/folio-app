@@ -27,6 +27,7 @@ export interface UserInfoContextType {
   testimonials: ITestimonialType[];
   layouts: ILayoutType;
   contacts: IContactType;
+  theme: IThemeType;
   pending: boolean;
   error: string;
   setLayouts: (newLayout: ILayoutType) => void;
@@ -38,6 +39,7 @@ export interface UserInfoContextType {
   setSkills: (newSkill: ISkillType[]) => void;
   setTestimonials: (newTestimonials: ITestimonialType[]) => void;
   setContacts: (contacts: IContactType) => void;
+  setTheme: (theme: IThemeType) => void;
 }
 
 export interface IBioType {
@@ -131,11 +133,7 @@ export interface ThemeContextType {
   activeTheme: IThemeType;
   themesList: IThemeType[];
   switchTheme: ({ newActiveTheme }: { newActiveTheme: IThemeType }) => void;
-  setThemesList: ({
-    newActiveTheme,
-  }: {
-    newActiveTheme?: IThemeType[] | IThemeType;
-  }) => void;
+  setThemesList: ({ newActiveTheme }: { newActiveTheme?: IThemeType }) => void;
   loading: boolean;
 }
 

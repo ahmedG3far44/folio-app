@@ -68,7 +68,7 @@ function LoginPage() {
 
   return (
     <div className="bg-zinc-950 w-full min-h-screen flex items-center justify-center">
-      <Card className="px-4 py-8 text-white shadow-lg bg-zinc-900">
+      <Card className="p-8 text-white shadow-lg bg-zinc-900">
         <CardTitle className="flex items-center justify-center flex-col gap-2 my-8">
           <Logo />
           <h1 className="text-lg font-bold">
@@ -76,7 +76,7 @@ function LoginPage() {
           </h1>
         </CardTitle>
         <form
-          className="w-[400px] flex flex-col items-start gap-4  "
+          className="w-[400px] flex flex-col items-start gap-4   "
           onSubmit={handleLogin}
         >
           {error && <ErrorMessage message={error} className={"text-center"} />}

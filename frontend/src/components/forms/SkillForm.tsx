@@ -8,7 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import ErrorMessage from "../ErrorMessage";
 import { useAuth } from "@/contexts/AuthProvider";
-import { XIcon } from "lucide-react";
+import { CirclePlus, XIcon } from "lucide-react";
 import toast from "react-hot-toast";
 
 import UploadHere from "../cards/UploadHere";
@@ -47,7 +47,13 @@ function SkillForm() {
         <div className="flex justify-between items-center w-full mb-4">
           <h1>Skill Form</h1>
           <Button onClick={() => setIsOpen(!isOpen)}>
-            {!isOpen ? "create skill" : "cancel"}
+            {!isOpen ? (
+              <>
+                <CirclePlus size={20} /> {"add skill"}
+              </>
+            ) : (
+              "cancel"
+            )}
           </Button>
         </div>
         {isOpen && (
@@ -83,9 +89,9 @@ function SkillForm() {
                 toast.error((err as Error).message);
                 return;
               } finally {
-                setIsOpen(false);
-                setFile(null);
                 reset();
+                setFile(null);
+                setIsOpen(false);
                 setIsUpdating(false);
               }
             })}
@@ -110,13 +116,12 @@ function SkillForm() {
                       alt="company logo image"
                     />
                     {!isSubmitting && (
-                      <Button
+                      <button
                         type="button"
-                        variant={"destructive"}
-                        className="cursor-pointer hover:opacity-70 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                         onClick={() => {
+                          setFile(null);
                           if (updateSkill) {
-                            setFile(null);
                             setUpdateSkill({
                               ...updateSkill,
                               skillLogo: "",
@@ -125,7 +130,7 @@ function SkillForm() {
                         }}
                       >
                         <XIcon size={20} />
-                      </Button>
+                      </button>
                     )}
                   </div>
                 ) : (
@@ -198,7 +203,7 @@ function SkillForm() {
                         setUpdateSkill({ ...skill });
                         setIsOpen(true);
                         setIsUpdating(true);
-                          }}
+                      }}
                     />
                   );
                 })}

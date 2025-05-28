@@ -78,7 +78,7 @@ function SignUpPage() {
   };
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-zinc-950 ">
-      <Card className="px-4 py-8 bg-zinc-700 text-white">
+      <Card className="p-8 bg-zinc-700 text-white">
         <CardTitle className="flex items-center justify-center flex-col gap-2 my-8">
           <Logo />
           <h1 className="text-lg font-bold text-start">

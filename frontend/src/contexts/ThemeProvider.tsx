@@ -1,4 +1,5 @@
-import { IThemeType, ThemeContextType } from "@/lib/types";
+import { IThemeType } from "@/lib/types";
+import { Dispatch, SetStateAction } from "react";
 import {
   createContext,
   FC,
@@ -9,8 +10,21 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import toast from "react-hot-toast";
+import { useUser } from "./UserProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+
+interface ThemeContextType {
+  activeTheme: IThemeType;
+  themesList: IThemeType[] | [];
+  switchTheme: ({
+    newActiveTheme,
+  }: {
+    newActiveTheme: IThemeType;
+  }) => Promise<IThemeType | undefined>;
+  setThemesList: Dispatch<SetStateAction<IThemeType[] | []>>;
+  loading: boolean;
+}
 
 const ThemeContext = createContext<ThemeContextType>({
   activeTheme: {
@@ -23,15 +37,16 @@ const ThemeContext = createContext<ThemeContextType>({
     borderColor: "#4E7D53",
   },
   themesList: [],
-  switchTheme: () => {},
+  switchTheme: () => Promise.resolve(undefined),
   setThemesList: () => {},
   loading: false,
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
+  const { theme } = useUser();
   const localTheme = JSON.parse(localStorage.getItem("theme")!);
-  const [theme, setActiveTheme] = useState<IThemeType>(
-    localTheme ? localTheme : user.theme
+  const [userTheme, setActiveTheme] = useState<IThemeType>(
+    localTheme ? localTheme : theme
   );
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -63,7 +78,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
     }
 
     getThemesList();
-  }, [user, theme]);
+  }, [user, userTheme]);
   const switchTheme = async ({
     newActiveTheme,
   }: {
@@ -100,7 +115,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   return (
     <ThemeContext.Provider
       value={{
-        activeTheme: theme,
+        activeTheme: userTheme,
         themesList,
         switchTheme,
         setThemesList,

@@ -3,7 +3,7 @@ import { useUser } from "@/contexts/UserProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 
-import { ClipboardCheck, Copy } from "lucide-react";
+import { ClipboardCheck, Copy, Link2 } from "lucide-react";
 
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
@@ -60,7 +60,7 @@ function TestimonialsForm() {
                 setUrl(`${protocol}//${host}/feedback/${user.id}`);
               }}
             >
-              generate your link
+              <Link2 size={20} /> generate your link
             </Button>
           </div>
         )}
