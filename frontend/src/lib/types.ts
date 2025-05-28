@@ -7,6 +7,7 @@ export interface IUserType {
   picture: string | null;
   role: string | "USER" | "ADMIN";
   resume: string;
+  theme: IThemeType | null;
 }
 
 export interface IAuthContextType {
@@ -111,11 +112,13 @@ export interface UploadFileType {
 }
 export interface IThemeType {
   id?: string;
+  themeName: string;
   backgroundColor: string;
   cardColor: string;
   primaryText: string;
   secondaryText: string;
   borderColor: string;
+  usersId?: string;
 }
 
 export interface IFeatureType {
@@ -128,6 +131,12 @@ export interface ThemeContextType {
   activeTheme: IThemeType;
   themesList: IThemeType[];
   switchTheme: ({ newActiveTheme }: { newActiveTheme: IThemeType }) => void;
+  setThemesList: ({
+    newActiveTheme,
+  }: {
+    newActiveTheme?: IThemeType[] | IThemeType;
+  }) => void;
+  loading: boolean;
 }
 
 export interface IActiveLayout {

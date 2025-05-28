@@ -112,3 +112,42 @@ export const feedbackSchema = z.object({
     .min(1, { message: "this field is required" })
     .max(100, { message: "too long input field" }),
 });
+
+export const themeSchema = z.object({
+  themeName: z
+    .string()
+    .min(1, {
+      message: "short input field",
+    })
+    .max(30, { message: "long input field!!" }),
+  backgroundColor: z
+    .string()
+    .min(1, {
+      message: "short input field",
+    })
+    .max(10, { message: "long input field!!" }),
+  cardColor: z
+    .string()
+    .min(1, {
+      message: "short input field",
+    })
+    .max(10, { message: "long input field!!" }),
+  primaryText: z
+    .string()
+    .min(1, {
+      message: "short input field",
+    })
+    .max(10, { message: "long input field!!" }),
+  secondaryText: z
+    .string()
+    .min(1, {
+      message: "short input field",
+    })
+    .max(10, { message: "long input field!!" }),
+  borderColor: z
+    .string()
+    .min(1, {
+      message: "short input field",
+    })
+    .max(10, { message: "long input field!!" }),
+});

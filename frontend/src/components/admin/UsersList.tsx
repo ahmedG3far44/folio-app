@@ -1,10 +1,11 @@
+import { Link } from "react-router-dom";
 import { useAdmin } from "@/contexts/AdminProvider";
+import { useTheme } from "@/contexts/ThemeProvider";
+
+import { Card } from "../ui/card";
+
 import Loader from "../loader";
 import ErrorMessage from "../ErrorMessage";
-import { Card } from "../ui/card";
-import { Link } from "react-router-dom";
-import { useTheme } from "@/contexts/ThemeProvider";
-import { Button } from "../ui/button";
 
 const BUCKET_DOMAIN = import.meta.env.VITE_BUCKET_DOMAIN as string;
 
@@ -33,7 +34,7 @@ function UsersList() {
                 borderColor: activeTheme.borderColor,
               }}
               key={user.id}
-              className="p-4 shadow-md border"
+              className="p-4 space-y-4 shadow-md border"
             >
               <div className="flex justify-between items-center lg:flex-wrap gap-2">
                 <div className="flex  justify-between items-center gap-2">
@@ -46,7 +47,7 @@ function UsersList() {
                       alt="user profile picture"
                     />
                   </div>
-                  <div>
+                  <div className="flex flex-col items-start gap-0">
                     <h1>{user.name}</h1>
                     <Link
                       className="hover:underline duration-150  text-[12px]"
@@ -74,25 +75,28 @@ function UsersList() {
                   {user.role.toLowerCase()}
                 </h3>
               </div>
-              <>
+              <div className="mt-auto flex items-center justify-between ">
+                <h3
+                  style={{ color: activeTheme.secondaryText }}
+                  className="text-sm mt-auto "
+                >
+                  Join US:{" "}
+                  {new Date(user.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </h3>
                 {user.resume && (
-                  <Button variant="outline" className="ml-auto w-full">
-                    <Link
-                      target="_blank"
-                      download={`${BUCKET_DOMAIN}/${user.resume}`}
-                      to={`${BUCKET_DOMAIN}/${user.resume}`}
-                    >
-                      Resume
-                    </Link>
-                  </Button>
+                  <Link
+                    target="_blank"
+                    download={`${BUCKET_DOMAIN}/${user.resume}`}
+                    to={`${BUCKET_DOMAIN}/${user.resume}`}
+                  >
+                    Resume
+                  </Link>
                 )}
-              </>
-              <h3
-                style={{ color: activeTheme.secondaryText }}
-                className="text-sm mt-auto "
-              >
-                Join In: {new Date(user.createdAt).toLocaleDateString()}
-              </h3>
+              </div>
             </Card>
           ))}
         </div>

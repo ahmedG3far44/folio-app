@@ -154,7 +154,7 @@ function SkillForm() {
                 className="w-full p-2 border rounded-md"
                 type="text"
                 id="skillName"
-                placeholder="skillName"
+                placeholder="Skill Name"
                 defaultValue={updateSkill ? updateSkill.skillName : ""}
                 {...register("skillName")}
               />

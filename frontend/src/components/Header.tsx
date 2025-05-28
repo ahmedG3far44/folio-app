@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
-import { useTheme } from "@/contexts/ThemeProvider";
+// import { useTheme } from "@/contexts/ThemeProvider";
 
 import { Button } from "./ui/button";
-import { Link } from "react-router-dom";
 
 import { CopyCheck, Share2 } from "lucide-react";
 
 import User from "./User";
 import Logo from "./Logo";
-
-const LOCAL_DOMAIN = import.meta.env.VITE_LOCAL_DOMAIN as string;
-const PRODUCTION_DOMAIN = import.meta.env.VITE_LOCAL_DOMAIN as string;
-const ENV = import.meta.env.VITE_ENV as string;
+import PrimaryBtn from "./buttons/PrimaryBtn";
+import SecondaryBtn from "./buttons/SecondaryBtn";
 
 function Header() {
   const { isLogged, user } = useAuth();
-  const { activeTheme } = useTheme();
+  // const { activeTheme } = useTheme();
 
   const [isScroll, setScroll] = useState(false);
   const [isCopied, setCopy] = useState(false);
+  // const location = useLocation()
   useEffect(() => {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 20) setScroll(window.scrollY > 20 ? true : false);
@@ -30,9 +28,9 @@ function Header() {
   const handleSharePortfolio = () => {
     if (isLogged) {
       setCopy(true);
-      navigator.clipboard.writeText(
-        `${ENV === "development" ? LOCAL_DOMAIN : PRODUCTION_DOMAIN}/${user.id}`
-      );
+      const { host, protocol } = window.location;
+      const url = `${protocol}//${host}`;
+      navigator.clipboard.writeText(`${url}/${user.id}`);
       setTimeout(() => {
         setCopy(false);
       }, 2000);
@@ -40,7 +38,7 @@ function Header() {
   };
   return (
     <div
-      style={{ backgroundColor: activeTheme.backgroundColor }}
+      // style={{ backgroundColor: activeTheme.backgroundColor }}
       className={`${
         isScroll && " border-b z-[999] "
       } w-full border-b-0 flex justify-between items-center px-4 py-8 sticky top-0 z-[999]`}
@@ -60,28 +58,8 @@ function Header() {
         ) : (
           <div className="space-x-4">
             <div className="space-x-4">
-              <Button
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                className="cursor-pointer border hover:opacity-75 duration-150 shadow-xl"
-              >
-                <Link to={"/login"}>Login</Link>
-              </Button>
-
-              <Button
-                style={{
-                  backgroundColor: activeTheme.primaryText,
-                  color: activeTheme.backgroundColor,
-                  borderColor: activeTheme.borderColor,
-                }}
-                className="cursor-pointer border hover:opacity-75 duration-150 shadow-xl"
-                variant={"outline"}
-              >
-                <Link to={"/signup"}>Signup</Link>
-              </Button>
+              <PrimaryBtn path="login">login</PrimaryBtn>
+              <SecondaryBtn path="signup">signup</SecondaryBtn>
             </div>
           </div>
         )}

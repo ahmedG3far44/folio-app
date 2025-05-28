@@ -1,10 +1,10 @@
+import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 
-import Logo from "./Logo";
+import SecondaryBtn from "./buttons/SecondaryBtn";
+import PrimaryBtn from "./buttons/PrimaryBtn";
 
-import { useAuth } from "@/contexts/AuthProvider";
-import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
+import Logo from "./Logo";
 
 function Footer() {
   const { activeTheme } = useTheme();
@@ -12,10 +12,16 @@ function Footer() {
   return (
     <footer
       className="w-full flex items-center justify-center mt-auto"
-      style={{
-        backgroundColor: activeTheme.cardColor,
-        color: activeTheme.primaryText,
-      }}
+      style={
+        isLogged
+          ? {
+              backgroundColor: activeTheme.cardColor,
+              color: activeTheme.primaryText,
+            }
+          : {
+              backgroundColor: "black",
+            }
+      }
     >
       <div className="lg:w-3/4 w-[90%] mx-auto  py-12">
         <div className="flex justify-between items-start lg:items-center flex-col md:flex-row lg:flex-row">
@@ -47,17 +53,14 @@ function Footer() {
               </div>
             ) : (
               <div className="flex flex-col items-start justify-start gap-4">
-                <Link className="w-full" to={"/login"}>
-                  <Button className="w-full">Login</Button>
-                </Link>{" "}
-                <Link className="w-full" to={"/signup"}>
-                  <Button className="w-full">Create Account</Button>
-                </Link>
+                <PrimaryBtn className="w-full text-center" path={"login"}>
+                  login
+                </PrimaryBtn>
+                <SecondaryBtn path={"signup"}>create account</SecondaryBtn>
               </div>
             )}
           </div>
         </div>
-
         <div className="flex flex-col md:flex-row justify-between items-start lg:items-center">
           <div className="text-sm mb-4 md:mb-0">
             © {new Date().getFullYear()} Folio. All rights reserved.

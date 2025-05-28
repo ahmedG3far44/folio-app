@@ -2,27 +2,37 @@ import { useTheme } from "@/contexts/ThemeProvider"; // import { Card } from "..
 import ThemeCard from "../cards/ThemeCard";
 import { easeInOut, motion } from "motion/react";
 import { Card } from "../ui/card";
+import Loader from "../loader";
 
 function ThemesForm() {
-  const { activeTheme, themesList, switchTheme } = useTheme();
+  const { activeTheme, themesList, switchTheme, loading } = useTheme();
   return (
     <div className="w-full space-y-4">
       <div className="w-fit p-4 space-y-8">
         <h1 className="text-3xl font-black">Active Theme</h1>
-        <ThemeCard
-          id={activeTheme.id}
-          backgroundColor={activeTheme.backgroundColor}
-          cardColor={activeTheme.cardColor}
-          primaryText={activeTheme.primaryText}
-          secondaryText={activeTheme.secondaryText}
-          borderColor={activeTheme.borderColor}
-        />
+        <>
+          {loading ? (
+            <div className="w-full flex items-center justify-center ">
+              <Loader size="md" />
+            </div>
+          ) : (
+            <ThemeCard
+              id={activeTheme.id}
+              themeName={activeTheme.themeName}
+              backgroundColor={activeTheme.backgroundColor}
+              cardColor={activeTheme.cardColor}
+              primaryText={activeTheme.primaryText}
+              secondaryText={activeTheme.secondaryText}
+              borderColor={activeTheme.borderColor}
+            />
+          )}
+        </>
       </div>
 
       <div className="p-4 flex justify-start items-start flex-wrap gap-4 w-3/4">
+        <h1 className="p-4 text-2xl font-semibold">Available Themes</h1>
         {themesList?.length > 0 ? (
-          <div className="w-full flex flex-col gap-4 justify-start items-start">
-            <h1 className="p-4 text-2xl font-semibold">Available Themes</h1>
+          <div className="grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  my-4">
             {themesList.map((theme) => {
               return (
                 <motion.div
@@ -36,6 +46,7 @@ function ThemesForm() {
                 >
                   <ThemeCard
                     id={theme.id}
+                    themeName={theme.themeName}
                     backgroundColor={theme.backgroundColor}
                     cardColor={theme.cardColor}
                     primaryText={theme.primaryText}

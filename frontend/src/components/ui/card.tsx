@@ -2,17 +2,27 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeProvider";
+import { useAuth } from "@/contexts/AuthProvider";
 
 function Card({ className, ...props }: React.ComponentProps<"div">) {
   const { activeTheme } = useTheme();
+  const { isLogged } = useAuth();
   return (
     <div
       data-slot="card"
-      style={{
-        backgroundColor: activeTheme.cardColor,
-        border: `1px solid ${activeTheme.borderColor}`,
-        color: activeTheme.primaryText,
-      }}
+      style={
+        isLogged
+          ? {
+              backgroundColor: activeTheme.cardColor,
+              border: `1px solid ${activeTheme.borderColor}`,
+              color: activeTheme.primaryText,
+            }
+          : {
+              backgroundColor: "black",
+              border: `1px solid oklch(21% 0.006 285.885)`,
+              color: "white",
+            }
+      }
       className={cn(
         "bg-card text-card-foreground flex flex-col gap-1 rounded-xl border py-6 shadow-sm p-4",
         className

@@ -237,7 +237,6 @@ function ProjectForm() {
                                 variant={"destructive"}
                                 type="button"
                                 className="cursor-pointer z-[50] hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
-                                // When filtering images during update
                                 onClick={() => {
                                   if (updatedProject) {
                                     setUpdatedProject({
@@ -262,10 +261,11 @@ function ProjectForm() {
                                       }
                                     );
                                     setImages(
-                                      filteredImages as
-                                        | File[]
-                                        | IProjectImagesType[]
-                                        | null
+                                      filteredImages.length > 0
+                                        ? (filteredImages as
+                                            | File[]
+                                            | IProjectImagesType[])
+                                        : null
                                     );
                                   }
                                 }}
@@ -327,7 +327,7 @@ function ProjectForm() {
                   className="p-2 border rounded-md w-[80%]"
                   type="text"
                   id="tags"
-                  placeholder="tags"
+                  placeholder="Project Tags"
                   value={oneTag ? oneTag : ""}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setOneTag(e.target.value);
@@ -422,7 +422,7 @@ function ProjectForm() {
                 className="w-full p-2 border rounded-md"
                 type="text"
                 id="sourceUrl"
-                placeholder="sourceUrl"
+                placeholder="Project external source link"
                 defaultValue={updatedProject ? updatedProject.source : ""}
                 {...register("sourceUrl")}
               />

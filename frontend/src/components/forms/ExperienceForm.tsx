@@ -212,7 +212,7 @@ function ExperienceForm() {
                 className="w-full p-2 border rounded-md"
                 type="text"
                 id="position"
-                placeholder="position"
+                placeholder="Job Position"
                 {...register("position")}
               />
               {errors.position && (
@@ -233,7 +233,7 @@ function ExperienceForm() {
                 defaultValue={
                   updateThisExperience ? updateThisExperience.duration : ""
                 }
-                placeholder="duration"
+                placeholder="Job Duration"
                 {...register("duration")}
               />
               {errors.duration && (
@@ -261,7 +261,7 @@ function ExperienceForm() {
                 className="w-full p-2 border rounded-md"
                 type="text"
                 id="location"
-                placeholder="location"
+                placeholder="Job Location"
                 defaultValue={
                   updateThisExperience ? updateThisExperience.location : ""
                 }

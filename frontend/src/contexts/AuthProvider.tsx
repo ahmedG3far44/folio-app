@@ -11,6 +11,15 @@ const AuthContext = createContext<IAuthContextType>({
     picture: "",
     role: "USER",
     resume: "",
+    theme: {
+      id: "",
+      themeName: "",
+      backgroundColor: "",
+      cardColor: "",
+      primaryText: "",
+      secondaryText: "",
+      borderColor: "",
+    },
   },
   token: "",
   isAdmin: false,
@@ -35,6 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(user);
     setToken(token);
     localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("theme", JSON.stringify(user.theme));
     localStorage.setItem("token", token);
     setIsLogged(true);
   };
@@ -50,6 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       picture: "",
       resume: "",
       role: "USER",
+      theme: null,
     });
   };
   return (

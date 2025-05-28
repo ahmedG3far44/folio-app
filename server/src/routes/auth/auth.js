@@ -30,6 +30,17 @@ router.post("/auth/login", async (req, res) => {
         picture: true,
         role: true,
         resume: true,
+        theme: {
+          select: {
+            id: true,
+            themeName: true,
+            backgroundColor: true,
+            cardColor: true,
+            primaryText: true,
+            secondaryText: true,
+            borderColor: true,
+          },
+        },
       },
     });
 
@@ -53,6 +64,7 @@ router.post("/auth/login", async (req, res) => {
     return res.status(500).json({ data: "Error", message: err.message });
   }
 });
+
 router.post("/auth/register", upload.single("profile"), async (req, res) => {
   try {
     const { name, email, password } = req.body;
@@ -71,6 +83,17 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         picture: true,
         role: true,
         resume: true,
+        theme: {
+          select: {
+            id: true,
+            themeName: true,
+            backgroundColor: true,
+            cardColor: true,
+            borderColor: true,
+            secondaryText: true,
+            primaryText: true,
+          },
+        },
       },
     });
 
@@ -97,6 +120,16 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         email,
         password: hashedPassword,
         picture: `${BUCKET_DOMAIN}/${pictureKey}`,
+        theme: {
+          create: {
+            themeName: "Midnight Eclipse",
+            backgroundColor: "#0a0a0a",
+            cardColor: "#171717",
+            primaryText: "#fafafa",
+            secondaryText: "#a3a3a3",
+            borderColor: "#262626",
+          },
+        },
       },
       select: {
         id: true,
@@ -105,6 +138,16 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         picture: true,
         role: true,
         resume: true,
+        theme: {
+          select: {
+            themeName: true,
+            backgroundColor: true,
+            cardColor: true,
+            primaryText: true,
+            secondaryText: true,
+            borderColor: true,
+          },
+        },
       },
     });
 
@@ -114,9 +157,10 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
       email,
       role: newUser.role,
     };
+
     const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
 
-    const bio = await prisma.bio.create({
+    await prisma.bio.create({
       data: {
         bio: "change your bio info...",
         bioName: newUser.name,
@@ -125,16 +169,31 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         usersId: newUser.id,
       },
     });
-    const contact = await prisma.contacts.create({
+
+    // await prisma.theme.create({
+    //   data: {
+    //     themeName: "midnight",
+    //     backgroundColor: "#121212",
+    //     cardColor: "#1F1F1F",
+    //     primaryText: "#E0E0E0",
+    //     secondaryText: "#B0B0B0",
+    //     borderColor: "#5A5A5A",
+    //     usersId: newUser.id,
+    //   },
+    // });
+
+    await prisma.contacts.create({
       data: {
         usersId: newUser.id,
       },
     });
-    const layouts = await prisma.layouts.create({
+
+    await prisma.layouts.create({
       data: {
         usersId: newUser.id,
       },
     });
+
     return res.status(201).json({
       data: { user: newUser, token },
       message: "a new user was created!",

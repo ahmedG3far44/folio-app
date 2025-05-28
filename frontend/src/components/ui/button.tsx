@@ -4,6 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/contexts/ThemeProvider";
+import { useAuth } from "@/contexts/AuthProvider";
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -48,15 +49,24 @@ function Button({
   }) {
   const Comp = asChild ? Slot : "button";
   const { activeTheme } = useTheme();
+  const { isLogged } = useAuth();
   return (
     <Comp
-      style={{
-        backgroundColor: activeTheme.backgroundColor,
-        color: activeTheme.primaryText,
-        border: `1px solid ${activeTheme.borderColor}`,
-      }}
+      style={
+        isLogged
+          ? {
+              backgroundColor: activeTheme.backgroundColor,
+              color: activeTheme.primaryText,
+              border: `1px solid ${activeTheme.borderColor}`,
+            }
+          : {
+              backgroundColor: "oklch(14.1% 0.005 285.823)",
+              color: "#fff",
+              border: `1px solid oklch(21% 0.006 285.885)`,
+            }
+      }
       data-slot="button"
-      className={`cursor-pointer hover:opacity-80 duration-150  ${cn(
+      className={`cursor-pointer hover:opacity-70 duration-150  ${cn(
         buttonVariants({ variant, size, className })
       )}`}
       {...props}
