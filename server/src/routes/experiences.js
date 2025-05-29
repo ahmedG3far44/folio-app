@@ -67,7 +67,7 @@ router.post(
 
       if (!validExperiencePayload.success) {
         const error = validExperiencePayload.error.flatten().fieldErrors;
-        console.log(error);
+
         return res.status(400).json(new Exceptions(400, error));
       }
 
@@ -131,8 +131,6 @@ router.put(
       const payload = req.body;
       const image = req.file;
 
-      console.log(payload);
-
       const experience = await prisma.experiences.findUnique({
         where: {
           id: experience_id,
@@ -162,13 +160,11 @@ router.put(
 
         if (uploadResult.$metadata.httpStatusCode !== 200)
           throw new Error("upload new company image failed!!");
-        console.log("company Logo image updated");
       }
 
       const validExperiencePayload = experienceSchema.safeParse(payload);
 
       if (!validExperiencePayload.success) {
-        console.log(validExperiencePayload.error.flatten().fieldErrors);
         throw new Error("not a valid experience data");
       }
 
@@ -221,7 +217,7 @@ router.delete(
         try {
           await s3Client.send(command);
         } catch (err) {
-          console.log("error");
+          throw new Error(err.message);
         }
       }
 

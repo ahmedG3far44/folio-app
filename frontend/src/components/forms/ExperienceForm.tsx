@@ -81,9 +81,7 @@ function ExperienceForm() {
                 formData.append(key, value);
               });
               formData.append("role", content);
-              // console.log(formData.get("role"));
-              // console.log(formData);
-              // return;
+        
               try {
                 const response = await fetch(
                   `${URL_SERVER}/experiences/${
@@ -101,14 +99,12 @@ function ExperienceForm() {
                   throw new Error(`${"create a new"} experience failed!!`);
                 }
                 const data = await response.json();
-                console.log(data.data);
                 setExperiences(data.data);
                 setContent("");
                 reset();
                 toast.success(`a new experience was success!!`);
                 return data;
               } catch (err) {
-                console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
               } finally {

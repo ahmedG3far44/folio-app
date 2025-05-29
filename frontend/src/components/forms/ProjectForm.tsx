@@ -81,7 +81,7 @@ function ProjectForm() {
     images.map((img) => {
       formData.append("image", img as File);
     });
-    // console.log(formData);
+
 
     try {
       const response = await fetch(`${URL_SERVER}/project`, {
@@ -138,8 +138,6 @@ function ProjectForm() {
               if (!checkUploadedImages(images as File[])) {
                 throw new Error("You uploaded more than 5 images");
               }
-
-              console.log(projectData);
               try {
                 const newProject = await addNewProject(
                   projectData as ProjectFormData

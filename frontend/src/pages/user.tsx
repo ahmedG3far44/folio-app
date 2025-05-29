@@ -1,5 +1,5 @@
 import { useAuth } from "@/contexts/AuthProvider";
-import { useTheme } from "@/contexts/ThemeProvider";
+// import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
@@ -14,10 +14,12 @@ import ProjectSection from "@/components/sections/ProjectSection";
 import SkillSection from "@/components/sections/SkillSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
 
+import { useTheme } from "@/contexts/ThemeProvider";
+
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function UserPage() {
-  const { isAdmin, user } = useAuth();
+  const { isAdmin } = useAuth();
   const { userId } = useParams();
   const { activeTheme } = useTheme();
   const {
@@ -34,12 +36,11 @@ function UserPage() {
     setContacts,
     setProjects,
     setLayouts,
-    setTheme,
   } = useUser();
-  // const { setThemesList } = useTheme();
 
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
   const getUserInfoById = async (id: string) => {
     try {
       setPending(true);
@@ -63,21 +64,21 @@ function UserPage() {
         setTestimonials(user.Testimonials);
         setContacts({ ...contacts });
         setLayouts({ ...layouts });
-        setTheme({ ...user.theme });
+        localStorage.setItem("theme", JSON.stringify(user.theme));
       })
       .catch((err) => {
         setError(err.message);
         return;
       });
-  }, [userId, user.id]);
+  }, [userId]);
 
   if (isAdmin) return <Navigate to={"/dashboard/insights"} />;
   if (error) return <ErrorMessage message={error} />;
   return (
     <div
       style={{
-        backgroundColor: activeTheme.backgroundColor,
-        color: activeTheme.primaryText,
+        backgroundColor: activeTheme?.backgroundColor,
+        color: activeTheme?.primaryText,
       }}
       className="w-full min-h-screen flex flex-col justify-between items-center"
     >

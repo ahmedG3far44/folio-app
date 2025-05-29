@@ -50,7 +50,7 @@ function LoginPage() {
         throw new Error("can't login your email or passowrd is Wrong!!");
       const { user, token } = data.data;
 
-      console.log(user);
+
 
       login({ user, token });
       setError(null);

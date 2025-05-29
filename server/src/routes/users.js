@@ -10,7 +10,7 @@ const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 router.post("/user", verifyAccessToken, async (req, res) => {
   try {
     const user = req.user;
-    // console.log(user.id);
+
     const userInfo = await prisma.users.findFirst({
       where: { id: user.id },
       select: {
@@ -120,7 +120,7 @@ router.get("/user/:userId", async (req, res) => {
       message: "geting user data success ",
     });
   } catch (error) {
-    console.log(error.message);
+ 
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });

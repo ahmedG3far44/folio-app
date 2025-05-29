@@ -6,7 +6,6 @@ import {
   IProjectType,
   ISkillType,
   ITestimonialType,
-  IThemeType,
   UserInfoContextType,
 } from "@/lib/types";
 
@@ -36,15 +35,6 @@ export const UserContext = createContext<UserInfoContextType>({
     skillsLayout: "",
     projectsLayout: "",
   },
-  theme: {
-    id: "",
-    themeName: "",
-    backgroundColor: "",
-    cardColor: "",
-    borderColor: "",
-    primaryText: "",
-    secondaryText: "",
-  },
   contacts: {
     id: "",
     linkedin: "",
@@ -62,7 +52,6 @@ export const UserContext = createContext<UserInfoContextType>({
   setSkills: () => {},
   setTestimonials: () => {},
   setContacts: () => {},
-  setTheme: () => {},
 });
 
 export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
@@ -75,7 +64,6 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const [skills, setSkills] = useState<ISkillType[]>();
   const [testimonials, setTestimonials] = useState<ITestimonialType[]>();
   const [userContacts, setContacts] = useState<IContactType>();
-  const [userTheme, setTheme] = useState<IThemeType>();
   const [userLayouts, setLayouts] = useState<ILayoutType>({
     id: "1",
     heroLayout: "1",
@@ -125,7 +113,6 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         setTestimonials(user?.Testimonials);
         setContacts({ ...contacts });
         setLayouts({ ...layouts });
-        setTheme({ ...user.theme });
       })
       .catch((error) => {
         setError(error.message);
@@ -143,7 +130,6 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         testimonials: testimonials || [],
         contacts: userContacts as IContactType,
         layouts: userLayouts as ILayoutType,
-        theme: userTheme as IThemeType,
         pending,
         error: error || "",
         setLayouts: (newLayout: ILayoutType) => setLayouts({ ...newLayout }),
@@ -156,7 +142,6 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         setTestimonials: (testimonials: ITestimonialType[]) =>
           setTestimonials(testimonials),
         setContacts: (contacts: IContactType) => setContacts({ ...contacts }),
-        setTheme: (theme: IThemeType) => setTheme({ ...theme }),
       }}
     >
       {children}

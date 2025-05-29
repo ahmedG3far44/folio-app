@@ -96,7 +96,7 @@ router.post(
       const uploadImageResult = await s3Client.send(command);
       if (uploadImageResult.$metadata.httpStatusCode !== 200)
         throw new Error("upload skill image error !!");
-      console.log("uploaded success");
+
       await prisma.skills.create({
         data: {
           skillName: payload.skillName,
@@ -111,7 +111,6 @@ router.post(
       });
       res.status(201).json({ data: newSkill, message: "a new skill added" });
     } catch (err) {
-      console.log(err.message);
       res.status(200).json({ data: "failed not upload", message: err.message });
     }
   }
@@ -170,7 +169,6 @@ router.put(
         if (updateUploadResult.$metadata.httpStatusCode !== 200) {
           throw new Error("Failed to update skill image in S3");
         }
-        console.log("Skill image updated successfully");
       }
 
       await prisma.skills.update({
@@ -188,7 +186,7 @@ router.put(
         where: {
           usersId: user.id,
         },
-          });
+      });
 
       return res.status(200).json({ data: newSkill });
     } catch (err) {
@@ -222,9 +220,8 @@ router.delete("/skills/:skillId", verifyAccessToken, async (req, res) => {
 
       try {
         await s3Client.send(command);
-        console.log("Skill image was deleted from S3");
       } catch (s3Error) {
-        console.error("Failed to delete image from S3:", s3Error);
+        throw new Error("Failed to delete image from S3:", s3Error);
       }
     }
 

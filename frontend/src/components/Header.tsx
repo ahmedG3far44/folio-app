@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
-// import { useTheme } from "@/contexts/ThemeProvider";
-
-import { Button } from "./ui/button";
+import { useTheme } from "@/contexts/ThemeProvider";
 
 import { CopyCheck, Share2 } from "lucide-react";
 
@@ -13,11 +11,10 @@ import SecondaryBtn from "./buttons/SecondaryBtn";
 
 function Header() {
   const { isLogged, user } = useAuth();
-  // const { activeTheme } = useTheme();
+  const { activeTheme } = useTheme();
 
   const [isScroll, setScroll] = useState(false);
   const [isCopied, setCopy] = useState(false);
-  // const location = useLocation()
   useEffect(() => {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 20) setScroll(window.scrollY > 20 ? true : false);
@@ -38,7 +35,7 @@ function Header() {
   };
   return (
     <div
-      // style={{ backgroundColor: activeTheme.backgroundColor }}
+      style={{ backgroundColor: activeTheme.backgroundColor }}
       className={`${
         isScroll && " border-b z-[999] "
       } w-full border-b-0 flex justify-between items-center px-4 py-8 sticky top-0 z-[999]`}
@@ -48,12 +45,20 @@ function Header() {
         {isLogged ? (
           <div className="flex items-center space-x-4">
             <User dashboard={false} />
-            <Button
-              className="flex items-center justify-center"
+            <button
+              style={{
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
+              className="flex items-center justify-center border p-2 rounded-md cursor-pointer hover:opacity-70 duration-150"
               onClick={handleSharePortfolio}
             >
-              {isCopied ? <CopyCheck size={20} /> : <Share2 size={20} />}
-            </Button>
+              {isCopied ? (
+                <CopyCheck size={15} />
+              ) : (
+                <Share2 color={activeTheme.secondaryText} size={15} />
+              )}
+            </button>
           </div>
         ) : (
           <div className="space-x-4">

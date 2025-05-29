@@ -11,8 +11,6 @@ import { easeIn, easeInOut, motion } from "motion/react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthProvider";
 
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import Container from "@/components/Container";
 import videoOne from "../assets/videos/video-1.mp4";
 import videoTwo from "../assets/videos/video-2.mp4";
@@ -24,11 +22,13 @@ import {
   FilePen,
   Github,
   LucideBox,
-  User,
+  LucideUser,
 } from "lucide-react";
 
 import SecondaryBtn from "@/components/buttons/SecondaryBtn";
 import PrimaryBtn from "@/components/buttons/PrimaryBtn";
+import Logo from "@/components/Logo";
+import User from "@/components/User";
 // Lazy load heavy components
 // const VideoGallerySection = lazy(() => import("VideoGallerySection"));
 
@@ -269,16 +269,14 @@ const FeaturesSection = memo(
 );
 FeaturesSection.displayName = "FeaturesSection";
 
-// Main component with optimized features data
 function LandingPage() {
   const { isLogged } = useAuth();
   const [activeState, setActive] = useState(false);
 
-  // Static features data - moved outside component to prevent recreation
   const featuresCard = useMemo(
     () => [
       {
-        icon: <User size={25} />,
+        icon: <LucideUser size={25} />,
         title: "Personalized Tech Portfolio",
         text: "Create a fully customizable portfolio showcasing personal details and expertise for professional presentation.",
       },
@@ -310,8 +308,6 @@ function LandingPage() {
     ],
     []
   );
-
-  // Optimized scroll handler with better performance
   const handleScroll = useCallback(() => {
     const scrollY = window.scrollY;
     const newActiveState = scrollY >= 800 && scrollY <= 1650;
@@ -327,7 +323,7 @@ function LandingPage() {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
-      timeoutId = setTimeout(handleScroll, 16); // ~60fps
+      timeoutId = setTimeout(handleScroll, 16);
     };
 
     window.addEventListener("scroll", throttledHandleScroll, { passive: true });
@@ -342,7 +338,23 @@ function LandingPage() {
   return (
     <div className="w-full flex flex-col justify-between gap-20 items-center m-auto min-h-screen overflow-hidden bg-zinc-950 text-white">
       <Container>
-        <Header />
+        <header className="w-full flex justify-between  items-center p-4  lg:p-8">
+          <Logo />
+          <div>
+            {isLogged ? (
+              <div className="flex items-center space-x-4">
+                <User dashboard={false} />
+              </div>
+            ) : (
+              <div className="space-x-4">
+                <div className="space-x-4">
+                  <PrimaryBtn path="login">login</PrimaryBtn>
+                  <SecondaryBtn path="signup">signup</SecondaryBtn>
+                </div>
+              </div>
+            )}
+          </div>
+        </header>
         <HeroSection isLogged={isLogged} />
         <VideoSection activeState={activeState} />
         <motion.h1
@@ -369,3 +381,55 @@ function LandingPage() {
 }
 
 export default LandingPage;
+
+function Footer() {
+  const { isLogged, user } = useAuth();
+  return (
+    <footer className="w-full flex items-center justify-center mt-auto bg-zinc-900">
+      <div className="lg:w-3/4 w-[90%] mx-auto  py-12">
+        <div className="flex justify-between items-start lg:items-center flex-col md:flex-row lg:flex-row">
+          <div className="md:col-span-1 w-full lg:w-1/2">
+            <Logo />
+            <p className=" text-sm mb-6 mt-4 w-full lg:w-1/2">
+              Showcase your creative work with a professional portfolio. Build,
+              share, and grow your online presence with our easy-to-use
+              platform.
+            </p>
+          </div>
+
+          <div className="flex items-end flex-col justify-center gap-2">
+            {isLogged ? (
+              <div className="flex items-center gap-2 py-4">
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  <img
+                    className="object-cover w-full h-full"
+                    width={40}
+                    height={40}
+                    src={user?.picture as string}
+                    alt={user.name as string}
+                  />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold">{user.name}</h3>
+                  <h4 className="text-sm">{user.email}</h4>
+                </div>
+              </div>
+            ) : (
+              <div className="flex flex-col items-start justify-start gap-4">
+                <PrimaryBtn className="w-full text-center" path={"login"}>
+                  login
+                </PrimaryBtn>
+                <SecondaryBtn path={"signup"}>create account</SecondaryBtn>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="flex flex-col md:flex-row justify-between items-start lg:items-center">
+          <div className="text-sm mb-4 md:mb-0">
+            © {new Date().getFullYear()} Folio. All rights reserved.
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

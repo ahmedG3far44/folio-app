@@ -21,8 +21,6 @@ router.get("/:userId/contacts", async (req, res) => {
       },
     });
 
-    console.log("get user contacts");
-
     return res.status(200).json(contacts);
   } catch (error) {
     return res.status(500).json(new Exceptions(500, error.message));
@@ -52,19 +50,17 @@ router.put("/contacts/:contactsId", verifyAccessToken, async (req, res) => {
         ...validContactsUrls.data,
       },
     });
-    console.log("contacts info updated");
+
     const newContact = await prisma.contacts.findFirst({
       where: {
         usersId: user.id,
         id: contactsId,
       },
     });
-    res
-      .status(200)
-      .json({
-        data: newContact,
-        message: "contact information was updated successful.",
-      });
+    res.status(200).json({
+      data: newContact,
+      message: "contact information was updated successful.",
+    });
   } catch (error) {
     res.status(500).json(new Exceptions(500, error.message));
   }

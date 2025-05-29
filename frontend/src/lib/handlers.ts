@@ -13,7 +13,6 @@ export async function loginUser({
   try {
     const payload = JSON.stringify({ email, password });
     const url = `${URL_SERVER}/auth/login`;
-    console.log(url);
     const data = await RequestServer({ method: "POST", payload, url });
     return { data: data.data, message: data.message };
   } catch (err: any) {
@@ -81,8 +80,6 @@ export const addSkill = async ({
     const data = await response.json();
     return { data, message: `A new skill was created success!!` };
   } catch (err) {
-    console.log((err as Error).message);
-
     return { data: "create error", message: (err as Error).message };
   }
 };
@@ -116,7 +113,7 @@ export const updateSkill = async ({
     const data = await response.json();
     return { data, message: `A skill ${skillId} was updated!!` };
   } catch (err) {
-    console.log((err as Error).message);
+  
     return { data: "update error", message: (err as Error).message };
   }
 };
@@ -141,7 +138,7 @@ export const deleteSkillById = async ({
     const data = await response.json();
     return { data, message: `a skill ${skillId} was delted!!` };
   } catch (err) {
-    console.log((err as Error).message);
+   
     return { data: "error", message: (err as Error).message };
   }
 };
@@ -166,10 +163,9 @@ export const deleteById = async ({
       throw new Error(`deleting a ${deleteRoute} failed!!`);
     }
     const data = await response.json();
-    console.log(data);
     return data;
   } catch (err) {
-    console.log((err as Error).message);
+
     return { data: "error", message: (err as Error).message };
   }
 };
@@ -214,10 +210,10 @@ export const updateById = async ({
       throw new Error(`updating ${updatedRoute} failed!!`);
     }
     const data = await response.json();
-    console.log(data);
+   
     return { data: data.type, message: data.message };
   } catch (err) {
-    console.log((err as Error).message);
+   
     return { data: "error", message: (err as Error).message };
   }
 };

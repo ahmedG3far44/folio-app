@@ -8,39 +8,34 @@ import { Card } from "../ui/card";
 import Resume from "../cards/Resume";
 import ShowUserContacts from "../cards/ShowUserContacts";
 import { ApplyLayout, ChangeLayoutForm } from "../layouts/Layouts";
-// import { useUser } from "@/contexts/UserProvider";
-// import LayoutsJosn from "@/lib/layouts.json"
 
 function Hero({
   bioInfo,
   contacts,
 }: {
-  bioInfo: IBioType;            
+  bioInfo: IBioType;
   contacts: IContactType;
 }) {
   const { activeTheme } = useTheme();
   const { isLogged } = useAuth();
-  // const {layouts} = useUser()
-  // const {heroLayout} =LayoutsJosn;
-  // const {parent, child} =heroLayout;
   return (
-    <>
+    <div className="w-full p-8 my-8 flex flex-col items-center gap-8 justify-center">
       {isLogged && <ChangeLayoutForm sectionName="heroLayout" />}
 
       <ApplyLayout sectionName="heroLayout" type="parent">
-        <ApplyLayout sectionName="heroLayout" type="child">
-          <div className="w-[250px] h-[250px] min-w-[250px] mini-h-[250px] rounned-4xl overflow-hidden ">
-            <img
-              loading="lazy"
-              property="true"
-              width={250}
-              height={250}
-              className="w-full h-full object-cover rounded-4xl"
-              src={bioInfo?.heroImage}
-              alt={bioInfo?.jobTitle}
-            />
-          </div>
+        <div className="w-[250px] h-[250px] min-w-[250px] mini-h-[250px] rounned-4xl overflow-hidden ">
+          <img
+            loading="lazy"
+            property="true"
+            width={250}
+            height={250}
+            className="w-full h-full object-cover rounded-4xl"
+            src={bioInfo?.heroImage}
+            alt={bioInfo?.jobTitle}
+          />
+        </div>
 
+        <ApplyLayout sectionName="heroLayout" type="child">
           <div className="flex flex-col justify-center items-center  lg:items-start gap-2 lg:gap-4">
             <h2 className="lg:text-5xl text-3xl font-black text-center lg:text-start">
               {bioInfo?.bioName}
@@ -51,20 +46,20 @@ function Hero({
             <ShowUserContacts contacts={contacts} />
             <Resume />
           </div>
-        </ApplyLayout>
 
-        <Card
-          style={{
-            backgroundColor: activeTheme.cardColor,
-            color: activeTheme.secondaryText,
-            border: `1px solid ${activeTheme.borderColor}`,
-          }}
-          className="w-full lg:w-3/4 md:w-full p-4"
-        >
-          <p>{bioInfo?.bio}</p>
-        </Card>
+          <Card
+            style={{
+              backgroundColor: activeTheme.cardColor,
+              color: activeTheme.secondaryText,
+              border: `1px solid ${activeTheme.borderColor}`,
+            }}
+            className="w-full lg:w-3/4 md:w-full p-4"
+          >
+            <p>{bioInfo?.bio}</p>
+          </Card>
+        </ApplyLayout>
       </ApplyLayout>
-    </>
+    </div>
   );
 }
 

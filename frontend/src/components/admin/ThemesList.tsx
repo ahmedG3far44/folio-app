@@ -65,7 +65,6 @@ function ThemesList() {
         secondaryText: "",
         borderColor: "",
       });
-      console.log(data.data);
       setThemesList(data.data);
       return data;
     } catch (err) {

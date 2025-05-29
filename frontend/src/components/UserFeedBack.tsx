@@ -96,7 +96,7 @@ function UserFeedBack() {
                 if (!response.ok) throw new Error("can't add feedback");
 
                 const data = await response.json();
-                console.log(data);
+
                 setProfile(null);
                 setFeedBackVideo(null);
                 reset();
@@ -104,7 +104,6 @@ function UserFeedBack() {
                 toast.success("your feedback is added sucess!!");
                 return data;
               } catch (err) {
-                console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
               }

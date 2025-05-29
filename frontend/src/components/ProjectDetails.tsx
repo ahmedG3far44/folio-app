@@ -28,11 +28,10 @@ function ProjectDetails() {
           throw new Error("can't get project by id!!");
         }
         const project = await response.json();
-        // console.log(project);
         setProject({ ...project });
         return project;
       } catch (err) {
-        console.log(err);
+        return err;
       } finally {
         setPending(false);
       }
@@ -54,7 +53,7 @@ function ProjectDetails() {
     >
       <div className="lg:w-3/4 md:w-[90%] m-auto w-full">
         {pending ? (
-          <div className="w-full min-h-full flex-col flex items-center justify-center mt-8">
+          <div className="w-full min-h-[700px] flex-col flex items-center justify-center mt-8">
             <Loader size="md" />
           </div>
         ) : (
@@ -67,7 +66,7 @@ function ProjectDetails() {
               <Undo2 size={20} />
             </Button>
 
-            <div className="w-full flex flex-col items-center justify-center lg:w-[50%] relative">
+            <div className="w-full flex flex-col items-center justify-center lg:w-[60%] relative">
               {project?.ImagesList ? (
                 <div className="w-full flex flex-col items-center justify-center gap-4">
                   {project?.ImagesList.map((image) => {
@@ -77,15 +76,25 @@ function ProjectDetails() {
                           backgroundColor: activeTheme.cardColor,
                           border: `1px solid ${activeTheme.borderColor}`,
                         }}
-                        className="p-2 rounded-2xl overflow-hidden w-full"
+                        className="p-4 rounded-2xl overflow-hidden w-full"
                         key={image.id}
                       >
-                        <img
-                          className="w-full h-full object-cover rounded-2xl"
-                          loading="lazy"
-                          src={image.url}
-                          alt={project.title}
-                        />
+                        <picture className="w-full h-full object-cover rounded-2xl">
+                          <source
+                            srcSet={image.url.replace(".jpg", ".avif")}
+                            type="image/avif"
+                          />
+                          <source
+                            srcSet={image.url.replace(".jpg", ".webp")}
+                            type="image/webp"
+                          />
+                          <img
+                            src={image.url}
+                            alt={project.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover rounded-2xl"
+                          />
+                        </picture>
                       </Card>
                     );
                   })}
@@ -107,23 +116,36 @@ function ProjectDetails() {
                 backgroundColor: activeTheme.cardColor,
                 border: `1px solid ${activeTheme.borderColor}`,
               }}
-              className="w-full lg:w-[50%] lg:sticky right-0 lg:top-20 px-4 py-8 lg:space-y-4 space-y-2"
+              className="w-full lg:w-[40%] lg:sticky right-0 lg:top-20 px-4 py-8 lg:space-y-4 space-y-2"
             >
               <h2
                 style={{
                   color: activeTheme.primaryText,
                 }}
-                className=" text-2xl font-bold "
+                className=" text-xl font-bold "
               >
                 {project?.title}
               </h2>
-              <div className="w-full h-auto flex items-center justify-center">
-                <img
-                  className="w-full h-full object-cover rounded-2xl"
-                  loading="lazy"
-                  src={project?.thumbnail}
-                  alt={project?.title}
-                />
+              <div
+                style={{ borderColor: activeTheme.borderColor }}
+                className="w-full h-auto flex items-center justify-center border rounded-2xl"
+              >
+                <picture className="w-full h-full object-cover rounded-2xl">
+                  <source
+                    srcSet={project?.thumbnail.replace(".jpg", ".avif")}
+                    type="image/avif"
+                  />
+                  <source
+                    srcSet={project?.thumbnail.replace(".jpg", ".webp")}
+                    type="image/webp"
+                  />
+                  <img
+                    src={project?.thumbnail}
+                    alt={project?.title}
+                    loading="lazy"
+                    className="w-full h-full object-cover rounded-2xl"
+                  />
+                </picture>
               </div>
 
               <div>

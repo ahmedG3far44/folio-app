@@ -10,7 +10,6 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import toast from "react-hot-toast";
-import { useUser } from "./UserProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -43,35 +42,26 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
-  const { theme } = useUser();
   const localTheme = JSON.parse(localStorage.getItem("theme")!);
-  const [userTheme, setActiveTheme] = useState<IThemeType>(
-    localTheme ? localTheme : theme
-  );
+
+  const [userTheme, setActiveTheme] = useState<IThemeType>(localTheme);
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
     async function getThemesList() {
       try {
         if (!user) return;
-
         const response = await fetch(`${URL_SERVER}/theme`);
-
         if (!response.ok) {
           throw new Error(
             "can't get themes list, please check your connection!!"
           );
         }
         const themes = await response.json();
-
         const { data }: { data: IThemeType[] } = themes;
-
-        // console.log(first)
-
         setThemesList([...data]);
         return data;
       } catch (err) {
-        console.log((err as Error).message);
         toast.error((err as Error).message);
         return;
       }
@@ -106,8 +96,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
       toast.success("theme changed succesfully");
       return theme;
     } catch (err) {
-      console.log((err as Error).message);
-      return;
+      return (err as Error).message;
     } finally {
       setLoading(false);
     }

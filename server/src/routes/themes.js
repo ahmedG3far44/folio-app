@@ -15,7 +15,7 @@ router.post("/theme", verifyAdminAccessToken, async (req, res) => {
 
     const newTheme = req.body;
 
-    console.log(newTheme);
+    
     const {
       themeName,
       backgroundColor,
@@ -24,7 +24,7 @@ router.post("/theme", verifyAdminAccessToken, async (req, res) => {
       secondaryText,
       borderColor,
     } = newTheme;
-    // console.log(user.id);
+    
     const theme = await prisma.theme.create({
       data: {
         themeName,
@@ -61,13 +61,11 @@ router.put("/theme/:themeId", verifyAccessToken, async (req, res) => {
     const newTheme = req.body;
     const { themeId } = req.params;
 
-    console.log(themeId);
 
     if (!themeId) throw new Error("theme id not available!!");
     if (!user) throw new Error("user not available!!");
     const validThemeData = themeSchema.safeParse(newTheme);
     if (!validThemeData.success) {
-      console.log(validThemeData.error.flatten().fieldErrors);
       throw new Error("not available input data!!");
     }
     const updatedTheme = await prisma.users.update({
@@ -142,7 +140,7 @@ router.delete("/theme/:themeId", verifyAdminAccessToken, async (req, res) => {
         id: themeId,
       },
     });
-    console.log("theme deleted success");
+    
     const newTheme = await prisma.theme.findMany({
       where: {
         usersId: user.id,

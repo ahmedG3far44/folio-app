@@ -28,8 +28,7 @@ router.post(
       const images = req.files;
       let keysArray = [];
 
-      console.log(user);
-      console.log(payload);
+    
 
       const projectNumbers = await prisma.projects.count({
         where: {
@@ -44,18 +43,18 @@ router.post(
       const validProjectData = projectSchema.safeParse(payload);
 
       if (!validProjectData?.success) {
-        console.log(validProjectData.error.flatten().fieldErrors);
+     
         return res
           .status(400)
           .json(new Exceptions(400, "not valid project data."));
       }
 
-      console.log(images);
+   
 
-      console.log(validProjectData.data);
+    
 
       const { title, description, sourceUrl, tags } = validProjectData?.data;
-      console.log(title, description, sourceUrl, tags);
+  
       let thumbnailKey;
       let imageKey;
       for (const image of images) {
@@ -108,7 +107,7 @@ router.post(
           usersId: user.id,
         },
       });
-      console.log("project basic info was created ");
+      
       const newProject = await prisma.projects.findMany({
         where: {
           usersId: user.id,
@@ -260,7 +259,7 @@ router.put(
       const validProjectData = projectSchema.safeParse(payload);
 
       if (!validProjectData.success) {
-        console.log(validProjectData.error.flatten().fieldErrors);
+      
         return res
           .status(404)
           .json(new Exceptions(404, "Bad request not a valid data."));
@@ -321,7 +320,7 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
       deletedProjectImageUrls.push(key);
     });
 
-    // console.log(deletedProjectImageUrls);
+   
 
     deletedProjectImageUrls.map(async (keyUrl) => {
       const command = new DeleteObjectCommand({
@@ -347,7 +346,7 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
         projectsId: projectId,
       },
     });
-    console.log("all images deleted");
+    
 
     await prisma.projects.delete({
       where: {
@@ -355,7 +354,7 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
         usersId: user.id,
       },
     });
-    console.log("the project deleted successful");
+  
 
     const newProject = await prisma.projects.findMany({
       where: {
@@ -367,7 +366,7 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
       .status(200)
       .json({ data: newProject, message: "project deleted successful." });
   } catch (error) {
-    console.log(error.message);
+    
     res.status(500).json(new Exceptions(500, error.message));
   }
 });
@@ -408,7 +407,7 @@ export async function uploadToS3(image, path) {
     const imgURL = `${BUCKET_DOMAIN}/${path}`;
     return imgURL;
   } catch (error) {
-    console.log(error.message);
+  
     return error;
   }
 }

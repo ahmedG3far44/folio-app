@@ -32,7 +32,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
   const storedUser = JSON.parse(window.localStorage.getItem("user")!);
   const [user, setUser] = useState<IUserType>(storedUser);
-  // console.log(user);
   const [token, setToken] = useState<string>(
     localStorage.getItem("token") as string
   );
