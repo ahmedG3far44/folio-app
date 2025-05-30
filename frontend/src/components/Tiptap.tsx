@@ -44,8 +44,8 @@ const MenuBar = () => {
           onClick={() => editor.chain().focus().toggleBold().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("bold")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideBold size={16} />
@@ -55,8 +55,8 @@ const MenuBar = () => {
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("italic")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideItalic size={16} />
@@ -67,8 +67,8 @@ const MenuBar = () => {
           onClick={() => editor.chain().focus().toggleStrike().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("strike")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideStrikethrough size={16} />
@@ -79,8 +79,8 @@ const MenuBar = () => {
           onClick={() => editor.chain().focus().toggleCode().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("code")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideCode size={16} />
@@ -91,8 +91,8 @@ const MenuBar = () => {
           onClick={() => editor.chain().focus().setParagraph().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("paragraph")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideBadge size={16} />
@@ -104,8 +104,8 @@ const MenuBar = () => {
           }
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("heading", { level: 1 })
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideHeading1 size={16} />
@@ -117,8 +117,8 @@ const MenuBar = () => {
           }
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("heading", { level: 2 })
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideHeading2 size={16} />
@@ -130,8 +130,8 @@ const MenuBar = () => {
           }
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("heading", { level: 3 })
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideHeading3 size={16} />
@@ -143,8 +143,8 @@ const MenuBar = () => {
           }
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("heading", { level: 4 })
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideHeading4 size={16} />
@@ -155,8 +155,8 @@ const MenuBar = () => {
           onClick={() => editor.chain().focus().toggleBulletList().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("bulletList")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideList size={16} />
@@ -166,8 +166,8 @@ const MenuBar = () => {
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("orderedList")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideListOrdered size={16} />
@@ -178,8 +178,8 @@ const MenuBar = () => {
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("horizontalRule")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideSeparatorHorizontal size={16} />
@@ -191,8 +191,8 @@ const MenuBar = () => {
           disabled={!editor.can().chain().focus().undo().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("undo")
-              ? "bg-zinc-900 border-zinc-800"
-              : "bg-zinc-950 border-zinc-950"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideUndo size={16} />
@@ -203,8 +203,8 @@ const MenuBar = () => {
           disabled={!editor.can().chain().focus().redo().run()}
           className={`p-2 px-4 text-sm rounded-md border ${
             editor.isActive("redo") || editor.isActive("undo")
-              ? "bg-zinc-950 border-zinc-950"
-              : "bg-zinc-900 border-zinc-800"
+              ? activeTheme.cardColor
+              : activeTheme.backgroundColor
           }`}
         >
           <LucideRedo size={16} />

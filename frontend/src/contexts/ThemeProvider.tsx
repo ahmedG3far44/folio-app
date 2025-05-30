@@ -42,8 +42,8 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
-  const localTheme = JSON.parse(localStorage.getItem("theme")!);
 
+  const localTheme = JSON.parse(localStorage.getItem("theme") as string);
   const [userTheme, setActiveTheme] = useState<IThemeType>(localTheme);
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);

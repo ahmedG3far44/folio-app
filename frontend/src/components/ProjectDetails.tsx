@@ -1,14 +1,13 @@
 import { IProjectType } from "@/lib/types";
+
 import { useEffect, useState } from "react";
+import { useTheme } from "@/contexts/ThemeProvider";
 import { Link, useNavigate, useParams } from "react-router-dom";
-// import { useAuth } from "@/contexts/AuthProvider";
 
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import Loader from "./loader";
-
 import { ExternalLink, Undo2 } from "lucide-react";
-import { useTheme } from "@/contexts/ThemeProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -116,13 +115,13 @@ function ProjectDetails() {
                 backgroundColor: activeTheme.cardColor,
                 border: `1px solid ${activeTheme.borderColor}`,
               }}
-              className="w-full lg:w-[40%] lg:sticky right-0 lg:top-20 px-4 py-8 lg:space-y-4 space-y-2"
+              className="w-full lg:w-[40%] lg:sticky right-0 lg:top-20 px-4 py-8 gap-4"
             >
               <h2
                 style={{
                   color: activeTheme.primaryText,
                 }}
-                className=" text-xl font-bold "
+                className="w-3/4 text-start text-2xl font-bold "
               >
                 {project?.title}
               </h2>

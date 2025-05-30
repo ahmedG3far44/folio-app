@@ -12,16 +12,10 @@ function Footer() {
   return (
     <footer
       className="w-full flex items-center justify-center mt-auto"
-      style={
-        isLogged
-          ? {
-              backgroundColor: activeTheme.cardColor,
-              color: activeTheme.primaryText,
-            }
-          : {
-              backgroundColor: "black",
-            }
-      }
+      style={{
+        backgroundColor: activeTheme.cardColor,
+        color: activeTheme.primaryText,
+      }}
     >
       <div className="lg:w-3/4 w-[90%] mx-auto  py-12">
         <div className="flex justify-between items-start lg:items-center flex-col md:flex-row lg:flex-row">

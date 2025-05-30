@@ -129,7 +129,7 @@ const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
       </div>
       <div>
         <p className="lg:text-sm text-[12px] mt-2 text-zinc-400">
-          Designed & created by Developer{" "}
+          Designed & created by{" "}
           <Link
             target="_blank"
             className="hover:underline hover:text-purple-500"

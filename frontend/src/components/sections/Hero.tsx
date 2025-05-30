@@ -53,7 +53,7 @@ function Hero({
               color: activeTheme.secondaryText,
               border: `1px solid ${activeTheme.borderColor}`,
             }}
-            className="w-full lg:w-3/4 md:w-full p-4"
+            className="w-full lg:w-3/4 md:w-full p-4 m-4"
           >
             <p>{bioInfo?.bio}</p>
           </Card>
