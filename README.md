@@ -29,8 +29,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 | Backend            | Express.js                   |  
 | Database/ORM       | PostgreSQL + Prisma (Neon DB)|  
 | Authentication     | JWT                          |  
-| Styling            | *(e.g., TailwindCSS, MUI?)*  |  
-| Hosting            | *(e.g., Vercel, Render?)*    |  
+| Styling            | TailwindCSS with Shadcn  |  
 
 *(Add/remove rows as needed.)*  
 
@@ -61,8 +60,27 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 3. **Set up environment variables**:  
    - Create `.env` in `/server`:  
      ```env  
-     DATABASE_URL="your_postgres_or_neon_db_url"  
-     JWT_SECRET="your_jwt_secret_key"  
+      PORT=5000
+      ENV=development # or "production"
+      LOCAL_CLIENT_URL=http://localhost:3000
+      PRODUCTION_CLIENT_URL=https://your-deployed-frontend-url.com
+      AWS_S3_ACCESS_SECRETE_KEY=your_aws_s3_secret_key
+      AWS_S3_ACCESS_KEY=your_aws_s3_access_key
+      AWS_S3_REGION=your_s3_region (e.g., us-east-1)
+      AWS_S3_BUCKET_NAME=your_s3_bucket_name
+      AWS_S3_BUCKET_DOMAIN=your_s3_bucket_domain (e.g., https://bucket-name.s3.amazonaws.com)
+      DATABASE_URL=your_postgres_or_neon_db_url
+      ACCESS_TOKEN_SECRET=your_jwt_secret_key
+      HOST_DOMAIN_URL=http://localhost:5000 # or your production backend URL
+     ```
+     
+   - Create `.env` in `/frontend`:  
+     ```env  
+      VITE_URL_SERVER=http://localhost:5000 # or your production backend URL
+      VITE_BUCKET_DOMAIN=your_s3_bucket_domain (e.g., https://bucket-name.s3.amazonaws.com)
+      VITE_LOCAL_DOMAIN=http://localhost:3000
+      VITE_PRODUCTION_DOMAIN=https://your-deployed-frontend-url.com
+      VITE_ENV=development # or "production"
      ```  
 
 4. **Database Setup**:  
@@ -85,11 +103,24 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 ## **Project Structure** 📂  
 ```  
 folio/  
-├── client/           # React frontend  
-├── server/           # Express backend  
-│   ├── prisma/       # DB schema & migrations  
-│   ├── routes/       # API endpoints  
-│   └── ...  
+├── frontend/             
+    ├── public
+    ├── src
+        ├── assests
+        ├── components
+        ├── context
+        ├── pages
+        ├── lib
+├── server/           
+    ├── src
+        ├── database 
+        ├── routes
+        ├── middlewares
+        ├── prisma     
+        ├── utils      
+        ├── s3
+        └── .env    
+    
 └── README.md  
 ```  
 
@@ -119,11 +150,3 @@ folio/
 *(Attach UI screenshots here if available.)*  
 
 --- 
-
-Let me know if you'd like to:  
-1. Add **screenshots/UI previews**.  
-2. Include a **roadmap** (e.g., "Add dark mode").  
-3. Adjust the **tech stack table** (e.g., add TailwindCSS).  
-4. Provide a **live demo link**.  
-
-Ready to refine further! 🎯
