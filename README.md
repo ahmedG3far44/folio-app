@@ -1,10 +1,10 @@
---- 
-
+ 
 # **Folio** 🚀  
 
 A web app for tech professionals to **build customized portfolios** showcasing projects, skills, and experiences with full CRUD functionality and theme customization.  
 
 **Live Demo**: [Coming Soon]() *(Share URL if deployed)*  
+
 
 ---
 
