@@ -146,7 +146,7 @@ folio/
 
 ---
 
-## **Screenshots** 📸 *(Optional)*  
+## **Screenshots** 📸 (Preview App):  
 
 
 <img src="https://github.com/ahmedG3far44/Folio-App/blob/development/Foliovideo-MadewithClipchamp-ezgif.com-video-to-gif-converter.gif"  alt="show case gif image" />
