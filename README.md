@@ -1,6 +1,4 @@
-Here’s a polished `README.md` for **Folio**, your tech portfolio web app, based on your answers:  
-
----
+--- 
 
 # **Folio** 🚀  
 
@@ -27,11 +25,9 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 |--------------------|------------------------------|  
 | Frontend           | React.js                     |  
 | Backend            | Express.js                   |  
-| Database/ORM       | PostgreSQL + Prisma (Neon DB)|  
+| Database/ORM       | Postgres + Prisma (Neon DB)  |  
 | Authentication     | JWT                          |  
-| Styling            | TailwindCSS with Shadcn  |  
-
-*(Add/remove rows as needed.)*  
+| Styling            | TailwindCSS & Shadcn         |  
 
 ---
 
@@ -45,8 +41,8 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 ### **Steps**  
 1. **Clone the repo**:  
    ```bash  
-   git clone https://github.com/your-username/folio.git  
-   cd folio  
+   git clone -b development https://github.com/ahmedG3far44/Folio-App.git
+   cd Folio-App  
    ```  
 
 2. **Install dependencies**:  
@@ -77,15 +73,16 @@ A web app for tech professionals to **build customized portfolios** showcasing p
    - Create `.env` in `/frontend`:  
      ```env  
       VITE_URL_SERVER=http://localhost:5000 # or your production backend URL
-      VITE_BUCKET_DOMAIN=your_s3_bucket_domain (e.g., https://bucket-name.s3.amazonaws.com)
+      VITE_BUCKET_DOMAIN=your_s3_bucket_domain (e.g., https://{bucket-name}.s3.amazonaws.com)
       VITE_LOCAL_DOMAIN=http://localhost:3000
-      VITE_PRODUCTION_DOMAIN=https://your-deployed-frontend-url.com
+      VITE_PRODUCTION_DOMAIN=https://{your-deployed-frontend-url}.com
       VITE_ENV=development # or "production"
      ```  
 
 4. **Database Setup**:  
-   ```bash  
-   npx prisma migrate dev  # Applies migrations  
+   ```bash
+   npx prisma generate
+   npx prisma db push
    ```  
 
 5. **Run the app**:  
@@ -95,8 +92,8 @@ A web app for tech professionals to **build customized portfolios** showcasing p
    # Backend (server/)  
    npm start  
    ```  
-   - Frontend: `http://localhost:3000`  
-   - Backend: `http://localhost:5000`  
+   - Frontend: `http://localhost:5173`  
+   - Backend: `http://localhost:8000`  
 
 ---
 
@@ -123,26 +120,6 @@ folio/
     
 └── README.md  
 ```  
-
----
-
-## **Deployment** ☁️  
-*(Example for Vercel + Render)*  
-1. **Frontend**:  
-   ```bash  
-   vercel deploy --prod  
-   ```  
-2. **Backend**:  
-   - Set up a PostgreSQL instance (e.g., Neon DB).  
-   - Deploy Express app to Render/Railway with env vars.  
-
----
-
-## **Contributing** 🤝  
-- Fork → `git checkout -b feature/foo` → Commit → PR!  
-- Report bugs via [GitHub Issues]().  
-
-**License**: [MIT](LICENSE) *(add file if needed)*  
 
 ---
 
