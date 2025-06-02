@@ -147,7 +147,8 @@ folio/
 ---
 
 ## **Screenshots** 📸 *(Optional)*  
-*(Attach UI screenshots here if available.)*  
-<img src="https://github.com/ahmedG3far44/Folio-App/blob/development/Foliovideo-MadewithClipchamp-ezgif.com-video-to-gif-converter.gif" width="500px" height="500px" alt="show case gif image" />
+
+
+<img src="https://github.com/ahmedG3far44/Folio-App/blob/development/Foliovideo-MadewithClipchamp-ezgif.com-video-to-gif-converter.gif"  alt="show case gif image" />
 
 --- 
