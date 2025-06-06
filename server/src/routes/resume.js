@@ -65,7 +65,7 @@ router.post(
     const resumeFile = req.file;
     let resumeKeyName;
 
-    console.log(resumeFile);
+    (resumeFile);
 
     if (!validResumeFile(resumeFile)) {
       throw new Error("resume format not accepted!!");
@@ -80,7 +80,7 @@ router.post(
     });
     try {
       await s3Client.send(command);
-      console.log("uploaded cv success");
+    
 
       const resume = await prisma.users.update({
         where: {
@@ -95,8 +95,8 @@ router.post(
         },
       });
       const url = `${BUCKET_DOMAIN}/${resumeKeyName}`;
-      console.log("updated cv key in db");
-      console.log(url);
+      ("updated cv key in db");
+      (url);
       res.status(201).json({
         success: "a cv file uploaded successfully",
         ...resume,
@@ -118,13 +118,13 @@ router.put(
 
     let newKey;
 
-    console.log(newCvFile);
+    (newCvFile);
 
     if (!validResumeFile(newCvFile)) {
       throw new Error("resume format not accepted!!");
     }
 
-    console.log("accepted file type");
+    
 
     const userCvKeyName = await prisma.users.findUnique({
       where: {
@@ -150,7 +150,7 @@ router.put(
       await s3Client
         .send(command)
         .then(() => {
-          console.log(`updated cv ${newKey} success`);
+          (`updated cv ${newKey} success`);
         })
         .catch((error) => {
           return res

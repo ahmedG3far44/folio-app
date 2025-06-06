@@ -43,7 +43,7 @@ router.post(
 
       if (video) {
         clientVideoKey = `${crypto.randomUUID()}`;
-        console.log(clientVideoKey);
+       
         const videoFile = video[0];
         try {
           await s3Client.send(
@@ -89,7 +89,7 @@ router.post(
         message: "a new experiences was added.",
       });
     } catch (error) {
-      console.log(error.message);
+     
       res.status(500).json(new Exceptions(500, error.message));
     }
   }
@@ -111,7 +111,7 @@ router.get("/feedback/:userId", async (req, res) => {
 router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
   const user = req.user;
   const { feedbackId } = req.params;
-  console.log(feedbackId);
+  
 
   try {
     const feedback = await prisma.testimonials.findUnique({
@@ -131,7 +131,7 @@ router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
     };
 
     await s3Client.send(new DeleteObjectCommand(deleteProfileParams));
-    console.log("feedback profile picture was deleted from S3");
+  
 
     if (feedback.video) {
       const deleteVideoFeedbackParams = {
@@ -139,7 +139,7 @@ router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
         Key: feedback.video,
       };
       await s3Client.send(new DeleteObjectCommand(deleteVideoFeedbackParams));
-      console.log("feedback video was deleted from S3");
+    
     }
 
     await prisma.testimonials.delete({
@@ -148,7 +148,7 @@ router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
         usersId: user.id,
       },
     });
-    console.log("feedback deleted successful");
+  
     const newFeedback = await prisma.testimonials.findMany({
       where: {
         usersId: user.id,

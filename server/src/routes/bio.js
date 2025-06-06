@@ -33,7 +33,7 @@ router.get("/:userId/bio", async (req, res) => {
     if (!bio) {
       return res.status(404).json(Exceptions(404, "bio not found"));
     }
-    console.log("get bio info ");
+    
 
     return res.status(200).json({
       ...bio,
@@ -59,7 +59,7 @@ router.put("/bio/:bioId", verifyAccessToken, async (req, res) => {
       Object.keys(error).forEach((key) => {
         errorMessage += error[key] + " ";
       });
-      // console.log("error in bio payload");
+     
       throw new Error(`error in bio payload  ${errorMessage}`);
     }
 
@@ -77,7 +77,7 @@ router.put("/bio/:bioId", verifyAccessToken, async (req, res) => {
       },
     });
 
-    console.log("updated bio info in db success ");
+  
     const bio = await prisma.bio.findFirst({
       where: {
         id: bioId,

@@ -27,7 +27,7 @@ router.get("/layouts", verifyAccessToken, async (req, res) => {
       });
       res.status(200).json(layouts);
     }
-    console.log("get user layouts");
+   
     res.status(200).json(userLayouts);
   } catch (error) {
     res.status(500).json(new Exceptions(500, error.message));

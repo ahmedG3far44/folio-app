@@ -4,7 +4,7 @@ import { projectSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import { XIcon } from "lucide-react";
+import { CirclePlus, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
@@ -81,7 +81,7 @@ function ProjectForm() {
     images.map((img) => {
       formData.append("image", img as File);
     });
-    // console.log(formData);
+
 
     try {
       const response = await fetch(`${URL_SERVER}/project`, {
@@ -109,7 +109,13 @@ function ProjectForm() {
         <div className="w-full flex justify-between items-center">
           <h1>Project Form</h1>
           <Button onClick={() => setIsOpen(!isOpen)}>
-            {!isOpen ? "create project" : "cancel"}
+            {!isOpen ? (
+              <>
+                <CirclePlus size={20} /> {"add project"}
+              </>
+            ) : (
+              "cancel"
+            )}
           </Button>
         </div>
         {isOpen && !isUpdating && (
@@ -132,8 +138,6 @@ function ProjectForm() {
               if (!checkUploadedImages(images as File[])) {
                 throw new Error("You uploaded more than 5 images");
               }
-
-              console.log(projectData);
               try {
                 const newProject = await addNewProject(
                   projectData as ProjectFormData
@@ -179,10 +183,9 @@ function ProjectForm() {
                       alt="company logo image"
                     />
                     {!isSubmitting && (
-                      <Button
+                      <button
                         type="button"
-                        variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                         onClick={() => {
                           if (updatedProject)
                             setUpdatedProject({
@@ -193,7 +196,7 @@ function ProjectForm() {
                         }}
                       >
                         <XIcon size={20} />
-                      </Button>
+                      </button>
                     )}
                   </div>
                 ) : (
@@ -233,11 +236,9 @@ function ProjectForm() {
                               alt="company logo image"
                             />
                             {!isSubmitting && (
-                              <Button
-                                variant={"destructive"}
+                              <button
                                 type="button"
-                                className="cursor-pointer z-[50] hover:bg-red-700 duration-150 absolute -top-2 -right-4 p-2 rounded-2xl flex items-center justify-center text-white "
-                                // When filtering images during update
+                                className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                                 onClick={() => {
                                   if (updatedProject) {
                                     setUpdatedProject({
@@ -262,16 +263,17 @@ function ProjectForm() {
                                       }
                                     );
                                     setImages(
-                                      filteredImages as
-                                        | File[]
-                                        | IProjectImagesType[]
-                                        | null
+                                      filteredImages.length > 0
+                                        ? (filteredImages as
+                                            | File[]
+                                            | IProjectImagesType[])
+                                        : null
                                     );
                                   }
                                 }}
                               >
                                 <XIcon size={20} />
-                              </Button>
+                              </button>
                             )}
                           </div>
                         );
@@ -327,7 +329,7 @@ function ProjectForm() {
                   className="p-2 border rounded-md w-[80%]"
                   type="text"
                   id="tags"
-                  placeholder="tags"
+                  placeholder="Project Tags"
                   value={oneTag ? oneTag : ""}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setOneTag(e.target.value);
@@ -393,7 +395,7 @@ function ProjectForm() {
                           {!isSubmitting && (
                             <button
                               type="button"
-                              className="bg-red-500 hover:bg-red-700  text-white p-2 rounded-full cursor-pointer duration-150 absolute -top-2 -right-4  flex items-center justify-center"
+                              className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                               onClick={() =>
                                 setTags([
                                   ...tags.filter(
@@ -422,7 +424,7 @@ function ProjectForm() {
                 className="w-full p-2 border rounded-md"
                 type="text"
                 id="sourceUrl"
-                placeholder="sourceUrl"
+                placeholder="Project external source link"
                 defaultValue={updatedProject ? updatedProject.source : ""}
                 {...register("sourceUrl")}
               />

@@ -19,7 +19,6 @@ function ProtectedAdminRoute() {
   const { user, isLogged, logout } = useAuth();
   const location = useLocation();
   const active = location.pathname.split("/").pop();
-  console.log(active);
 
   const isAdmin = user.role === "ADMIN" ? true : false;
   if (!isLogged) return <Navigate to={"/login"} />;

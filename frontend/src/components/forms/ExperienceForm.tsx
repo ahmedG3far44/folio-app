@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { XIcon } from "lucide-react";
+import { CirclePlus, XIcon } from "lucide-react";
 
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
@@ -57,7 +57,13 @@ function ExperienceForm() {
         <div className="w-full flex justify-between items-center">
           <h1>Experience Form</h1>
           <Button onClick={() => setIsOpen(!isOpen)}>
-            {!isOpen ? "create Experience" : "cancel"}
+            {!isOpen ? (
+              <>
+                <CirclePlus size={20} /> {"add experience"}
+              </>
+            ) : (
+              "cancel"
+            )}
           </Button>
         </div>
         {isOpen && (
@@ -75,9 +81,7 @@ function ExperienceForm() {
                 formData.append(key, value);
               });
               formData.append("role", content);
-              // console.log(formData.get("role"));
-              // console.log(formData);
-              // return;
+        
               try {
                 const response = await fetch(
                   `${URL_SERVER}/experiences/${
@@ -95,14 +99,12 @@ function ExperienceForm() {
                   throw new Error(`${"create a new"} experience failed!!`);
                 }
                 const data = await response.json();
-                console.log(data.data);
                 setExperiences(data.data);
                 setContent("");
                 reset();
                 toast.success(`a new experience was success!!`);
                 return data;
               } catch (err) {
-                console.log((err as Error).message);
                 toast.error((err as Error).message);
                 return;
               } finally {
@@ -139,13 +141,12 @@ function ExperienceForm() {
                       alt="company logo image"
                     />
                     {!isSubmitting && (
-                      <Button
+                      <button
                         type="button"
-                        variant={"destructive"}
-                        className="cursor-pointer hover:bg-red-700 duration-150 absolute -top-2 rounded-2xl flex items-center justify-center text-white"
+                        className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
                         onClick={() => {
+                          setFile(null);
                           if (updateThisExperience) {
-                            setFile(null);
                             setUpdateThisExperience({
                               ...updateThisExperience,
                             });
@@ -153,7 +154,7 @@ function ExperienceForm() {
                         }}
                       >
                         <XIcon size={20} />
-                      </Button>
+                      </button>
                     )}
                   </div>
                 ) : (
@@ -212,7 +213,7 @@ function ExperienceForm() {
                 className="w-full p-2 border rounded-md"
                 type="text"
                 id="position"
-                placeholder="position"
+                placeholder="Job Position"
                 {...register("position")}
               />
               {errors.position && (
@@ -233,7 +234,7 @@ function ExperienceForm() {
                 defaultValue={
                   updateThisExperience ? updateThisExperience.duration : ""
                 }
-                placeholder="duration"
+                placeholder="Job Duration"
                 {...register("duration")}
               />
               {errors.duration && (
@@ -261,7 +262,7 @@ function ExperienceForm() {
                 className="w-full p-2 border rounded-md"
                 type="text"
                 id="location"
-                placeholder="location"
+                placeholder="Job Location"
                 defaultValue={
                   updateThisExperience ? updateThisExperience.location : ""
                 }

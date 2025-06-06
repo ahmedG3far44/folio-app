@@ -101,7 +101,7 @@ function BioForm() {
                 className="w-full p-2 rounded-md"
                 type="text"
                 id="jobTitle"
-                placeholder="Job title"
+                placeholder="Your Job Title"
                 {...register("jobTitle")}
               />
               {errors.jobTitle && (
@@ -120,7 +120,7 @@ function BioForm() {
                 className="w-full p-2 rounded-md"
                 type="text"
                 id="name"
-                placeholder="name"
+                placeholder="Your Name"
                 {...register("name")}
               />
               {errors.name && (
@@ -138,7 +138,7 @@ function BioForm() {
                 readOnly={isSubmitting}
                 className="w-full p-2 rounded-md"
                 id="bio"
-                placeholder="bio"
+                placeholder="Your Bio"
                 {...register("summary")}
               />
               {errors.summary && (

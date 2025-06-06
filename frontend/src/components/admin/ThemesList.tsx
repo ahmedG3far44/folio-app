@@ -10,14 +10,15 @@ const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ThemesList() {
   const { token } = useAuth();
-  const { themesList, activeTheme } = useTheme();
+  const { themesList, setThemesList, activeTheme } = useTheme();
   const { backgroundColor, cardColor, borderColor } = activeTheme;
   const [newTheme, setNewTheme] = useState<IThemeType>({
-    backgroundColor: "#121212",
-    cardColor: "#1F1F1F",
-    primaryText: "#E0E0E0",
-    secondaryText: "#B0B0B0",
-    borderColor: "#5A5A5A",
+    themeName: "",
+    backgroundColor: "",
+    cardColor: "",
+    primaryText: "",
+    secondaryText: "",
+    borderColor: "",
   });
   const [submitting, setSubmitting] = useState<{
     pending: boolean;
@@ -57,13 +58,14 @@ function ThemesList() {
       toast.success("a new theme was created success!!");
 
       setNewTheme({
+        themeName: "",
         backgroundColor: "",
         cardColor: "",
         primaryText: "",
         secondaryText: "",
         borderColor: "",
       });
-
+      setThemesList(data.data);
       return data;
     } catch (err) {
       toast.error((err as Error).message);
@@ -85,6 +87,17 @@ function ThemesList() {
         className="w-full lg:1/2 p-4 border flex items-center justify-center flex-col gap-1"
         style={{ backgroundColor, borderColor }}
       >
+        <input
+          id="themeName"
+          style={{ backgroundColor: cardColor, borderColor }}
+          type="text"
+          name="themeName"
+          value={newTheme.themeName}
+          placeholder="Theme Name"
+          onChange={handleColorChange}
+          className="w-full p-4 rounded-md  overflow-hidden"
+        />
+
         <div
           style={{ backgroundColor: cardColor }}
           className="w-full p-4 rounded-md flex justify-between items-center gap-4"
@@ -95,6 +108,7 @@ function ThemesList() {
             style={{ backgroundColor: cardColor, borderColor }}
             type="color"
             name="backgroundColor"
+            value={newTheme.backgroundColor}
             onChange={handleColorChange}
             className=" overflow-hidden"
           />
@@ -110,6 +124,7 @@ function ThemesList() {
             style={{ backgroundColor: cardColor, borderColor }}
             type="color"
             name="cardColor"
+            value={newTheme.cardColor}
             onChange={handleColorChange}
             className=" overflow-hidden"
           />
@@ -124,6 +139,7 @@ function ThemesList() {
             style={{ backgroundColor: cardColor, borderColor }}
             type="color"
             name="borderColor"
+            value={newTheme.borderColor}
             onChange={handleColorChange}
             className=" overflow-hidden"
           />
@@ -138,6 +154,7 @@ function ThemesList() {
             style={{ backgroundColor: cardColor, borderColor }}
             type="color"
             name="primaryText"
+            value={newTheme.primaryText}
             onChange={handleColorChange}
             className=" overflow-hidden"
           />
@@ -152,6 +169,7 @@ function ThemesList() {
             style={{ backgroundColor: cardColor, borderColor }}
             type="color"
             name="secondaryText"
+            value={newTheme.secondaryText}
             onChange={handleColorChange}
             className=" overflow-hidden"
           />
@@ -166,9 +184,10 @@ function ThemesList() {
         </SubmitButton>
       </form>
 
-      <div className="grid grid-cols-3 lg:grid-cols-5 gap-2  my-4">
+      <div className="grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  my-4">
         {themesList.map(
           ({
+            themeName,
             backgroundColor,
             cardColor,
             borderColor,
@@ -180,6 +199,7 @@ function ThemesList() {
               <ThemeCard
                 key={id}
                 id={id}
+                themeName={themeName}
                 backgroundColor={backgroundColor}
                 cardColor={cardColor}
                 borderColor={borderColor}

@@ -1,7 +1,6 @@
 import { ReactNode } from "react";
 import { Button } from "./ui/button";
 import Loader from "./loader";
-import { useTheme } from "@/contexts/ThemeProvider";
 
 interface SubmitButtonProps {
   children: ReactNode;
@@ -25,14 +24,8 @@ function SubmitButton({
   loading,
   className,
 }: SubmitButtonProps) {
-  const { activeTheme } = useTheme();
   return (
     <Button
-      style={{
-        backgroundColor: activeTheme.backgroundColor,
-        color: activeTheme.primaryText,
-        border: `1px solid ${activeTheme.borderColor}`,
-      }}
       type={type as "submit" | "reset" | "button"}
       onClick={onClickFunction}
       disabled={loading}

@@ -49,17 +49,17 @@ function UploadResume() {
       }
       const data = await response.json();
       toast.success("uploading resume success");
-      setFile(null);
       setUploadState({
         ...uploadState,
         success: "uploading resume successfull",
       });
-      setIsChangeResume(false);
       return data;
     } catch (err) {
       setUploadState({ ...uploadState, error: (err as Error).message });
       return;
     } finally {
+      setFile(null);
+      setIsChangeResume(false);
       setUploadState({
         success: null,
         error: null,
@@ -105,14 +105,13 @@ function UploadResume() {
                     <FileCheck2 size={30} />
                   </span>
                   {!uploadState.uploading && (
-                    <Button
+                    <button
                       onClick={() => setFile(null)}
                       type="button"
-                      variant={"destructive"}
-                      className="hover:bg-red-700 duration-150 rounded-2xl text-white cursor-pointer absolute top-2 right-4"
+                      className="bg-red-600 hover:bg-red-700 duration-150 rounded-full p-2 text-white cursor-pointer absolute -top-2 -right-4"
                     >
                       <XIcon size={20} />
-                    </Button>
+                    </button>
                   )}
                 </div>
                 <div className="flex flex-col justify-start items-center text-center ">

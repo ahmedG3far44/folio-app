@@ -18,7 +18,7 @@ export default function checkUploadImageFormat(req, res, next) {
     }
 
     if (image.size >= 4194304) {
-      console.log("thumbnail image check not accepted");
+   
 
       return res.status(400).json({
         error: "large size error",
@@ -55,7 +55,7 @@ export default function checkUploadImageFormat(req, res, next) {
           message: "the image file should be in this formats: JPEG, JPG, PNG.",
         });
       }
-      console.log(`${index} image check accepted`);
+  
     });
   }
   return next();

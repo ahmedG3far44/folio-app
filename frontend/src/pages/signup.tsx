@@ -7,7 +7,6 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 
 import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 import ErrorMessage from "@/components/ErrorMessage";
 import Logo from "@/components/Logo";
@@ -79,7 +78,7 @@ function SignUpPage() {
   };
   return (
     <div className="w-full min-h-screen flex items-center justify-center bg-zinc-950 ">
-      <Card className="px-4 py-8 bg-zinc-700 text-white">
+      <Card className="p-8 bg-zinc-700 text-white">
         <CardTitle className="flex items-center justify-center flex-col gap-2 my-8">
           <Logo />
           <h1 className="text-lg font-bold text-start">
@@ -100,14 +99,13 @@ function SignUpPage() {
                   alt="profile picture"
                 />
                 {!pending && (
-                  <Button
+                  <button
                     onClick={() => setProfile(null)}
-                    variant={"destructive"}
                     type="button"
-                    className="absolute -right-4 -top-1 hover:opacity-75 duration-150 cursor-pointer"
+                    className="bg-red-600 text-white p-2 rounded-full absolute -right-4 -top-1 hover:bg-red-700 duration-150 cursor-pointer"
                   >
                     <XIcon size={15} />
-                  </Button>
+                  </button>
                 )}
               </div>
             ) : (

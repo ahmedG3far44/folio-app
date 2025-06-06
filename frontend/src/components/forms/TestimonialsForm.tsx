@@ -3,7 +3,7 @@ import { useUser } from "@/contexts/UserProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 
-import { ClipboardCheck, Copy } from "lucide-react";
+import { ClipboardCheck, Copy, Link2 } from "lucide-react";
 
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
@@ -11,11 +11,8 @@ import { Button } from "../ui/button";
 import Loader from "../loader";
 import ShowListCard from "../cards/ShowListCard";
 
-const ENV = import.meta.env.VITE_ENV as string;
-const LOCAL_DOMAIN = import.meta.env.VITE_LOCAL_DOMAIN as string;
-const PRODUCTION_DOMAIN = import.meta.env.VITE_PRODUCTION_DOMAIN as string;
-
 function TestimonialsForm() {
+  const { host, protocol } = window.location;
   const { user } = useAuth();
   const { testimonials, pending } = useUser();
   const { activeTheme } = useTheme();
@@ -27,7 +24,8 @@ function TestimonialsForm() {
       setCopy(true);
       setTimeout(() => {
         setCopy(false);
-      }, 2000);
+        setUrl(null);
+      }, 3000);
     }
   };
   return (
@@ -59,14 +57,10 @@ function TestimonialsForm() {
           <div className="flex justify-start items-center gap-4">
             <Button
               onClick={() => {
-                setUrl(
-                  `${
-                    ENV === "development" ? LOCAL_DOMAIN : PRODUCTION_DOMAIN
-                  }/feedback/${user.id}`
-                );
+                setUrl(`${protocol}//${host}/feedback/${user.id}`);
               }}
             >
-              generate your link
+              <Link2 size={20} /> generate your link
             </Button>
           </div>
         )}

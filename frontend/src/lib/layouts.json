@@ -1,18 +1,18 @@
 {
   "heroLayout": {
     "parent": {
-      "default": "w-full flex flex-col items-center justify-center gap-4",
-      "medium": "flex items-center justify-center gap-10",
-      "minimal": "flex flex-col items-center justify-center gap-4 ",
-      "wizzard": "flex flex-col justify-center items-center gap-4",
-      "accent": "w-full flex items-center justify-center gap-10"
+      "default": "w-full flex flex-col items-center justify-center gap-10",
+      "medium": " flex items-center justify-center gap-10",
+      "minimal": "grid place-items-center gap-2  ",
+      "wizzard": "w-3/4 m-auto flex flex-row-reverse justify-center items-center",
+      "accent": "w-full flex flex-row-reverse items-center justify-center gap-10 p-8"
     },
     "child": {
-      "default": "w-full flex flex-col items-center justify-between gap-2",
-      "medium": "w-3/4 flex  items-center justify-center gap-10",
-      "minimal": "flex items-center justify-center gap-8 ",
-      "wizzard": "flex flex-row-reverse items-center justify-center gap-8",
-      "accent": "w-3/4 flex flex-row-reverse items-center justify-center gap-10"
+      "default": "w-3/4 flex flex-col items-center justify-between",
+      "medium": "flex flex-col items-start  justify-start",
+      "minimal": "w-3/4 flex  items-center justify-center text-center ",
+      "wizzard": "flex flex-col  items-satrt justify-start",
+      "accent": "w-3/4 flex flex-col items-start justify-center gap-4"
     }
   },
   "expLayout": {
