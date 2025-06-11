@@ -52,7 +52,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 
    ```bash
    # Frontend
-   cd client && npm install
+   cd frontend && npm install
    # Backend
    cd ../server && npm install
    ```
@@ -92,7 +92,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 
 5. **Run the app**:
    ```bash
-   # Frontend (client/)
+   # Frontend (frontend/)
    npm run dev
    # Backend (server/)
    npm start
@@ -221,6 +221,7 @@ http://{localhost:4000}/api/
 - **PUT** `/layouts/:id` - Update layout (requires ID parameter)
 
 ---
+
 
 ## **Screenshots** 📸 (Preview App):
 
