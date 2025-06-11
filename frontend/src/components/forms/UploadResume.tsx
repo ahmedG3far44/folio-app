@@ -1,4 +1,4 @@
-import { FileCheck2, LucideBook, XIcon } from "lucide-react";
+import { FileCheck2, FileUser, XIcon } from "lucide-react";
 import React, { ChangeEvent, useState } from "react";
 import { Button } from "../ui/button";
 import SubmitButton from "../submit-button";
@@ -15,7 +15,7 @@ function UploadResume() {
   const { token, user } = useAuth();
   const { activeTheme } = useTheme();
   const [file, setFile] = useState<File | null>(null);
-  const [isChangeResume, setIsChangeResume] = useState<boolean>(true);
+  const [isChangeResume, setIsChangeResume] = useState<boolean>(false);
   const [uploadState, setUploadState] = useState<{
     uploading: boolean;
     success?: string | null;
@@ -77,11 +77,11 @@ function UploadResume() {
             target="_blank"
             className="flex justify-center items-center gap-2 my-4 hover:underline hover:opacity-75 duration-150"
           >
-            <LucideBook size={20} />
-            <h1>Show Uploaded Resume</h1>
+            <FileUser size={20} />
+            <h1>Show Current Resume</h1>
           </Link>
           <Button onClick={() => setIsChangeResume(!isChangeResume)}>
-            {isChangeResume ? "Cancle Change Resume" : "Change Resume"}
+            {isChangeResume ? "Close" : "Change Resume"}
           </Button>
         </div>
       )}
@@ -98,7 +98,7 @@ function UploadResume() {
                   color: activeTheme.primaryText,
                   borderColor: activeTheme.borderColor,
                 }}
-                className="w-full lg:w-[350px] flex flex-col items-center justify-center gap-4 p-4 border rounded-2xl relative"
+                className="w-full lg:w-[350px] flex flex-col items-center justify-center gap-2 p-4 border rounded-2xl relative"
               >
                 <div className="w-fit">
                   <span>
@@ -114,16 +114,16 @@ function UploadResume() {
                     </button>
                   )}
                 </div>
-                <div className="flex flex-col justify-start items-center text-center ">
-                  <h1 className="font-semibold max-w-[260px] overflow-x-hidden">
+                <div className="flex flex-col justify-start items-center text-center text-sm ">
+                  <h2 className="font-semibold max-w-[260px] overflow-x-hidden">
                     {file.name.split(".")[0]}
-                  </h1>
-                  <h1 className="font-bold">
-                    {(file.size / 1024 / 1024).toLocaleString()} KB
-                  </h1>
-                  <h1 className="font-semibold text-sm">
-                    {file.type.split("/").pop()?.toString()}
-                  </h1>
+                  </h2>
+                  <div className="flex flex-row-reverse items-center gap-2">
+                    <h3>{(file.size / 1024 / 1024).toLocaleString()} KB</h3>
+                    <h4>
+                      {file.type.split("/").pop()?.toString().toUpperCase()}
+                    </h4>
+                  </div>
                 </div>
               </div>
             ) : (
