@@ -60,6 +60,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 3. **Set up environment variables**:
 
 - Create `.env` in `/server`:
+  
   ```env
   PORT=5000
   ENV=development # or "production"
@@ -75,6 +76,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
   HOST_DOMAIN_URL=http://localhost:5000 # or your production backend URL
   ```
 - Create `.env` in `/frontend`:
+  
   ```env
   VITE_URL_SERVER=http://localhost:5000 # or your production backend URL
   VITE_BUCKET_DOMAIN=your_s3_bucket_domain (e.g., https://{bucket-name}.s3.amazonaws.com)
