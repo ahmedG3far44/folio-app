@@ -60,11 +60,10 @@ function ProtectedAdminRoute() {
       <aside
         style={{
           backgroundColor: activeTheme.backgroundColor,
-       
         }}
-        className={`hidden min-h-screen w-1/2 p-4  flex-col items-center justify-start ${
+        className={`hidden min-h-screen w-1/2 p-4  flex-col items-center justify-start  ${
           isOpen && "inline-block fixed left-0 top-0 shadow-2xl z-[999] "
-        } lg:p-8 lg:flex lg:w-full lg:items-start gap-4`}
+        } lg:p-8 lg:flex lg:w-full lg:items-center gap-4`}
       >
         <div
           style={{ borderColor: activeTheme.borderColor }}
@@ -91,12 +90,12 @@ function ProtectedAdminRoute() {
             {isAdmin ? "Admin" : "User"}
           </span>
         </div>
-        <ul className="w-full flex flex-col items-start justify-start gap-4">
+        <ul className=" flex flex-col items-center justify-center gap-4">
           {adminDashboardRoutes.map((route) => {
             return (
               <Link
                 key={route.id}
-                className="w-full hover:opacity-70 duration-150"
+                className="w-full inline-block hover:opacity-70 duration-150"
                 to={route.name === "Home" ? "/" : `/dashboard/${route.path}`}
               >
                 <li
@@ -107,7 +106,7 @@ function ProtectedAdminRoute() {
                         : activeTheme.backgroundColor,
                   }}
                   className={
-                    "w-full flex justify-start items-start p-2 space-x-2 rounded-md"
+                    "w-full flex justify-center items-center py-2 px-4 space-x-2 rounded-md"
                   }
                 >
                   <span>{route.icon}</span>
@@ -117,8 +116,12 @@ function ProtectedAdminRoute() {
             );
           })}
         </ul>
-        <div className="w-full flex items-center justify-center mt-20 gap-2">
-          <Button className={"w-full"} variant={"outline"} onClick={() => logout()}>
+        <div className="w-full flex items-center justify-center  gap-2 mt-auto mb-20">
+          <Button
+            className={"w-full"}
+            variant={"outline"}
+            onClick={() => logout()}
+          >
             <LucideLogOut size={20} />
             Logout
           </Button>

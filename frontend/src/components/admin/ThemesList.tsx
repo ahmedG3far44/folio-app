@@ -184,7 +184,7 @@ function ThemesList() {
         </SubmitButton>
       </form>
 
-      <div className="grid place-items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2  my-4">
+      <div className="flex items-center justify-start flex-wrap gap-4  my-4">
         {themesList.map(
           ({
             themeName,

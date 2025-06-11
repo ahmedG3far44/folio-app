@@ -1,4 +1,3 @@
- 
 # **Folio** 🚀  
 
 A web app for tech professionals to **build customized portfolios** showcasing projects, skills, and experiences with full CRUD functionality and theme customization.  
@@ -92,8 +91,8 @@ A web app for tech professionals to **build customized portfolios** showcasing p
    # Backend (server/)  
    npm start  
    ```  
-   - Frontend: `http://localhost:5173`  
-   - Backend: `http://localhost:8000`  
+   - Frontend: `http://localhost:3000`  
+   - Backend: `http://localhost:4000`  
 
 ---
 
@@ -108,6 +107,8 @@ folio/
         ├── context
         ├── pages
         ├── lib
+   |── .env 
+
 ├── server/           
     ├── src
         ├── database 
@@ -116,9 +117,8 @@ folio/
         ├── prisma     
         ├── utils      
         ├── s3
-        └── .env    
-    
-└── README.md  
+    ├── .env
+
 ```  
 
 ---
@@ -128,4 +128,3 @@ folio/
 
 <img src="https://github.com/ahmedG3far44/Folio-App/blob/development/showcase.gif"  alt="show case gif image" />
 
---- 

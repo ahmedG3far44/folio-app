@@ -11,8 +11,8 @@ function ThemeCard({
 }: IThemeType) {
   const { activeTheme } = useTheme();
   return (
-    <div className="flex flex-col items-start justify-start gap-2">
-      <h1 className="text-md font-semibold">{themeName}</h1>
+    <div className="flex flex-col items-start justify-start gap-2 hover:scale-95 duration-150 ">
+      <h1 className="text-sm font-semibold">{themeName}</h1>
       <div
         style={{
           border: `1px solid ${activeTheme.borderColor}`,
