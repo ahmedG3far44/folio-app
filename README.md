@@ -145,16 +145,10 @@ http://localhost:4000/api/
 - **POST** `/auth/login` - User login
 - **POST** `/auth/register` - User registration
 
-## User Management
-
 ### User
 
 - **GET** `/user` - Get user information
 
-### Upload Hero Image
-
-- **POST** `/upload-hero-image` - Upload hero image
-- **POST** `/upload-files` - Upload files
 
 ### Admin
 
@@ -162,6 +156,11 @@ http://localhost:4000/api/
 
 
 ## Profile Information
+
+### Upload Hero Image
+
+- **POST** `/upload-hero-image` - Upload hero image
+- **POST** `/upload-files` - Upload files
 
 ### Resume
 
@@ -174,8 +173,6 @@ http://localhost:4000/api/
 - **GET** `/bio/:id` - Get bio by ID
 - **PUT** `/bio/:id` - Update bio (requires ID parameter)
 
-## Skills Management
-
 ### Skills
 
 - **GET** `/skills` - Get all skills
@@ -183,8 +180,6 @@ http://localhost:4000/api/
 - **POST** `/skills` - Create new skill
 - **PUT** `/skills/:id` - Update skill (requires ID parameter)
 - **DELETE** `/skills/:id` - Delete skill (requires ID parameter)
-
-## Experience Management
 
 ### Experiences
 
@@ -194,8 +189,6 @@ http://localhost:4000/api/
 - **PUT** `/experience/:id` - Update experience (requires ID parameter)
 - **DELETE** `/experience/:id` - Delete experience (requires ID parameter)
 
-## Project Management
-
 ### Projects
 
 - **GET** `/project` - Get all projects
@@ -204,8 +197,6 @@ http://localhost:4000/api/
 - **PUT** `/project/:id` - Update project (requires ID parameter)
 - **DELETE** `/project/:id` - Delete project (requires ID parameter)
 
-## Theme Management
-
 ### Themes
 
 - **GET** `/theme` - Get theme information
@@ -213,15 +204,11 @@ http://localhost:4000/api/
 - **PUT** `/theme/:id` - Update theme (requires ID parameter)
 - **DELETE** `/theme/:id` - Delete theme (requires ID parameter)
 
-## Feedback Management
-
 ### Feedback
 
 - **GET** `/feedback` - Get all feedback
 - **POST** `/feedback` - Create new feedback
 - **DELETE** `/feedback/:id` - Delete feedback (requires ID parameter)
-
-## Contact Management
 
 ### Contacts
 
