@@ -12,8 +12,9 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthProvider";
 
 import Container from "@/components/Container";
-import videoOne from "../assets/videos/video-1.mp4";
+// import videoOne from "../assets/videos/video-1.mp4";
 import videoTwo from "../assets/videos/video-2.mp4";
+import gifShowcase from "../assets/videos/showcase.gif";
 
 import {
   Atom,
@@ -172,20 +173,16 @@ const VideoSection = memo(({ activeState }: { activeState?: boolean }) => (
       whileInView={{ opacity: 1, scaleY: 1, scaleX: 1, translateY: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, ease: easeInOut }}
-      className="p-4 w-[800px] h-auto rounded-2xl shadow-xl lg:my-20 z-5 relative"
+      className="p-4 w-[700px]  flex items-center justify-center  rounded-2xl overflow-hidden shadow-xl lg:my-20 z-5 relative"
     >
-      <video
-        preload="metadata"
-        autoPlay
-        muted
-        loop
-        playsInline
-        width={800}
-        height={800}
-        className="rounded-2xl object-cover z-4 shadow-2xl border border-zinc-900"
-      >
-        <source src={videoOne} type="video/mp4" />
-      </video>
+      <img
+        property="true"
+        loading="lazy"
+        className="rounded-2xl object-cover z-4 shadow-2xl border border-zinc-950"
+        src={gifShowcase}
+        alt="Animated example"
+        width="700"
+      />
     </motion.div>
   </section>
 ));
