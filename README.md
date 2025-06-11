@@ -228,4 +228,4 @@ http://{localhost:4000}/api/
 
 ## **Screenshots** 📸 (Preview App):
 
-<img src="https://github.com/ahmedG3far44/Folio-App/blob/development/showcase.gif"  alt="show case gif image" />
+<img src="https://github.com/ahmedG3far44/Folio-App/blob/development/showcase(1).gif"  alt="show case gif image" />
