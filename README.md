@@ -75,6 +75,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
   ACCESS_TOKEN_SECRET=your_jwt_secret_key
   HOST_DOMAIN_URL=http://localhost:5000 # or your production backend URL
   ```
+  
 - Create `.env` in `/frontend`:
   
   ```env
