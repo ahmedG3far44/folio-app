@@ -20,6 +20,7 @@ import Loader from "../loader";
 import { IProjectImagesType, IProjectType } from "@/lib/types";
 import checkUploadedImages from "@/lib/checkUploadedImages";
 import Tiptap from "../Tiptap";
+import Image from "../ui/image";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -81,7 +82,6 @@ function ProjectForm() {
     images.map((img) => {
       formData.append("image", img as File);
     });
-
 
     try {
       const response = await fetch(`${URL_SERVER}/project`, {
@@ -169,10 +169,12 @@ function ProjectForm() {
                 {thumbnail ? (
                   <div
                     style={{ borderColor: activeTheme.borderColor }}
-                    className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
+                    className="relative w-40 h-40 rounded-md border p-2 flex items-center justify-center"
                   >
-                    <img
-                      className="w-30 h-30 object-cover rounded-2xl"
+                    <Image
+                      className="w-30 h-30 object-cover rounded-md"
+                      width={30}
+                      height={30}
                       src={
                         typeof thumbnail === "string"
                           ? thumbnail
@@ -226,7 +228,7 @@ function ProjectForm() {
                             style={{ borderColor: activeTheme.borderColor }}
                             className="relative w-30 h-30 rounded-2xl border p-2 flex items-center justify-center"
                           >
-                            <img
+                            <Image
                               className="w-25  h-25  lg:w-full lg:h-full object-cover rounded-2xl"
                               src={
                                 img instanceof File

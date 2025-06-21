@@ -6,6 +6,7 @@ import { Card } from "../ui/card";
 
 import Resume from "../cards/Resume";
 import ShowUserContacts from "../cards/ShowUserContacts";
+import Image from "../ui/image";
 
 function HeroFour({
   bioInfo,
@@ -23,13 +24,9 @@ function HeroFour({
       }}
     >
       <div className="flex flex-col lg:flex-row gap-8 items-center">
-        {/* Image Section */}
         <div className="flex-shrink-0">
-          <div
-            className="w-[280px] h-[350px] rounded-2xl overflow-hidden"
-          >
-            <img
-              loading="lazy"
+          <div className="w-[280px] h-[350px] rounded-2xl overflow-hidden">
+            <Image
               property="true"
               width={280}
               height={350}
@@ -40,9 +37,7 @@ function HeroFour({
           </div>
         </div>
 
-        {/* Content Section */}
         <div className="flex-1 space-y-6">
-          {/* Name and Title */}
           <div className="text-center lg:text-left">
             <h2
               className="text-4xl lg:text-5xl font-black mb-3"

@@ -30,6 +30,7 @@ import SecondaryBtn from "@/components/buttons/SecondaryBtn";
 import PrimaryBtn from "@/components/buttons/PrimaryBtn";
 import Logo from "@/components/Logo";
 import User from "@/components/User";
+import Image from "@/components/ui/image";
 // Lazy load heavy components
 // const VideoGallerySection = lazy(() => import("VideoGallerySection"));
 
@@ -41,14 +42,12 @@ const ProfileImage = memo(() => (
     whileTap={{ scale: 1 }}
     className="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border border-purple-500"
   >
-    <img
-      loading="lazy"
+    <Image
       width={40}
       height={40}
       className="w-full h-full object-cover"
       src="https://media.licdn.com/dms/image/v2/D4D03AQHYaJyb47RqrA/profile-displayphoto-shrink_200_200/B4DZZUMvChGwAc-/0/1745169347596?e=1750896000&v=beta&t=qAnlNxEDOKbQxJN98k-layJMsZmnZtPpeDJfZDFseCo"
       alt="profile developer"
-      decoding="async"
     />
   </motion.div>
 ));
@@ -175,13 +174,12 @@ const VideoSection = memo(({ activeState }: { activeState?: boolean }) => (
       transition={{ duration: 0.5, ease: easeInOut }}
       className="p-4 w-[700px]  flex items-center justify-center  rounded-2xl overflow-hidden shadow-xl lg:my-20 z-5 relative"
     >
-      <img
+      <Image
         property="true"
-        loading="lazy"
         className="rounded-2xl object-cover z-4 shadow-2xl border border-zinc-950"
         src={gifShowcase}
         alt="Animated example"
-        width="700"
+        width={700}
       />
     </motion.div>
   </section>
@@ -398,7 +396,7 @@ function Footer() {
             {isLogged ? (
               <div className="flex items-center gap-2 py-4">
                 <div className="w-10 h-10 rounded-full overflow-hidden">
-                  <img
+                  <Image
                     className="object-cover w-full h-full"
                     width={40}
                     height={40}

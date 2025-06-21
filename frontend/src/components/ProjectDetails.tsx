@@ -8,6 +8,7 @@ import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import Loader from "./loader";
 import { ExternalLink, Undo2 } from "lucide-react";
+import Image from "./ui/image";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -78,22 +79,14 @@ function ProjectDetails() {
                         className="p-4 rounded-2xl overflow-hidden w-full"
                         key={image.id}
                       >
-                        <picture className="w-full h-full object-cover rounded-2xl">
-                          <source
-                            srcSet={image.url.replace(".jpg", ".avif")}
-                            type="image/avif"
-                          />
-                          <source
-                            srcSet={image.url.replace(".jpg", ".webp")}
-                            type="image/webp"
-                          />
-                          <img
-                            src={image.url}
-                            alt={project.title}
-                            loading="lazy"
-                            className="w-full h-full object-cover rounded-2xl"
-                          />
-                        </picture>
+                        <Image
+                          property="true"
+                          width={280}
+                          height={350}
+                          className="w-full h-full object-cover rounded-lg"
+                          src={image?.url}
+                          alt={project?.title}
+                        />
                       </Card>
                     );
                   })}
@@ -138,11 +131,11 @@ function ProjectDetails() {
                     srcSet={project?.thumbnail.replace(".jpg", ".webp")}
                     type="image/webp"
                   />
-                  <img
-                    src={project?.thumbnail}
-                    alt={project?.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover rounded-2xl"
+                  <Image
+                    property="true"
+                    className="w-full h-full object-cover rounded-lg"
+                    src={project?.thumbnail as string}
+                    alt={project?.title as string}
                   />
                 </picture>
               </div>

@@ -6,6 +6,7 @@ import { Card } from "../ui/card";
 
 import Resume from "../cards/Resume";
 import ShowUserContacts from "../cards/ShowUserContacts";
+import Image from "../ui/image";
 
 function HeroThree({
   bioInfo,
@@ -26,8 +27,7 @@ function HeroThree({
     >
       <div className="flex flex-col md:flex-row gap-6 items-center">
         <div className="w-[180px] h-[180px] rounded-2xl overflow-hidden flex-shrink-0">
-          <img
-            loading="lazy"
+          <Image
             property="true"
             width={180}
             height={180}

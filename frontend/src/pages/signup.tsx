@@ -10,6 +10,7 @@ import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
 
 import ErrorMessage from "@/components/ErrorMessage";
 import Logo from "@/components/Logo";
+import Image from "@/components/ui/image";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -92,8 +93,7 @@ function SignUpPage() {
           <div className="self-center">
             {profile ? (
               <div className="w-20 h-20 rounded-full  flex items-center justify-center border-2 relative">
-                <img
-                  loading="lazy"
+                <Image
                   className="w-full h-full rounded-full object-cover"
                   src={URL.createObjectURL(profile)}
                   alt="profile picture"

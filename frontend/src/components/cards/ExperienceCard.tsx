@@ -4,6 +4,7 @@ import { MapPin } from "lucide-react";
 
 import LayoutsJson from "@/lib/layouts.json";
 import { useUser } from "@/contexts/UserProvider";
+import Image from "../ui/image";
 
 function ExperienceCard({ exp }: { exp: IExperienceType; className?: string }) {
   const { cName, cLogo, duration, position, role, location } = exp;
@@ -35,7 +36,7 @@ function ExperienceCard({ exp }: { exp: IExperienceType; className?: string }) {
     >
       <div className="w-full flex justify-start items-center gap-4">
         <div className="w-12 h-12 rounded-xl  overflow-hidden">
-          <img
+          <Image
             className="w-full h-full rounded-xl object-cover"
             src={cLogo}
             alt={cName}
@@ -62,7 +63,10 @@ function ExperienceCard({ exp }: { exp: IExperienceType; className?: string }) {
         }}
         className="flex flex-col justify-start items-start gap-2 text-sm"
       >
-        <p className="editor-content" dangerouslySetInnerHTML={{ __html: role }} />
+        <p
+          className="editor-content"
+          dangerouslySetInnerHTML={{ __html: role }}
+        />
       </div>
 
       <div className="flex justify-start items-center gap-2 mt-auto">

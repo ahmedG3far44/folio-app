@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 
 import { deleteById } from "@/lib/handlers";
 import { useUser } from "@/contexts/UserProvider";
+import Image from "../ui/image";
 
 function ShowListCard({
   id,
@@ -87,11 +88,11 @@ function ShowListCard({
             vertical ? "w-10 h-10 rounded-full" : "w-14 h-14 rounded-2xl "
           }`}
         >
-          <img
+          <Image
             className={` w-full h-full object-cover ${
               vertical ? "rounded-full" : " rounded-2xl"
             }`}
-            loading="lazy"
+            
             src={image}
             alt={title}
           />

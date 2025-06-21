@@ -6,6 +6,7 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { easeInOut, motion } from "motion/react";
+import Image from "./ui/image";
 
 function User({ dashboard }: { dashboard?: boolean }) {
   const { user, isLogged, isAdmin, logout } = useAuth();
@@ -15,7 +16,7 @@ function User({ dashboard }: { dashboard?: boolean }) {
       {isLogged ? (
         <div onClick={() => setIsOpen(!isOpen)} className="relative">
           <div className="flex flex-row-reverse items-center justify-center gap-4 ">
-            <img
+            <Image
               role="button"
               className="rounded-full w-10 h-10 object-cover object-center hover:scale-110 transition-all duration-150 cursor-pointer"
               src={user.picture as string}

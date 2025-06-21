@@ -6,6 +6,7 @@ import { Card } from "../ui/card";
 
 import Resume from "../cards/Resume";
 import ShowUserContacts from "../cards/ShowUserContacts";
+import Image from "../ui/image";
 
 function HeroFive({
   bioInfo,
@@ -20,8 +21,7 @@ function HeroFive({
       {/* Profile Image */}
       <div className="relative inline-block">
         <div className="w-[200px] h-[200px] mx-auto rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-700 shadow-lg">
-          <img
-            loading="lazy"
+          <Image
             property="true"
             width={200}
             height={200}

@@ -12,6 +12,7 @@ import {
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "./ui/button";
 import { useTheme } from "@/contexts/ThemeProvider";
+import Image from "./ui/image";
 
 function Sidebar({
   isOpen,
@@ -93,7 +94,7 @@ function Sidebar({
           <XIcon size={20} />
         </button>
         <div className="w-10 h-10 overflow-hidden rounded-full">
-          <img
+          <Image
             className="w-full h-full object-cover"
             src={user?.picture as string}
             alt={user.email as string}

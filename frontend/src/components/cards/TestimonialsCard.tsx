@@ -1,6 +1,7 @@
 import { ITestimonialType } from "@/lib/types";
 import { Card } from "../ui/card";
 import { useTheme } from "@/contexts/ThemeProvider";
+import Image from "../ui/image";
 
 function TestimonialsCard({
   profile,
@@ -23,11 +24,10 @@ function TestimonialsCard({
     >
       <div className="flex items-center space-x-2">
         <div className="w-10 h-10 rounded-full overflow-hidden">
-          <img
-            loading="lazy"
+          <Image
             className="w-full h-full object-cover"
             src={profile}
-            alt={position}
+            alt={`${name} ${position} feedback`}
           />
         </div>
         <div className="flex flex-col items-start justify-start ">

@@ -21,6 +21,7 @@ import SubmitButton from "../submit-button";
 import UploadHere from "../cards/UploadHere";
 import ShowListCard from "../cards/ShowListCard";
 import Tiptap from "../Tiptap";
+import Image from "../ui/image";
 // import { useEditor } from "@tiptap/react";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
@@ -129,7 +130,7 @@ function ExperienceForm() {
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
                   >
-                    <img
+                    <Image
                       className="w-30 h-30 object-cover rounded-2xl"
                       src={
                         typeof file === "string"

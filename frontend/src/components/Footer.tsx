@@ -5,6 +5,7 @@ import SecondaryBtn from "./buttons/SecondaryBtn";
 import PrimaryBtn from "./buttons/PrimaryBtn";
 
 import Logo from "./Logo";
+import Image from "./ui/image";
 
 function Footer() {
   const { activeTheme } = useTheme();
@@ -32,7 +33,7 @@ function Footer() {
             {isLogged ? (
               <div className="flex items-center gap-2 py-4">
                 <div className="w-10 h-10 rounded-full overflow-hidden">
-                  <img
+                  <Image
                     className="object-cover w-full h-full"
                     width={40}
                     height={40}

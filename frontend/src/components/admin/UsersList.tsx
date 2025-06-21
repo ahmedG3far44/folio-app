@@ -6,6 +6,7 @@ import { Card } from "../ui/card";
 
 import Loader from "../loader";
 import ErrorMessage from "../ErrorMessage";
+import Image from "../ui/image";
 
 const BUCKET_DOMAIN = import.meta.env.VITE_BUCKET_DOMAIN as string;
 
@@ -39,7 +40,7 @@ function UsersList() {
               <div className="flex justify-between items-center lg:flex-wrap gap-2">
                 <div className="flex  justify-between items-center gap-2">
                   <div className="w-10 h-10 rounded-full overflow-hidden">
-                    <img
+                    <Image
                       className="w-full h-full object-cover"
                       width={40}
                       height={40}

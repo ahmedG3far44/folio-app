@@ -3,6 +3,7 @@ import { ISkillType } from "@/lib/types";
 
 import LayoutJson from "@/lib/layouts.json";
 import { useUser } from "@/contexts/UserProvider";
+import Image from "../ui/image";
 
 function SkillCard({
   skill,
@@ -44,7 +45,7 @@ function SkillCard({
         
         ${layouts.skillsLayout === "2" ? "hidden" : "block "}`}
       >
-        <img src={skillLogo} alt={skillName} />
+        <Image src={skillLogo} alt={skillName} />
       </div>
       <div style={{ color: activeTheme.primaryText }}>
         <h1 className="text-2xl font-black">{skillName}</h1>

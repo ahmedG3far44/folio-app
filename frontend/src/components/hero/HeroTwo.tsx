@@ -6,6 +6,7 @@ import { Card } from "../ui/card";
 
 import Resume from "../cards/Resume";
 import ShowUserContacts from "../cards/ShowUserContacts";
+import Image from "../ui/image";
 
 function HeroTwo({
   bioInfo,
@@ -19,8 +20,7 @@ function HeroTwo({
     <div className="grid lg:grid-cols-2 gap-2 items-center">
       <div className="flex flex-col items-center gap-4">
         <div className="w-[300px] h-[300px] rounded-full overflow-hidden shadow-xl">
-          <img
-            loading="lazy"
+          <Image
             property="true"
             width={300}
             height={300}

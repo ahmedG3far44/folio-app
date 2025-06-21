@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Image from "@/components/ui/image";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 import {
@@ -70,7 +71,7 @@ function ProtectedAdminRoute() {
           className="w-full flex border-b items-start justify-start gap-2 p-4 flex-wrap"
         >
           <div className="w-10 h-10 overflow-hidden rounded-full">
-            <img
+            <Image
               className="w-full h-full object-cover"
               src={user?.picture as string}
               alt={user.email as string}

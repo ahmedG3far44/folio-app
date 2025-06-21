@@ -8,7 +8,7 @@ function ShowUserContacts({ contacts }: { contacts?: IContactType }) {
   const { activeTheme } = useTheme();
   return (
     <div className="flex justify-start items-start gap-2">
-      {/* {contacts?.id} */}
+   
       {contacts?.github && (
         <ContactIcon
           path={contacts.github}

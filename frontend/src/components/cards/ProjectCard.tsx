@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 // import { Card } from "../ui/card";
 
 import LayoutJson from "@/lib/layouts.json";
+import Image from "../ui/image";
 
 function ProjectCard({
   project,
@@ -43,9 +44,8 @@ function ProjectCard({
         }`}
     >
       <div className="flex-1 min-w-1/2 rounded-md overflow-hidden">
-        <img
+        <Image
           property="true"
-          loading="lazy"
           className="w-full h-full max-w-full max-h-full object-cover rounded-md"
           src={thumbnail}
           alt={`${title}-${id}`}
