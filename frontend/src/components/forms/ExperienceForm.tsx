@@ -21,13 +21,12 @@ import SubmitButton from "../submit-button";
 import UploadHere from "../cards/UploadHere";
 import ShowListCard from "../cards/ShowListCard";
 import Tiptap from "../Tiptap";
-import Image from "../ui/image";
-// import { useEditor } from "@tiptap/react";
+
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ExperienceForm() {
-  // const router = useNavigate();
+  
   const { token } = useAuth();
   const { activeTheme } = useTheme();
   const { experiences, setExperiences, pending } = useUser();
@@ -40,7 +39,7 @@ function ExperienceForm() {
     updateThisExperience ? updateThisExperience.cLogo : null
   );
   const [content, setContent] = useState<string>("");
-  // const {cont} = useEditor();
+
 
   const {
     register,
@@ -130,7 +129,8 @@ function ExperienceForm() {
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
                   >
-                    <Image
+                    <img
+                      style={{ borderColor: activeTheme.borderColor }}
                       className="w-30 h-30 object-cover rounded-2xl"
                       src={
                         typeof file === "string"

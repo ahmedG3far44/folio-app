@@ -20,7 +20,7 @@ import Loader from "../loader";
 import { IProjectImagesType, IProjectType } from "@/lib/types";
 import checkUploadedImages from "@/lib/checkUploadedImages";
 import Tiptap from "../Tiptap";
-import Image from "../ui/image";
+
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -120,7 +120,8 @@ function ProjectForm() {
         </div>
         {isOpen && !isUpdating && (
           <form
-            onSubmit={handleSubmit(async () => {
+            onSubmit={handleSubmit(
+              async () => {
               const { title, sourceUrl } = getValues();
               const projectData = {
                 title,
@@ -149,7 +150,7 @@ function ProjectForm() {
                 reset();
                 setIsOpen(false);
                 setTags([]);
-                setImages([]);
+                setImages(null);
                 setDescription("");
                 setThumbnail(null);
                 setError(null);
@@ -160,7 +161,8 @@ function ProjectForm() {
                 setError((error as Error).message as string);
                 return;
               }
-            })}
+            })
+          }
             className="w-full p-2 flex flex-col justify-start items-center gap-2"
           >
             <Card className="w-full">
@@ -171,7 +173,7 @@ function ProjectForm() {
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-40 h-40 rounded-md border p-2 flex items-center justify-center"
                   >
-                    <Image
+                    <img
                       className="w-30 h-30 object-cover rounded-md"
                       width={30}
                       height={30}
@@ -228,7 +230,7 @@ function ProjectForm() {
                             style={{ borderColor: activeTheme.borderColor }}
                             className="relative w-30 h-30 rounded-2xl border p-2 flex items-center justify-center"
                           >
-                            <Image
+                            <img
                               className="w-25  h-25  lg:w-full lg:h-full object-cover rounded-2xl"
                               src={
                                 img instanceof File

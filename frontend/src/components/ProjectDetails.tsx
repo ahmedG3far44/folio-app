@@ -66,7 +66,7 @@ function ProjectDetails() {
               <Undo2 size={20} />
             </Button>
 
-            <div className="w-full flex flex-col items-center justify-center lg:w-[60%] relative">
+            <div className="w-full flex flex-col items-center justify-center lg:w-[65%] relative">
               {project?.ImagesList ? (
                 <div className="w-full flex flex-col items-center justify-center gap-4">
                   {project?.ImagesList.map((image) => {
@@ -108,7 +108,7 @@ function ProjectDetails() {
                 backgroundColor: activeTheme.cardColor,
                 border: `1px solid ${activeTheme.borderColor}`,
               }}
-              className="w-full lg:w-[40%] lg:sticky right-0 lg:top-20 px-4 py-8 gap-4"
+              className="w-full lg:w-[35%] lg:sticky right-0 lg:top-20 px-4 py-8 gap-4"
             >
               <h2
                 style={{

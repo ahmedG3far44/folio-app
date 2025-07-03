@@ -24,10 +24,14 @@ function Image({
   const [isLoaded, setIsLoaded] = useState(false);
   const [isError, setIsError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
+  console.log(isError)
 
   useEffect(() => {
     const img = imgRef.current;
-    console.log(isError);
+    if(img){
+      setIsLoaded(false);
+      setIsError(false);
+    }
     if (!img) return;
 
     const handleLoad = () => {
@@ -40,12 +44,10 @@ function Image({
       onError?.();
     };
 
-    // Check if image is already loaded (cached)
     if (img.complete) {
       handleLoad();
     }
 
-    // Add event listeners
     img.addEventListener("load", handleLoad);
     img.addEventListener("error", handleError);
 
