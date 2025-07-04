@@ -12,6 +12,9 @@ const ENV = process.env.ENV;
 const PORT = process.env.PORT;
 const ALLOWED_CLIENT_ORIGIN = process.env.ALLOWED_CLIENT_ORIGIN;
 
+const certPath = process.env.CERTBOT_CERT_PATH;
+const keyPath = process.env.CERTBOT_KEY_PATH;
+
 const app = express();
 
 
@@ -55,9 +58,9 @@ app.use("/api", rootRouter);
 
 if (ENV === "production") {
     
-  const key = fs.readFileSync("/etc/letsencrypt/live/api.folio.business/privkey.pem", "utf-8");
-  const cert =  fs.readFileSync("/etc/letsencrypt/live/api.folio.business/fullchain.pem", "utf-8");
-  
+  const key = fs.readFileSync(keyPath, "utf-8");
+  const cert =  fs.readFileSync(certPath, "utf-8");
+
   https.createServer({
     key, cert
   }, app).listen(PORT, () => {
