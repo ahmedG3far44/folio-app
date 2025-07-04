@@ -1,53 +1,76 @@
+import fs from "fs";
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import https from "https";
 import prisma from "./database/db.js";
 import rootRouter from "./routes/index.js";
-import cors from "cors";
 import cookieParser from "cookie-parser";
 
-
 dotenv.config();
-
 const ENV = process.env.ENV;
 const PORT = process.env.PORT;
-const LOCAL_CLIENT_URL = process.env.LOCAL_CLIENT_URL;
-const PRODUCTION_CLIENT_URL = process.env.PRODUCTION_CLIENT_URL;
+const ALLOWED_CLIENT_ORIGIN = process.env.ALLOWED_CLIENT_ORIGIN;
 
 const app = express();
 
+
+
+
+
+
 const corsOptions = {
-  origin: "*",
-  methods: "GET,POST, PUT, DELETE",
+  origin: ENV === "development"? "*" : ALLOWED_CLIENT_ORIGIN,
+  methods: "GET,POST,PUT,DELETE",
   allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
 };
 
 prisma
   .$connect()
   .then(() => {
     console.log("db connection successful");
-  })  
+  })
   .catch(() => {
     console.log("db connection error");
   });
 
-app.use(cors(corsOptions));
-app.use(cookieParser());
-app.use(express.json());
+  
+
+  
+  app.use(cors(corsOptions));
+  app.use(cookieParser());
+  app.use(express.json());
 
 
 app.get("/", async (req, res) => {
   return res.send("APP is working....");
 });
 app.get("/healthz", async (req, res) => {
-  return res.send({"status": "ok", "message": "Server is running"});
+  return res.send({ status: "ok", message: "Server is running" });
 });
-
 app.use("/api", rootRouter);
 
-app.listen(PORT, () => {
-  console.log(
-    `Server running on port ${PORT || 4000} calling ${
-      ENV === "development" ? LOCAL_CLIENT_URL : PRODUCTION_CLIENT_URL
-    }`
-  );
-});
+
+
+if (ENV === "production") {
+    
+  const key = fs.readFileSync("/etc/letsencrypt/live/api.folio.business/privkey.pem", "utf-8");
+  const cert =  fs.readFileSync("/etc/letsencrypt/live/api.folio.business/fullchain.pem", "utf-8");
+  
+  https.createServer({
+    key, cert
+  }, app).listen(PORT, () => {
+    console.log(
+      `HTTPS Server running on port ${PORT} calling from ${ENV} environment`
+    );
+  });
+} else {
+  app.listen(PORT, () => {
+    console.log(
+      `HTTP Server running on port ${
+        PORT
+      } calling from ${ENV} environment`
+    );
+  });
+}
