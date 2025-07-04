@@ -35,10 +35,13 @@ app.use(cookieParser());
 app.use(express.json());
 app.use("/api", rootRouter);
 
+
 app.get("/", async (req, res) => {
   return res.send("APP is working....");
 });
-
+app.get("/healthz", async (req, res) => {
+  return res.send({"status": "ok", "message": "Server is running"});
+});
 app.listen(PORT, () => {
   console.log(
     `Server running on port ${PORT || 4000} calling ${
