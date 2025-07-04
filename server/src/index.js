@@ -33,7 +33,6 @@ prisma
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
-app.use("/api", rootRouter);
 
 
 app.get("/", async (req, res) => {
@@ -42,6 +41,9 @@ app.get("/", async (req, res) => {
 app.get("/healthz", async (req, res) => {
   return res.send({"status": "ok", "message": "Server is running"});
 });
+
+app.use("/api", rootRouter);
+
 app.listen(PORT, () => {
   console.log(
     `Server running on port ${PORT || 4000} calling ${
