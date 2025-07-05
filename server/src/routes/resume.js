@@ -1,3 +1,4 @@
+import crypto from "crypto";
 import express from "express";
 import prisma from "../database/db.js";
 import s3Client from "../s3/s3Client.js";

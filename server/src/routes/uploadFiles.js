@@ -1,18 +1,20 @@
 import sharp from "sharp";
 import express from "express";
 import s3Client from "../s3/s3Client.js";
+import crypto from "crypto";
+
 
 import { upload } from "./skills.js";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+
 
 const router = express.Router();
 
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
 const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
-router.post("/upload", upload.array("file", 5), async (req, res) => {
+router.post("/upload", verifyAccessToken, upload.array("file", 5), async (req, res) => {
   try {
     const files = req.files;
     const uploadedFiles = [];

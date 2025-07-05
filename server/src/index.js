@@ -6,14 +6,14 @@ import https from "https";
 import prisma from "./database/db.js";
 import rootRouter from "./routes/index.js";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 dotenv.config();
 const ENV = process.env.ENV;
 const PORT = process.env.PORT;
 const ALLOWED_CLIENT_ORIGIN = process.env.ALLOWED_CLIENT_ORIGIN;
 
-const certPath = process.env.CERTBOT_CERT_PATH;
-const keyPath = process.env.CERTBOT_KEY_PATH;
+
 
 const app = express();
 
@@ -57,9 +57,14 @@ app.use("/api", rootRouter);
 
 
 if (ENV === "production") {
+  const certPath = process.env.CERTBOT_CERT_PATH;
+  const keyPath = process.env.CERTBOT_KEY_PATH;
+
+  const normalizedCertPath = path.normalize(certPath);
+  const normalizedKeyPath = path.normalize(keyPath);
     
-  const key = fs.readFileSync(keyPath, "utf-8");
-  const cert =  fs.readFileSync(certPath, "utf-8");
+  const key = fs.readFileSync(normalizedKeyPath, "utf-8");
+  const cert =  fs.readFileSync(normalizedCertPath, "utf-8");
 
   https.createServer({
     key, cert

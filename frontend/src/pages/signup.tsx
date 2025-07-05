@@ -36,12 +36,16 @@ function SignUpPage() {
       const formData = new FormData();
       const { name, email, password } = registerUser;
 
-      if (!profile)
+      if (!profile){
+
         throw new Error("Profile picture is required to register!!");
-      if (!email || !password || !name)
+      }
+      if (!email || !password || !name){
+        
         throw new Error(
           "The email or passowrd field is required, make sure to fill all the fields correctly!!"
         );
+      }
 
       if (password.length <= 8)
         throw new Error(
@@ -62,8 +66,10 @@ function SignUpPage() {
 
       const data = await response.json();
 
-      if (!data)
+      if (!data){
         throw new Error("can't login your email or passowrd is Wrong!!");
+      }
+
       const { user, token } = data.data;
       login({ user, token });
       setError(null);
@@ -93,7 +99,7 @@ function SignUpPage() {
           <div className="self-center">
             {profile ? (
               <div className="w-20 h-20 rounded-full  flex items-center justify-center border-2 relative">
-                <Image
+                <img
                   className="w-full h-full rounded-full object-cover"
                   src={URL.createObjectURL(profile)}
                   alt="profile picture"

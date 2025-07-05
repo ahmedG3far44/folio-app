@@ -1,7 +1,9 @@
 import sharp from "sharp";
+import crypto from "crypto";
 import prisma from "../database/db.js";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import s3Client from "../s3/s3Client.js";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+
 
 
 const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;

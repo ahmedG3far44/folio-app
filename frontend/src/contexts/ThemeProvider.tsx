@@ -27,7 +27,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType>({
   activeTheme: {
-    id: "1ssssssssa",
+    id: "84899843984",
     themeName: "Default",
     backgroundColor: "#1A2F23",
     cardColor: "#2D3B33",
@@ -44,7 +44,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
 
   const localTheme = JSON.parse(localStorage.getItem("theme") as string);
-  const [userTheme, setActiveTheme] = useState<IThemeType>(localTheme);
+  const [userTheme, setActiveTheme] = useState<IThemeType>(user? user.theme:localTheme);
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -76,6 +76,9 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   }) => {
     try {
       setLoading(true);
+      if (!user || !token) {
+        throw new Error("you must be logged in to change theme");
+      }
       const response = await fetch(`${URL_SERVER}/theme/${newActiveTheme.id}`, {
         method: "PUT",
         headers: {

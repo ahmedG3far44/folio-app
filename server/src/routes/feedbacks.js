@@ -2,6 +2,7 @@ import express from "express";
 import prisma from "../database/db.js";
 import Exceptions from "../utils/Exceptions.js";
 import s3Client from "../s3/s3Client.js";
+import crypto from "crypto";
 
 import { upload } from "./skills.js";
 import { uploadToS3 } from "./projects.js";
