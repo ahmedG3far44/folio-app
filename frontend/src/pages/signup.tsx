@@ -10,7 +10,7 @@ import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
 
 import ErrorMessage from "@/components/ErrorMessage";
 import Logo from "@/components/Logo";
-import Image from "@/components/ui/image";
+
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
