@@ -22,15 +22,14 @@ function Image({
   onError?: () => void;
 }) {
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isError, setIsError] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
-  console.log(isError)
+
 
   useEffect(() => {
     const img = imgRef.current;
     if(img){
       setIsLoaded(false);
-      setIsError(false);
+    
     }
     if (!img) return;
 
@@ -40,7 +39,7 @@ function Image({
     };
 
     const handleError = () => {
-      setIsError(true);
+    
       onError?.();
     };
 

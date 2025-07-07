@@ -2,11 +2,11 @@ import sharp from "sharp";
 import crypto from "crypto";
 import express from "express";
 import prisma from "../database/db.js";
-import Exceptions from "../utils/Exceptions.js";
-import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import s3Client from "../s3/s3Client.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import Exceptions from "../utils/Exceptions.js";
 import getImageKey from "../utils/getImageKey.js";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 
 import { upload } from "./skills.js";
 import { projectSchema } from "../utils/schemas.js";

@@ -1,12 +1,12 @@
 import sharp from "sharp";
+import crypto from "crypto";
 import express from "express";
 import s3Client from "../s3/s3Client.js";
-import crypto from "crypto";
+import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
 
 import { upload } from "./skills.js";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
 
 const router = express.Router();

@@ -1,8 +1,9 @@
 import express from "express";
 import prisma from "../database/db.js";
 import Exceptions from "../utils/Exceptions.js";
-import { layoutsSchema } from "../utils/schemas.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+
+import { layoutsSchema } from "../utils/schemas.js";
 
 const router = express.Router();
 

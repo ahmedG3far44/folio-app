@@ -1,12 +1,14 @@
-import { FileCheck2, FileUser, XIcon } from "lucide-react";
-import React, { ChangeEvent, useState } from "react";
-import { Button } from "../ui/button";
-import SubmitButton from "../submit-button";
+import { ChangeEvent, useState } from "react";
 import { useAuth } from "@/contexts/AuthProvider";
-import toast from "react-hot-toast";
 import { useTheme } from "@/contexts/ThemeProvider";
-import UploadHere from "../cards/UploadHere";
+
+import { Button } from "../ui/button";
+import { FileCheck2, FileUser, XIcon } from "lucide-react";
 import { Link } from "react-router-dom";
+
+import SubmitButton from "../submit-button";
+import UploadHere from "../cards/UploadHere";
+import toast from "react-hot-toast";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 const BUCKET_DOMAIN = import.meta.env.VITE_BUCKET_DOMAIN as string;
@@ -35,7 +37,7 @@ function UploadResume() {
       });
       const formData = new FormData();
 
-      formData.append("resume", file!);
+      formData.append("resume", file as File);
 
       const response = await fetch(`${URL_SERVER}/resume`, {
         method: "POST",
@@ -51,7 +53,7 @@ function UploadResume() {
       toast.success("uploading resume success");
       setUploadState({
         ...uploadState,
-        success: "uploading resume successfull",
+        success: "uploading resume success",
       });
       return data;
     } catch (err) {

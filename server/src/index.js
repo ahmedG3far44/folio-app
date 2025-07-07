@@ -8,6 +8,7 @@ import rootRouter from "./routes/index.js";
 import cookieParser from "cookie-parser";
 
 dotenv.config();
+
 const ENV = process.env.ENV;
 const PORT = process.env.PORT;
 
@@ -30,13 +31,14 @@ prisma
   });
 
 app.enable("trust proxy");
+
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
-  return res.send("APP is working....");
+  return res.send("Folio app is working....");
 });
 
 app.get("/healthz", async (req, res) => {
@@ -47,12 +49,8 @@ app.use("/api", rootRouter);
 
 if (ENV === "production") {
   const options = {
-    cert: fs.readFileSync(
-      "/etc/letsencrypt/live/api.folio.business/fullchain.pem"
-    ),
-    key: fs.readFileSync(
-      "/etc/letsencrypt/live/api.folio.business/privkey.pem"
-    ),
+    cert: fs.readFileSync(process.env.SSL_CERT),
+    key: fs.readFileSync(process.env.SSL_KEY),
     minVersion: "TLSv1.2",
   };
 

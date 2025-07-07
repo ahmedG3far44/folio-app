@@ -140,14 +140,14 @@ export interface IActiveLayout {
     default: string;
     medium: string;
     minimal: string;
-    wizzard: string;
+    wizard: string;
     accent: string;
   };
   child: {
     default: string;
     medium: string;
     minimal: string;
-    wizzard: string;
+    wizard: string;
     accent: string;
   };
 }

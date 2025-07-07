@@ -63,8 +63,8 @@ export const ApplyLayout = ({
               : child.minimal
             : layouts?.heroLayout === "4"
             ? type === "parent"
-              ? parent.wizzard
-              : child.wizzard
+              ? parent.wizard
+              : child.wizard
             : layouts?.heroLayout === "5"
             ? type === "parent"
               ? parent.accent
@@ -85,8 +85,8 @@ export const ApplyLayout = ({
               : child.minimal
             : layouts?.expLayout === "4"
             ? type === "parent"
-              ? parent.wizzard
-              : child.wizzard
+              ? parent.wizard
+              : child.wizard
             : layouts?.expLayout === "5"
             ? type === "parent"
               ? parent.accent
@@ -107,8 +107,8 @@ export const ApplyLayout = ({
               : child.minimal
             : layouts?.projectsLayout === "4"
             ? type === "parent"
-              ? parent.wizzard
-              : child.wizzard
+              ? parent.wizard
+              : child.wizard
             : layouts?.projectsLayout === "5"
             ? type === "parent"
               ? parent.accent
@@ -129,8 +129,8 @@ export const ApplyLayout = ({
               : child.minimal
             : layouts?.skillsLayout === "4"
             ? type === "parent"
-              ? parent.wizzard
-              : child.wizzard
+              ? parent.wizard
+              : child.wizard
             : layouts?.skillsLayout === "5"
             ? type === "parent"
               ? parent.accent
@@ -180,7 +180,7 @@ export const ChangeLayoutForm = ({ sectionName }: { sectionName: string }) => {
   return (
     <form
       onSubmit={handleChangeLayout}
-      className="w-3/4 lg:w-[30%] ml-auto flex justify-end items-center gap-4 lg:gap-2  "
+      className="w-3/4 md:w-[50%] lg:w-[40%] ml-auto flex justify-end items-center gap-4 lg:gap-2  "
     >
       <select
         defaultValue={
@@ -208,15 +208,15 @@ export const ChangeLayoutForm = ({ sectionName }: { sectionName: string }) => {
           backgroundColor: activeTheme.cardColor,
           borderColor: activeTheme.borderColor,
         }}
-        className="appearance-none w-full py-1 px-4 rounded-md  border focus:border-blue-500 focus:ring focus:ring-blue-500/20 focus:outline-none cursor-pointer relative pr-10 shadow-sm hover:opacity-65 transition-colors duration-200"
+        className="appearance-none  w-full py-1 px-4 rounded-md  border focus:border-blue-500 focus:ring focus:ring-blue-500/20 focus:outline-none cursor-pointer relative pr-10 shadow-sm hover:opacity-65 transition-colors duration-200"
       >
         <option value="1">Default</option>
         <option value="2">Medium</option>
         <option value="3">Minimal</option>
-        <option value="4">Wizzard</option>
+        <option value="4">Wizard</option>
         <option value="5">Accent</option>
       </select>
-      <SubmitButton loading={pending} type="submit">
+      <SubmitButton  loading={pending} type="submit">
         save
       </SubmitButton>
     </form>

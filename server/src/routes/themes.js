@@ -1,7 +1,8 @@
 import express from "express";
-import verifyAdminAccessToken from "../middlewares/verifyAdminAccessToken.js";
 import prisma from "../database/db.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import verifyAdminAccessToken from "../middlewares/verifyAdminAccessToken.js";
+
 import { themeSchema } from "../utils/schemas.js";
 
 const router = express.Router();

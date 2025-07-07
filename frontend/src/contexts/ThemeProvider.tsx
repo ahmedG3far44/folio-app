@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { IThemeType } from "@/lib/types";
 import { Dispatch, SetStateAction } from "react";
 import {
@@ -96,7 +97,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
 
       localStorage.setItem("theme", JSON.stringify(theme));
       setActiveTheme({ ...theme });
-      toast.success("theme changed succesfully");
+      toast.success("theme changed successfully");
       return theme;
     } catch (err) {
       return (err as Error).message;

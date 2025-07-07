@@ -5,7 +5,7 @@ function UploadHere({ inputId }: { inputId: string }) {
   const { activeTheme } = useTheme();
   return (
     <div
-      className={`px-4 py-8 min-h-[150px]  w-3/4 lg:w-1/3 border border-dashed rounded-2xl flex items-center justify-center gap-2 cursor-pointer `}
+      className={`px-4 py-8 min-h-[150px]  w-full  border border-dashed rounded-2xl flex items-center justify-center gap-2 cursor-pointer `}
       style={{
         color: activeTheme.primaryText,
         border: `1px dashed ${activeTheme.borderColor}`,
@@ -17,14 +17,14 @@ function UploadHere({ inputId }: { inputId: string }) {
         htmlFor={inputId}
       >
         <div>
-          <CloudUpload size={30} />
+          <CloudUpload size={25} />
         </div>
         <div className="flex justify-center items-center gap-2 text-sm">
           <span className="underline cursor-pointer text-nowrap">
             click to upload{" "}
           </span>
         </div>
-        <div className="text-[10px]">
+        <div style={{ color: activeTheme.secondaryText }} className="text-[10px] text-center mt-2">
           {inputId === "resume"
             ? "PDF, DOCX, Word, Txt max size (2MB)"
             : "JPEG, PNG, WEBP & GIF max(800px X 400px)"}

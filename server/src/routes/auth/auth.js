@@ -58,7 +58,7 @@ router.post("/auth/login", async (req, res) => {
       email,
       role: user.role,
     };
-    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
     return res
       .status(200)
       .json({ data: { user, token }, message: "a user login success" });
@@ -160,7 +160,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
       role: newUser.role,
     };
 
-    const token = jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET);
+    const token = jwt.sign(payload, process.env.JWT_SECRET);
 
     await prisma.bio.create({
       data: {

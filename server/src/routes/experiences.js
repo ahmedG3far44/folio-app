@@ -2,12 +2,12 @@
 import crypto from "crypto";
 import express from "express";
 import prisma from "../database/db.js";
-import Exceptions from "../utils/Exceptions.js";
-import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 import s3Client from "../s3/s3Client.js";
 import resizedImage from "../utils/resizeImage.js";
 import getImageKey from "../utils/getImageKey.js";
+import Exceptions from "../utils/Exceptions.js";
 import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
 
 import { upload } from "./skills.js";
 import { experienceSchema } from "../utils/schemas.js";

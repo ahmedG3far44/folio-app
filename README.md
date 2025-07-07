@@ -64,16 +64,13 @@ A web app for tech professionals to **build customized portfolios** showcasing p
   ```env
   PORT=5000
   ENV=development # or "production"
-  LOCAL_CLIENT_URL=http://localhost:3000
-  PRODUCTION_CLIENT_URL=https://your-deployed-frontend-url.com
   AWS_S3_ACCESS_SECRETE_KEY=your_aws_s3_secret_key
   AWS_S3_ACCESS_KEY=your_aws_s3_access_key
   AWS_S3_REGION=your_s3_region (e.g., us-east-1)
   AWS_S3_BUCKET_NAME=your_s3_bucket_name
   AWS_S3_BUCKET_DOMAIN=your_s3_bucket_domain (e.g., https://bucket-name.s3.amazonaws.com)
   DATABASE_URL=your_postgres_or_neon_db_url
-  ACCESS_TOKEN_SECRET=your_jwt_secret_key
-  HOST_DOMAIN_URL=http://localhost:5000 # or your production backend URL
+  JWT_SECRET=your_jwt_secret_key
   ```
   
 - Create `.env` in `/frontend`:

@@ -10,7 +10,7 @@ async function verifyAccessToken(req, res, next) {
         .status(401)
         .json(new Exceptions(401, "You are not authorized to do this action"));
 
-    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     req.user = decoded;
 
