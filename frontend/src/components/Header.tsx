@@ -35,10 +35,9 @@ function Header() {
   };
   return (
     <div
-      style={{ backgroundColor: activeTheme.backgroundColor }}
       className={`${
         isScroll && " border-b z-[999] "
-      } w-full border-b-0 flex justify-between items-center px-4 py-8 sticky top-0 z-[999]`}
+      } w-full border-b-0 flex justify-between items-center px-4 py-8 relative top-0 z-[999]`}
     >
       <Logo />
       <div>

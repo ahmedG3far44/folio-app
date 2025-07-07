@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   IBioType,
   IContactType,
@@ -6,6 +7,7 @@ import {
   IProjectType,
   ISkillType,
   ITestimonialType,
+  IThemeType,
   UserInfoContextType,
 } from "@/lib/types";
 
@@ -28,6 +30,15 @@ export const UserContext = createContext<UserInfoContextType>({
   projects: [],
   skills: [],
   testimonials: [],
+  userActiveTheme: {
+        id: "84899843984",
+    themeName: "Default",
+    backgroundColor: "#1A2F23",
+    cardColor: "#2D3B33",
+    primaryText: "#7CC68D",
+    secondaryText: "#B8C4B9",
+    borderColor: "#4E7D53",
+  },
   layouts: {
     id: "",
     heroLayout: "",
@@ -51,6 +62,7 @@ export const UserContext = createContext<UserInfoContextType>({
   setProjects: () => {},
   setSkills: () => {},
   setTestimonials: () => {},
+  setActiveTheme: () => {},
   setContacts: () => {},
 });
 
@@ -64,6 +76,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
   const [skills, setSkills] = useState<ISkillType[]>();
   const [testimonials, setTestimonials] = useState<ITestimonialType[]>();
   const [userContacts, setContacts] = useState<IContactType>();
+  const [userActiveTheme, setActiveTheme] = useState<IThemeType>();
   const [userLayouts, setLayouts] = useState<ILayoutType>({
     id: "1",
     heroLayout: "1",
@@ -85,23 +98,6 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
       setPending(false);
     }
   };
-
-  //   try {
-  //     const data = await getUserInfoById(userId);
-  //     const { bio, user, contacts, layouts } = data;
-  //     setBio({ ...bio });
-  //     setExperiences(user.ExperiencesList);
-  //     setProjects(user.ProjectsList);
-  //     setSkills(user.SkillsList);
-  //     setTestimonials(user.Testimonials);
-  //     setContacts({ ...contacts });
-  //     setLayouts({ ...layouts });
-  //     return data;
-  //   } catch (err) {
-  //     setError((err as Error).message);
-  //     return;
-  //   }
-  // };
   useEffect(() => {
     getUserInfoById(userId ? userId : user?.id)
       .then((data) => {
@@ -111,6 +107,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         setProjects(user?.ProjectsList);
         setSkills(user?.SkillsList);
         setTestimonials(user?.Testimonials);
+        setActiveTheme(user?.theme);
         setContacts({ ...contacts });
         setLayouts({ ...layouts });
       })
@@ -130,6 +127,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         testimonials: testimonials || [],
         contacts: userContacts as IContactType,
         layouts: userLayouts as ILayoutType,
+        userActiveTheme:userActiveTheme as IThemeType,
         pending,
         error: error || "",
         setLayouts: (newLayout: ILayoutType) => setLayouts({ ...newLayout }),
@@ -142,6 +140,8 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         setTestimonials: (testimonials: ITestimonialType[]) =>
           setTestimonials(testimonials),
         setContacts: (contacts: IContactType) => setContacts({ ...contacts }),
+        setActiveTheme: (newTheme: IThemeType) =>
+          setActiveTheme({ ...newTheme }),
       }}
     >
       {children}

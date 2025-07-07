@@ -4,7 +4,7 @@ function Loader({ size }: { size?: string | "sm" | "md" | "lg" | "xl" }) {
   const { activeTheme } = useTheme();
   return (
     <div
-      style={{ borderColor: activeTheme.primaryText}}
+      style={{ borderColor: activeTheme? activeTheme.primaryText: "#ffff"}}
       className={`${
         size === "sm"
           ? "w-4 h-4"

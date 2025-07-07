@@ -9,7 +9,7 @@ function Logo() {
       to={"/"}
     >
       <Image width={40} height={40} src={favicon} alt="logo app" />
-      <h1 className="text-3xl font-black hover:scale-1.1 duration-150">
+      <h1 className="text-3xl font-black hover:scale-1.1 duration-150 text-white">
         Folio
       </h1>
     </Link>

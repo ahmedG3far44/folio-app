@@ -1,18 +1,19 @@
+import { z } from "zod";
+import { ChangeEvent, useState } from "react";
 import { useTheme } from "@/contexts/ThemeProvider";
-import { Card, CardContent, CardFooter } from "./ui/card";
+import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { feedbackSchema } from "@/lib/schemas";
-import { z } from "zod";
-import ErrorMessage from "./ErrorMessage";
-import { ChangeEvent, useState } from "react";
+
 import { Button } from "./ui/button";
+import { Card, CardContent, CardFooter } from "./ui/card";
 import { PartyPopper, XIcon } from "lucide-react";
+
+import ErrorMessage from "./ErrorMessage";
 import UploadHere from "./cards/UploadHere";
 import SubmitButton from "./submit-button";
-import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import Image from "./ui/image";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -117,10 +118,10 @@ function UserFeedBack() {
                     style={{ borderColor: activeTheme.borderColor }}
                     className="relative w-30 h-30 rounded-full border p-2 flex items-center justify-center"
                   >
-                    <Image
+                    <img
                       className="w-full h-full object-cover rounded-full"
                       src={profile ? URL.createObjectURL(profile) : ""}
-                      alt="compnay logo image"
+                      alt="company logo image"
                     />
                     {!isSubmitting && (
                       <Button

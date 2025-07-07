@@ -11,6 +11,7 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import toast from "react-hot-toast";
+import { useUser } from "./UserProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -43,9 +44,23 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
+  const { userActiveTheme } = useUser();
 
-  const localTheme = JSON.parse(localStorage.getItem("theme") as string);
-  const [userTheme, setActiveTheme] = useState<IThemeType>(user? user.theme:localTheme);
+  // const localTheme = JSON.parse(localStorage.getItem("theme") as string);
+  const defaultTheme: IThemeType = {
+    id: "84899843984",
+    themeName: "Default",
+    backgroundColor: "#1A2F23",
+    cardColor: "#2D3B33",
+    primaryText: "#7CC68D",
+    secondaryText: "#B8C4B9",
+    borderColor: "#4E7D53",
+  };
+  const [userTheme, setActiveTheme] = useState<IThemeType>(
+    user && user.theme
+      ? user.theme
+      : userActiveTheme ?? defaultTheme
+  );
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -67,9 +82,9 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
         return;
       }
     }
-
-    getThemesList();
+    getThemesList();    
   }, [user, userTheme]);
+
   const switchTheme = async ({
     newActiveTheme,
   }: {

@@ -37,7 +37,7 @@ function ProjectCard({
             : layouts.projectsLayout === "3"
             ? child.minimal
             : layouts.projectsLayout === "4"
-            ? child?.wizzard
+            ? child?.wizard
             : layouts.projectsLayout === "5"
             ? child?.accent
             : "1"

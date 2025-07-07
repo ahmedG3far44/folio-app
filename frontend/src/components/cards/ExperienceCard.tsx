@@ -28,7 +28,7 @@ function ExperienceCard({ exp }: { exp: IExperienceType; className?: string }) {
            : layouts.expLayout === "3"
            ? child.minimal
            : layouts.expLayout === "4"
-           ? child?.wizzard
+           ? child?.wizard
            : layouts.expLayout === "5"
            ? child?.accent
            : "1"

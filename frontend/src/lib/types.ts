@@ -26,18 +26,19 @@ export interface UserInfoContextType {
   skills: ISkillType[];
   testimonials: ITestimonialType[];
   layouts: ILayoutType;
+  userActiveTheme: IThemeType;
   contacts: IContactType;
   pending: boolean;
   error: string;
-  setLayouts: (newLayout: ILayoutType) => void;
   getUserInfo: (userId: string) => Promise<UserInfoContextType>;
-  // handleUserInfo: (id: string) => void;
   setBio: (bio: IBioType) => void;
   setExperiences: (newExperience: IExperienceType[]) => void;
   setProjects: (newProjects: IProjectType[]) => void;
   setSkills: (newSkill: ISkillType[]) => void;
   setTestimonials: (newTestimonials: ITestimonialType[]) => void;
   setContacts: (contacts: IContactType) => void;
+  setActiveTheme: (newTheme: IThemeType) => void;
+  setLayouts: (newLayout: ILayoutType) => void;
 }
 
 export interface IBioType {

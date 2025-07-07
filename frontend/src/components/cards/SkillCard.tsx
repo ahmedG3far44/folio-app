@@ -33,7 +33,7 @@ function SkillCard({
           : layouts.skillsLayout === "3"
           ? child.minimal
           : layouts.skillsLayout === "4"
-          ? child?.wizzard
+          ? child?.wizard
           : layouts.skillsLayout === "5"
           ? child?.accent
           : "1"

@@ -57,11 +57,11 @@
       "accent": "w-full flex justify-center items-center gap-4 flex-wrap"
     },
     "child": {
-      "default": "flex flex-col items-center justify-center gap-2  border rounded-xl shadow-sm hover:shadow-xl",
+      "default": "flex flex-col items-center justify-center gap-2 border rounded-xl shadow-sm hover:shadow-xl",
       "medium": " w-full flex items-center justify-center gap-4",
-      "minimal": "flex  items-center justify-center gap-4 !bg-transparent border-none flex-wrap",
-      "wizard": "flex items-center justify-start gap-2 border-r-8 !bg-transparent border-l-0  border-t-0 border-b-0",
-      "accent": "flex items-center justify-start lg:justify-center gap-4  border-none rounded-xl shadow-xl "
+      "minimal": "flex items-center justify-center gap-4 bg-transparent border-none flex-wrap",
+      "wizard":"flex items-center justify-start gap-2 border-r-8 bg-transparent border-l-0 border-t-0 border-b-0",
+      "accent": "flex items-center justify-start lg:justify-center gap-4 border-none rounded-xl shadow-xl "
     }
   }
 }
