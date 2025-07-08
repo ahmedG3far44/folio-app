@@ -87,7 +87,7 @@ function UploadResume() {
           </Button>
         </div>
       )}
-      {isChangeResume && (
+      {!isChangeResume && (
         <>
           <form
             onSubmit={handleUploadResume}

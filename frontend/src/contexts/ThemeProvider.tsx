@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import toast from "react-hot-toast";
-import { useUser } from "./UserProvider";
+// import { useUser } from "./UserProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -43,23 +43,21 @@ const ThemeContext = createContext<ThemeContextType>({
   loading: false,
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { user, token } = useAuth();
-  const { userActiveTheme } = useUser();
+  const { user, isLogged, token } = useAuth();
+  // const { userActiveTheme } = useUser();
 
   // const localTheme = JSON.parse(localStorage.getItem("theme") as string);
   const defaultTheme: IThemeType = {
-    id: "84899843984",
-    themeName: "Default",
-    backgroundColor: "#1A2F23",
-    cardColor: "#2D3B33",
-    primaryText: "#7CC68D",
-    secondaryText: "#B8C4B9",
-    borderColor: "#4E7D53",
+    "id": "theme-zinc-modern",
+    "themeName": "Zinc Modern",
+    "backgroundColor": "#09090b",
+    "cardColor": "#18181b",
+    "primaryText": "#fafafa",
+    "secondaryText": "#a1a1aa",
+    "borderColor": "#27272a",
   };
   const [userTheme, setActiveTheme] = useState<IThemeType>(
-    user && user.theme
-      ? user.theme
-      : userActiveTheme ?? defaultTheme
+     isLogged && user.theme ? user.theme : defaultTheme
   );
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -110,7 +108,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
       const data = await response.json();
       const { theme } = data.data;
 
-      localStorage.setItem("theme", JSON.stringify(theme));
+      // localStorage.setItem("theme", JSON.stringify(theme));
       setActiveTheme({ ...theme });
       toast.success("theme changed successfully");
       return theme;
