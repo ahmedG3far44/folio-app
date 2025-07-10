@@ -112,7 +112,7 @@ export interface UploadFileType {
   type: string;
 }
 export interface IThemeType {
-  id?: string;
+  id: string;
   themeName: string;
   backgroundColor: string;
   cardColor: string;

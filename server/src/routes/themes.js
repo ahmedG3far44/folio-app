@@ -10,13 +10,21 @@ const router = express.Router();
 router.post("/theme", verifyAdminAccessToken, async (req, res) => {
   try {
     const user = req.user;
+
     if (user?.role !== "ADMIN") {
       throw new Error("your not authorized to do this action");
     }
 
     const newTheme = req.body;
 
-    
+    if (!newTheme) throw new Error("theme data is required!!");
+
+    const validThemeData = themeSchema.safeParse(newTheme);
+
+    if (!validThemeData.success) {
+      throw new Error("not available input data!!");
+    }
+
     const {
       themeName,
       backgroundColor,
@@ -24,9 +32,11 @@ router.post("/theme", verifyAdminAccessToken, async (req, res) => {
       primaryText,
       secondaryText,
       borderColor,
-    } = newTheme;
-    
-    const theme = await prisma.theme.create({
+    } = validThemeData.data;
+
+    console.log(newTheme);
+
+    await prisma.theme.create({
       data: {
         themeName,
         backgroundColor,
@@ -34,13 +44,15 @@ router.post("/theme", verifyAdminAccessToken, async (req, res) => {
         primaryText,
         secondaryText,
         borderColor,
+        usersId: user.id,
       },
     });
     const allThemes = await prisma.theme.findMany({
       orderBy: {
-        themeName: "desc",
+        themeName: "asc",
       },
       select: {
+        id: true,
         themeName: true,
         backgroundColor: true,
         cardColor: true,
@@ -56,40 +68,71 @@ router.post("/theme", verifyAdminAccessToken, async (req, res) => {
     res.status(500).json({ data: "error", message: err.message });
   }
 });
-router.put("/theme/:themeId", verifyAccessToken, async (req, res) => {
+router.put("/theme", verifyAccessToken, async (req, res) => {
   try {
     const user = req.user;
     const newTheme = req.body;
-    const { themeId } = req.params;
 
-
-    if (!themeId) throw new Error("theme id not available!!");
     if (!user) throw new Error("user not available!!");
     const validThemeData = themeSchema.safeParse(newTheme);
+
     if (!validThemeData.success) {
       throw new Error("not available input data!!");
     }
-    const updatedTheme = await prisma.users.update({
+
+    const {
+      id,
+      themeName,
+      backgroundColor,
+      cardColor,
+      primaryText,
+      secondaryText,
+      borderColor,
+    } = validThemeData.data;
+
+    await prisma.users.update({
       where: {
         id: user.id,
       },
       data: {
         theme: {
           update: {
-            ...validThemeData.data,
+            where: {
+              id,
+            },
+            data: {
+              themeName,
+              backgroundColor,
+              cardColor,
+              primaryText,
+              secondaryText,
+              borderColor,
+            },
           },
         },
       },
+    });
+    const activeTheme = await prisma.users.findUnique({
+      where: {
+        id: user.id,
+      },
       select: {
-        id: true,
-        email: true,
-        password: false,
-        theme: true,
+        theme: {
+          select: {
+            id: true,
+            themeName: true,
+            backgroundColor: true,
+            cardColor: true,
+            primaryText: true,
+            secondaryText: true,
+            borderColor: true,
+          },
+        },
       },
     });
     res
       .status(200)
-      .json({ data: updatedTheme, message: "updated theme successfully" });
+      .json({ data: activeTheme, message: "updated theme successfully" });
   } catch (err) {
     res.status(500).json({ data: "error", message: err.message });
   }
@@ -141,15 +184,12 @@ router.delete("/theme/:themeId", verifyAdminAccessToken, async (req, res) => {
         id: themeId,
       },
     });
-    
-    const newTheme = await prisma.theme.findMany({
-      where: {
-        usersId: user.id,
-      },
-    });
+
+    const newThemes = await prisma.theme.findMany();
+    console.log(newThemes);
     res
-      .status(204)
-      .json({ data: newTheme, message: "this theme was deleted!!" });
+      .status(200)
+      .json({ data: newThemes, message: "this theme was deleted!!" });
   } catch (err) {
     res.status(500).json({ data: "error", message: err.message });
   }

@@ -114,6 +114,7 @@ export const feedbackSchema = z.object({
 });
 
 export const themeSchema = z.object({
+  id: z.string().optional(),
   themeName: z
     .string()
     .min(1, {

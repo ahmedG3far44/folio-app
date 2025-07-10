@@ -132,18 +132,18 @@ function Sidebar({
               </Link>
             );
           })}
+          <div className="mt-10 w-full flex items-center justify-center gap-2 ">
+            {isLogged && (
+              <Button
+                className="w-full  cursor-pointer"
+                type="button"
+                onClick={logout}
+              >
+                Logout
+              </Button>
+            )}
+          </div>
         </ul>
-        <div className="justify-end w-1/2 mt-32">
-          {isLogged && (
-            <Button
-              className="w-full cursor-pointer mt-auto mb-8"
-              type="button"
-              onClick={logout}
-            >
-              Logout
-            </Button>
-          )}
-        </div>
       </div>
     </aside>
   );

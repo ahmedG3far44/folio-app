@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useAuth } from "@/contexts/AuthProvider";
-// import { useTheme } from "@/contexts/ThemeProvider";
+import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
@@ -14,7 +15,7 @@ import ProjectSection from "@/components/sections/ProjectSection";
 import SkillSection from "@/components/sections/SkillSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
 
-import { useTheme } from "@/contexts/ThemeProvider";
+
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 

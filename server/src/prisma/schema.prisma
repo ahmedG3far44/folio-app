@@ -22,7 +22,7 @@ model Users {
   ContactsList    Contacts[]
   Bio             Bio[]
   Layouts         Layouts[]
-  theme           Theme?
+  theme           Theme[]
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 }
@@ -56,7 +56,7 @@ model Experiences {
   updatedAt DateTime @updatedAt
 }
 
-//=========================================
+
 model Projects {
   id          String       @id @default(cuid())
   title       String
@@ -87,7 +87,6 @@ model ImagesList {
   projectsId String
 }
 
-//=========================================
 
 model Skills {
   id        String   @id @default(cuid())
@@ -99,7 +98,7 @@ model Skills {
   updatedAt DateTime @updatedAt
 }
 
-// ====================================================
+
 model Testimonials {
   id        String   @id @default(cuid())
   profile   String
@@ -113,7 +112,7 @@ model Testimonials {
   updatedAt DateTime @updatedAt
 }
 
-// ====================================================
+
 model Contacts {
   id       String  @id @default(cuid())
   linkedin String?
@@ -136,14 +135,14 @@ model Layouts {
 
 model Theme {
   id              String   @id @default(cuid())
-  themeName       String   @default("default")
-  backgroundColor String   @default("#121212")
-  cardColor       String   @default("#1F1F1F")
-  borderColor     String   @default("#121212")
-  primaryText     String   @default("#E0E0E0")
-  secondaryText   String   @default("#B0B0B0")
+  themeName       String   
+  backgroundColor String   
+  cardColor       String   
+  borderColor     String   
+  primaryText     String   
+  secondaryText   String   
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  userId          Users?   @relation(fields: [usersId], references: [id])
-  usersId         String?  @unique
+  userId         Users   @relation(fields: [usersId], references: [id])
+  usersId        String 
 }

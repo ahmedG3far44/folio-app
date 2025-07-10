@@ -116,17 +116,17 @@ function ProtectedAdminRoute() {
               </Link>
             );
           })}
+          <div className="w-full flex items-center justify-center  gap-2 mt-20 ">
+            <Button
+              className={"w-full"}
+              variant={"outline"}
+              onClick={() => logout()}
+            >
+              <LucideLogOut size={20} />
+              Logout
+            </Button>
+          </div>
         </ul>
-        <div className="w-full flex items-center justify-center  gap-2 mt-auto mb-20">
-          <Button
-            className={"w-full"}
-            variant={"outline"}
-            onClick={() => logout()}
-          >
-            <LucideLogOut size={20} />
-            Logout
-          </Button>
-        </div>
       </aside>
 
       <main

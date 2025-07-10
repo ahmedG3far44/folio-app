@@ -11,7 +11,7 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import toast from "react-hot-toast";
-// import { useUser } from "./UserProvider";
+
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -22,8 +22,9 @@ interface ThemeContextType {
     newActiveTheme,
   }: {
     newActiveTheme: IThemeType;
-  }) => Promise<IThemeType | undefined>;
+  }) =>void;
   setThemesList: Dispatch<SetStateAction<IThemeType[] | []>>;
+  setActiveTheme: Dispatch<SetStateAction<IThemeType>>;
   loading: boolean;
 }
 
@@ -38,27 +39,24 @@ const ThemeContext = createContext<ThemeContextType>({
     borderColor: "#4E7D53",
   },
   themesList: [],
-  switchTheme: () => Promise.resolve(undefined),
+  switchTheme: () => {},
   setThemesList: () => {},
+  setActiveTheme: () => {},
   loading: false,
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
-  const { user, isLogged, token } = useAuth();
-  // const { userActiveTheme } = useUser();
+  const { user, token } = useAuth();
+  const defaultTheme = JSON.parse(localStorage.getItem("theme") as string);
 
-  // const localTheme = JSON.parse(localStorage.getItem("theme") as string);
-  const defaultTheme: IThemeType = {
-    "id": "theme-zinc-modern",
-    "themeName": "Zinc Modern",
-    "backgroundColor": "#09090b",
-    "cardColor": "#18181b",
-    "primaryText": "#fafafa",
-    "secondaryText": "#a1a1aa",
-    "borderColor": "#27272a",
-  };
-  const [userTheme, setActiveTheme] = useState<IThemeType>(
-     isLogged && user.theme ? user.theme : defaultTheme
-  );
+  const [userTheme, setActiveTheme] = useState<IThemeType>(defaultTheme || {
+    id: "84899843984",
+    themeName: "Default",
+    backgroundColor: "#1A2F23",
+    cardColor: "#2D3B33",
+    primaryText: "#7CC68D",
+    secondaryText: "#B8C4B9",
+    borderColor: "#4E7D53"});
+
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
@@ -93,27 +91,31 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
       if (!user || !token) {
         throw new Error("you must be logged in to change theme");
       }
-      const response = await fetch(`${URL_SERVER}/theme/${newActiveTheme.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(newActiveTheme),
-      });
+      // const response = await fetch(`${URL_SERVER}/theme`, {
+      //   method: "PUT",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      //   body: JSON.stringify(newActiveTheme),
+      // });
 
-      if (!response.ok) {
-        throw new Error("updating theme failed, check your connection!!");
-      }
-      const data = await response.json();
-      const { theme } = data.data;
-
-      // localStorage.setItem("theme", JSON.stringify(theme));
-      setActiveTheme({ ...theme });
+      // if (!response.ok) {
+      //   throw new Error("updating theme failed, check your connection!!");
+      // }
+      // const data = await response.json();
+      
+      // const { theme } = data.data;
+      // if (!theme) {
+      //   throw new Error("theme not found");
+      // }
+      localStorage.removeItem("theme");
+      localStorage.setItem("theme", JSON.stringify(newActiveTheme));
+      setActiveTheme(JSON.parse(localStorage.getItem("theme") as string));
       toast.success("theme changed successfully");
-      return theme;
+      return newActiveTheme;
     } catch (err) {
-      return (err as Error).message;
+      return toast.error((err as Error).message);
     } finally {
       setLoading(false);
     }
@@ -125,6 +127,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
         themesList,
         switchTheme,
         setThemesList,
+        setActiveTheme,
         loading,
       }}
     >

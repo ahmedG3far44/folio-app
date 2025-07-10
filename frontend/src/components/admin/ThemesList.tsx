@@ -1,10 +1,12 @@
-import { useTheme } from "@/contexts/ThemeProvider";
-import ThemeCard from "../cards/ThemeCard";
-import SubmitButton from "../submit-button";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useAuth } from "@/contexts/AuthProvider";
-import toast from "react-hot-toast";
 import { IThemeType } from "@/lib/types";
+import { ChangeEvent, FormEvent, useState } from "react";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { useAuth } from "@/contexts/AuthProvider";
+
+import toast from "react-hot-toast";
+import ThemeCard from "../cards/ThemeCard";
+import ErrorMessage from "../ErrorMessage";
+import SubmitButton from "../submit-button";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -13,12 +15,13 @@ function ThemesList() {
   const { themesList, setThemesList, activeTheme } = useTheme();
   const { backgroundColor, cardColor, borderColor } = activeTheme;
   const [newTheme, setNewTheme] = useState<IThemeType>({
-    themeName: "",
-    backgroundColor: "",
-    cardColor: "",
-    primaryText: "",
-    secondaryText: "",
-    borderColor: "",
+    id: "1",
+    themeName: "Untitled",
+    backgroundColor: "#000000",
+    cardColor: "#0000",
+    primaryText: "#ffffff",
+    secondaryText: "#000000",
+    borderColor: "#000000",
   });
   const [submitting, setSubmitting] = useState<{
     pending: boolean;
@@ -33,10 +36,12 @@ function ThemesList() {
       ...prevTheme,
       [name]: value,
     }));
+    console.log("changed", newTheme);
   };
   const handleAddNewTheme = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!token) return;
+    console.log(newTheme);
     try {
       setSubmitting({
         pending: true,
@@ -48,7 +53,14 @@ function ThemesList() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newTheme),
+        body: JSON.stringify({
+          themeName: newTheme.themeName,
+          backgroundColor: newTheme.backgroundColor,
+          cardColor: newTheme.cardColor,
+          primaryText: newTheme.primaryText,
+          secondaryText: newTheme.secondaryText,
+          borderColor: newTheme.borderColor,
+        }),
       });
 
       if (!response.ok) throw new Error("failed to add a new theme!!");
@@ -58,12 +70,13 @@ function ThemesList() {
       toast.success("a new theme was created success!!");
 
       setNewTheme({
-        themeName: "",
-        backgroundColor: "",
-        cardColor: "",
-        primaryText: "",
-        secondaryText: "",
-        borderColor: "",
+        id: "",
+        themeName: "Untitled",
+        backgroundColor: "#000000",
+        cardColor: "#0000",
+        primaryText: "#ffffff",
+        secondaryText: "#000000",
+        borderColor: "#000000",
       });
       setThemesList(data.data);
       return data;
@@ -87,6 +100,8 @@ function ThemesList() {
         className="w-full lg:1/2 p-4 border flex items-center justify-center flex-col gap-1"
         style={{ backgroundColor, borderColor }}
       >
+        {submitting.error && <ErrorMessage message={submitting.error} />}
+
         <input
           id="themeName"
           style={{ backgroundColor: cardColor, borderColor }}
@@ -186,18 +201,21 @@ function ThemesList() {
 
       <div className="flex items-center justify-start flex-wrap gap-4  my-4">
         {themesList.map(
-          ({
-            themeName,
-            backgroundColor,
-            cardColor,
-            borderColor,
-            primaryText,
-            secondaryText,
-            id,
-          }) => {
+          (
+            {
+              themeName,
+              backgroundColor,
+              cardColor,
+              borderColor,
+              primaryText,
+              secondaryText,
+              id,
+            },
+            index
+          ) => {
             return (
               <ThemeCard
-                key={id}
+                key={index}
                 id={id}
                 themeName={themeName}
                 backgroundColor={backgroundColor}

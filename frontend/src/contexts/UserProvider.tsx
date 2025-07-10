@@ -107,9 +107,9 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         setProjects(user?.ProjectsList);
         setSkills(user?.SkillsList);
         setTestimonials(user?.Testimonials);
-        setActiveTheme(user?.theme);
         setContacts({ ...contacts });
         setLayouts({ ...layouts });
+        localStorage.setItem("theme", JSON.stringify(user?.theme));
       })
       .catch((error) => {
         setError(error.message);

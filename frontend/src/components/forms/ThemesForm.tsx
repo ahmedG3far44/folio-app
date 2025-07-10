@@ -1,8 +1,11 @@
-import { useTheme } from "@/contexts/ThemeProvider"; // import { Card } from "../ui/card";
-import ThemeCard from "../cards/ThemeCard";
-import { easeInOut, motion } from "motion/react";
+import { useTheme } from "@/contexts/ThemeProvider"; 
+
 import { Card } from "../ui/card";
+
+import { easeInOut, motion } from "motion/react";
+
 import Loader from "../loader";
+import ThemeCard from "../cards/ThemeCard";
 
 function ThemesForm() {
   const { activeTheme, themesList, switchTheme, loading } = useTheme();
