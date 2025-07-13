@@ -46,9 +46,9 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
-  const defaultTheme = JSON.parse(localStorage.getItem("theme") as string);
+  // const defaultTheme = JSON.parse(localStorage.getItem("theme") as string);
 
-  const [userTheme, setActiveTheme] = useState<IThemeType>(defaultTheme || {
+  const [userTheme, setActiveTheme] = useState<IThemeType>({
     id: "84899843984",
     themeName: "Default",
     backgroundColor: "#1A2F23",
