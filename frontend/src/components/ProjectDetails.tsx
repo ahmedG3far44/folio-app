@@ -1,13 +1,14 @@
 import { IProjectType } from "@/lib/types";
-
 import { useEffect, useState } from "react";
+
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
-import Loader from "./loader";
 import { ExternalLink, Undo2 } from "lucide-react";
+
+import Loader from "./loader";
 import Image from "./ui/image";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
@@ -49,7 +50,7 @@ function ProjectDetails() {
         backgroundColor: activeTheme.backgroundColor,
         color: activeTheme.primaryText,
       }}
-      className="w-full p-4 lg:full m-auto  min-h-screen relative"
+      className="w-full p-4 lg:full m-auto   min-h-screen relative"
     >
       <div className="lg:w-3/4 md:w-[90%] m-auto w-full">
         {pending ? (
@@ -57,59 +58,21 @@ function ProjectDetails() {
             <Loader size="md" />
           </div>
         ) : (
-          <div className="w-full flex flex-col-reverse justify-start items-start gap-4 lg:flex-row lg:justify-start">
-            <Button
-              className="w-[100px] fixed z-[9999] lg:sticky -left-30 top-20 cursor-pointer"
-              type="button"
-              onClick={handelNavigateBack}
-            >
-              <Undo2 size={20} />
-            </Button>
-
-            <div className="w-full flex flex-col items-center justify-center lg:w-[65%] relative">
-              {project?.ImagesList ? (
-                <div className="w-full flex flex-col items-center justify-center gap-4">
-                  {project?.ImagesList.map((image) => {
-                    return (
-                      <Card
-                        style={{
-                          backgroundColor: activeTheme.cardColor,
-                          border: `1px solid ${activeTheme.borderColor}`,
-                        }}
-                        className="p-4 rounded-2xl overflow-hidden w-full"
-                        key={image.id}
-                      >
-                        <Image
-                          property="true"
-                          width={280}
-                          height={350}
-                          className="w-full h-full object-cover rounded-lg"
-                          src={image?.url}
-                          alt={project?.title}
-                        />
-                      </Card>
-                    );
-                  })}
-                </div>
-              ) : (
-                <>not project images!!</>
-              )}
-
-              <Button
-                className="w-[200px]  my-4 cursor-pointer"
-                type="button"
-                onClick={handelNavigateBack}
-              >
-                <Undo2 size={20} />
-              </Button>
-            </div>
+          <div className="w-full flex flex-col justify-center items-center gap-4">
             <Card
               style={{
                 backgroundColor: activeTheme.cardColor,
                 border: `1px solid ${activeTheme.borderColor}`,
               }}
-              className="w-full lg:w-[35%] lg:sticky right-0 lg:top-20 px-4 py-8 gap-4"
+              className="w-full lg:w-[70%]  px-4 py-8 gap-4 "
             >
+              <Button
+                className="w-[100px] fixed z-[9999] left-40 top-20 cursor-pointer"
+                type="button"
+                onClick={handelNavigateBack}
+              >
+                <Undo2 size={20} />
+              </Button>
               <h2
                 style={{
                   color: activeTheme.primaryText,
@@ -193,6 +156,44 @@ function ProjectDetails() {
                 </Link>
               )}
             </Card>
+
+            <div className="w-full flex flex-col items-center justify-center lg:w-[70%] relative">
+              {project?.ImagesList ? (
+                <div className="w-full flex flex-col items-center justify-center gap-4">
+                  {project?.ImagesList.map((image) => {
+                    return (
+                      <Card
+                        style={{
+                          backgroundColor: activeTheme.cardColor,
+                          border: `1px solid ${activeTheme.borderColor}`,
+                        }}
+                        className="p-4 rounded-2xl overflow-hidden w-full"
+                        key={image.id}
+                      >
+                        <Image
+                          property="true"
+                          width={280}
+                          height={350}
+                          className="w-full h-full object-cover rounded-lg"
+                          src={image?.url}
+                          alt={project?.title}
+                        />
+                      </Card>
+                    );
+                  })}
+                </div>
+              ) : (
+                <>not project images!!</>
+              )}
+
+              <Button
+                className="w-[200px]  my-4 cursor-pointer"
+                type="button"
+                onClick={handelNavigateBack}
+              >
+                <Undo2 size={20} />
+              </Button>
+            </div>
           </div>
         )}
       </div>

@@ -1,26 +1,27 @@
 import { z } from "zod";
 import { ChangeEvent, useState } from "react";
+import { IProjectImagesType, IProjectType } from "@/lib/types";
 import { projectSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+
 import { useForm } from "react-hook-form";
+import { useTheme } from "@/contexts/ThemeProvider";
+import { useAuth } from "@/contexts/AuthProvider";
+import { useUser } from "@/contexts/UserProvider";
 
 import { CirclePlus, XIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 
-import SubmitButton from "../submit-button";
-import ErrorMessage from "../ErrorMessage";
-import { useAuth } from "@/contexts/AuthProvider";
-import toast from "react-hot-toast";
-import { useTheme } from "@/contexts/ThemeProvider";
-import UploadHere from "../cards/UploadHere";
-import { useUser } from "@/contexts/UserProvider";
-import ShowListCard from "../cards/ShowListCard";
-import Loader from "../loader";
-import { IProjectImagesType, IProjectType } from "@/lib/types";
-import checkUploadedImages from "@/lib/checkUploadedImages";
 import Tiptap from "../Tiptap";
+import Loader from "../loader";
+import toast from "react-hot-toast";
+import ErrorMessage from "../ErrorMessage";
+import SubmitButton from "../submit-button";
+import UploadHere from "../cards/UploadHere";
+import ShowListCard from "../cards/ShowListCard";
 
+import checkUploadedImages from "@/lib/checkUploadedImages";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -120,8 +121,7 @@ function ProjectForm() {
         </div>
         {isOpen && !isUpdating && (
           <form
-            onSubmit={handleSubmit(
-              async () => {
+            onSubmit={handleSubmit(async () => {
               const { title, sourceUrl } = getValues();
               const projectData = {
                 title,
@@ -161,8 +161,7 @@ function ProjectForm() {
                 setError((error as Error).message as string);
                 return;
               }
-            })
-          }
+            })}
             className="w-full p-2 flex flex-col justify-start items-center gap-2"
           >
             <Card className="w-full">
@@ -438,9 +437,8 @@ function ProjectForm() {
                 />
               )}
             </Card>
-            <Card className="p-4 w-full">
-              <Tiptap content={description} setContent={setDescription} />
-            </Card>
+            <Tiptap content={description} setContent={setDescription} />
+
             <SubmitButton
               className="w-full"
               loading={isSubmitting}

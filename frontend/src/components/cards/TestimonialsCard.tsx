@@ -9,10 +9,8 @@ function TestimonialsCard({
   position,
   feedback,
   video,
-  createdAt,
 }: ITestimonialType) {
   const { activeTheme } = useTheme();
-  const date = new Date(createdAt);
   return (
     <Card
       className="p-4 flex flex-col items-start justify-start gap-2"
@@ -25,7 +23,7 @@ function TestimonialsCard({
       <div className="flex items-center space-x-2">
         <div className="w-10 h-10 rounded-full overflow-hidden">
           <Image
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover "
             src={profile}
             alt={`${name} ${position} feedback`}
           />
@@ -38,17 +36,6 @@ function TestimonialsCard({
           >
             {position}
           </h3>
-          <span
-            style={{ color: activeTheme.secondaryText }}
-            className="text-[12px]"
-          >
-            {date.toLocaleDateString(undefined, {
-              weekday: "long",
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
-          </span>
         </div>
       </div>
       <div className="w-full mx-auto">

@@ -34,14 +34,14 @@
   "projectsLayout": {
     "parent": {
       "default": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row  gap-2 ",
-      "medium": "grid grid-cols-1  lg:grid-cols-3 gap-2  ",
-      "minimal": "grid grid-cols-1 lg:grid-cols-4 grid-flow-row  gap-2  ",
+      "medium": "grid grid-flow-row grid-cols-2 lg:grid-cols-2 gap-4",
+      "minimal": "grid grid-cols-1 lg:grid-cols-4 grid-flow-row  gap-2 ",
       "wizard": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 grid-flow-row  gap-2 ",
       "accent": "grid grid-cols-1 lg:grid-cols-3 gap-2"
     },
     "child": {
       "default": "flex items-start justify-start gap-4 rounded-md shadow-md",
-      "medium": "w-[350px] flex flex-col justify-between items-center  gap-4 rounded-md",
+      "medium": "w-[350px] flex flex-col justify-start items-center  gap-4 rounded-md",
       "minimal": "flex flex-col items-center justify-center gap-4 ",
       "wizard": "w-full grid grid-flow-row gap-4 rounded-md",
       "accent": "flex flex-col  items-center justify-center gap-4  rounded-xl"
