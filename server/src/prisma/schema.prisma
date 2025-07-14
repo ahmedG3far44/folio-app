@@ -22,8 +22,7 @@ model Users {
   ContactsList    Contacts[]
   Bio             Bio[]
   Layouts         Layouts[]
-  themeId         String
-  theme           Theme?  @relation(fields: [themeId], references: [id])
+  activeTheme     String         @unique
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 }
@@ -57,7 +56,6 @@ model Experiences {
   updatedAt DateTime @updatedAt
 }
 
-
 model Projects {
   id          String       @id @default(cuid())
   title       String
@@ -88,7 +86,6 @@ model ImagesList {
   projectsId String
 }
 
-
 model Skills {
   id        String   @id @default(cuid())
   skillName String
@@ -98,7 +95,6 @@ model Skills {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
 
 model Testimonials {
   id        String   @id @default(cuid())
@@ -112,7 +108,6 @@ model Testimonials {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-
 
 model Contacts {
   id       String  @id @default(cuid())
@@ -136,14 +131,12 @@ model Layouts {
 
 model Theme {
   id              String   @id @default(cuid())
-  themeName       String   
-  backgroundColor String   
-  cardColor       String   
-  borderColor     String   
-  primaryText     String   
-  secondaryText   String   
+  themeName       String   @default("Midnight Eclipse")
+  backgroundColor String   @default("#0a0a0a")
+  cardColor       String   @default("#171717")
+  primaryText     String   @default("#fafafa")
+  secondaryText   String   @default("#a3a3a3")
+  borderColor     String   @default("#262626")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
-  userId         Users[]
-  usersId        String 
 }

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { IAuthContextType, IUserType } from "@/lib/types";
 import { createContext, ReactNode, useContext, useState } from "react";
 
@@ -11,7 +12,7 @@ const AuthContext = createContext<IAuthContextType>({
     picture: "",
     role: "USER",
     resume: "",
-    theme: {
+    activeTheme: {
       id: "",
       themeName: "",
       backgroundColor: "",
@@ -43,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(user);
     setToken(token);
     localStorage.setItem("user", JSON.stringify(user));
-    localStorage.setItem("theme", JSON.stringify(user.theme));
+    localStorage.setItem("theme", JSON.stringify(user.activeTheme));
     localStorage.setItem("token", token);
     setIsLogged(true);
   };
@@ -59,7 +60,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       picture: "",
       resume: "",
       role: "USER",
-      theme: null,
+      activeTheme: {
+        id: "cmd2t3dit0001uzhkshrx838w",
+        themeName: "Midnight Eclipse",
+        backgroundColor: "#0a0a0a",
+        borderColor: "#262626",
+        cardColor: "#171717",
+        primaryText: "#fafafa",
+        secondaryText: "#a3a3a3",
+      },
     });
   };
   return (

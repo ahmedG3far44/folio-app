@@ -5,12 +5,9 @@ import verifyAccessToken from "../middlewares/verifyAccessToken.js";
 
 const router = express.Router();
 
-const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
-
 router.post("/user", verifyAccessToken, async (req, res) => {
   try {
     const user = req.user;
-
     const userInfo = await prisma.users.findFirst({
       where: { id: user.id },
       select: {
@@ -21,35 +18,29 @@ router.post("/user", verifyAccessToken, async (req, res) => {
         Bio: true,
         ExperiencesList: true,
         ProjectsList: true,
-        theme: {
-          select: {
-            id: true,
-            themeName: true,
-            backgroundColor: true,
-            cardColor: true,
-            primaryText: true,
-            secondaryText: true,
-            borderColor: true,
-          },
-        },
+        activeTheme: true,
         SkillsList: true,
       },
     });
+
     const bio = await prisma.bio.findFirst({
       where: {
         usersId: user.id,
       },
     });
+
     const contacts = await prisma.contacts.findFirst({
       where: {
         usersId: user.id,
       },
     });
+
     const layouts = await prisma.layouts.findFirst({
       where: {
         usersId: user.id,
       },
     });
+    
     return res.status(200).json({ ...userInfo, bio, layouts, contacts });
   } catch (error) {
     return res.status(500).json(new Exceptions(500, error.message));
@@ -70,17 +61,6 @@ router.get("/user/:userId", async (req, res) => {
         resume: true,
         role: true,
         ExperiencesList: true,
-        theme: {
-          select: {
-            id: true,
-            themeName: true,
-            backgroundColor: true,
-            cardColor: true,
-            primaryText: true,
-            secondaryText: true,
-            borderColor: true,
-          },
-        },
         ProjectsList: {
           select: {
             id: true,
@@ -96,6 +76,7 @@ router.get("/user/:userId", async (req, res) => {
         },
         SkillsList: true,
         Testimonials: true,
+        activeTheme: true,
         createdAt: true,
       },
     });
@@ -117,10 +98,9 @@ router.get("/user/:userId", async (req, res) => {
     });
     return res.status(200).json({
       data: { user, bio, layouts, contacts },
-      message: "geting user data success ",
+      message: "getting user data success ",
     });
   } catch (error) {
- 
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });

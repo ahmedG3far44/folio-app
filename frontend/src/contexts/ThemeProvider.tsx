@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { IThemeType } from "@/lib/types";
+import { IThemeType, IUserType } from "@/lib/types";
 import { Dispatch, SetStateAction } from "react";
 import {
   createContext,
@@ -11,18 +11,14 @@ import {
 } from "react";
 import { useAuth } from "./AuthProvider";
 import toast from "react-hot-toast";
-
+// import { useUser } from "./UserProvider";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 interface ThemeContextType {
   activeTheme: IThemeType;
   themesList: IThemeType[] | [];
-  switchTheme: ({
-    newActiveTheme,
-  }: {
-    newActiveTheme: IThemeType;
-  }) =>void;
+  switchTheme: ({ newActiveThemeId }: { newActiveThemeId: string }) => void;
   setThemesList: Dispatch<SetStateAction<IThemeType[] | []>>;
   setActiveTheme: Dispatch<SetStateAction<IThemeType>>;
   loading: boolean;
@@ -30,13 +26,13 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType>({
   activeTheme: {
-    id: "84899843984",
-    themeName: "Default",
-    backgroundColor: "#1A2F23",
-    cardColor: "#2D3B33",
-    primaryText: "#7CC68D",
-    secondaryText: "#B8C4B9",
-    borderColor: "#4E7D53",
+    id: "1",
+    themeName: "Slate",
+    backgroundColor: "#f8fafc",
+    cardColor: "#f1f5f9",
+    primaryText: "#1e293b",
+    secondaryText: "#475569",
+    borderColor: "#cbd5e1",
   },
   themesList: [],
   switchTheme: () => {},
@@ -46,74 +42,88 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
-  // const defaultTheme = JSON.parse(localStorage.getItem("theme") as string);
-
+  // const { userActiveTheme } = useUser();
+  // const storedTheme = JSON.parse(localStorage.getItem("theme") as string);
+  // const [defaultTheme] = useState<IThemeType | null>(
+  //   storedTheme !== null ? storedTheme : null
+  // );
   const [userTheme, setActiveTheme] = useState<IThemeType>({
-    id: "84899843984",
-    themeName: "Default",
-    backgroundColor: "#1A2F23",
-    cardColor: "#2D3B33",
-    primaryText: "#7CC68D",
-    secondaryText: "#B8C4B9",
-    borderColor: "#4E7D53"});
+    id: "1",
+    themeName: "Slate",
+    backgroundColor: "#f8fafc",
+    cardColor: "#f1f5f9",
+    primaryText: "#1e293b",
+    secondaryText: "#475569",
+    borderColor: "#cbd5e1",
+  });
 
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
   useEffect(() => {
-    async function getThemesList() {
+    const fetchThemes = async () => {
       try {
-        if (!user) return;
-        const response = await fetch(`${URL_SERVER}/theme`);
-        if (!response.ok) {
-          throw new Error(
-            "can't get themes list, please check your connection!!"
-          );
+        setLoading(true);
+        const listThemes = await getThemesList(token, user);
+        const activeTheme = await getUserActiveTheme({ token, user });
+        if (activeTheme && activeTheme.id) {
+          setActiveTheme(activeTheme as IThemeType);
         }
-        const themes = await response.json();
-        const { data }: { data: IThemeType[] } = themes;
-        setThemesList([...data]);
-        return data;
-      } catch (err) {
-        toast.error((err as Error).message);
+
+        if (listThemes && Array.isArray(listThemes.data)) {
+          setThemesList(listThemes.data);
+        }
+      } catch (error) {
+        if (error instanceof Error) {
+          console.log(error.message);
+        } else {
+          console.log(error);
+        }
         return;
+      } finally {
+        setLoading(false);
       }
-    }
-    getThemesList();    
-  }, [user, userTheme]);
+    };
+    fetchThemes();
+  }, [user, token]);
 
   const switchTheme = async ({
-    newActiveTheme,
+    newActiveThemeId,
   }: {
-    newActiveTheme: IThemeType;
+    newActiveThemeId: string;
   }) => {
     try {
       setLoading(true);
       if (!user || !token) {
         throw new Error("you must be logged in to change theme");
       }
-      // const response = await fetch(`${URL_SERVER}/theme`, {
-      //   method: "PUT",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      //   body: JSON.stringify(newActiveTheme),
-      // });
+      const newActiveTheme = themesList.find(
+        (theme) => theme.id === newActiveThemeId
+      );
+      if (!newActiveTheme) {
+        throw new Error("theme not found");
+      }
+      const response = await fetch(`${URL_SERVER}/theme`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ themeId: newActiveThemeId }),
+      });
 
-      // if (!response.ok) {
-      //   throw new Error("updating theme failed, check your connection!!");
-      // }
-      // const data = await response.json();
-      
-      // const { theme } = data.data;
-      // if (!theme) {
-      //   throw new Error("theme not found");
-      // }
-      localStorage.removeItem("theme");
-      localStorage.setItem("theme", JSON.stringify(newActiveTheme));
-      setActiveTheme(JSON.parse(localStorage.getItem("theme") as string));
+      if (!response.ok) {
+        throw new Error("updating theme failed, check your connection!!");
+      }
+      const data = await response.json();
+
+      const theme = data.data;
+
+      if (!theme) {
+        throw new Error("theme not found");
+      }
+      setActiveTheme({ ...theme });
       toast.success("theme changed successfully");
-      return newActiveTheme;
+      return theme;
     } catch (err) {
       return toast.error((err as Error).message);
     } finally {
@@ -139,3 +149,56 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
 export default ThemeProvider;
 
 export const useTheme = () => useContext(ThemeContext);
+
+export const getThemesList = async (token: string, user: IUserType) => {
+  try {
+    if (!user) return;
+    const response = await fetch(`${URL_SERVER}/themes`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("can't get themes list, please check your connection!!");
+    }
+    const data = await response.json();
+    console.log(data);
+
+    const themesList: { data: IThemeType[] } = data;
+
+    return themesList;
+  } catch (err) {
+    toast.error((err as Error).message);
+    return;
+  }
+};
+
+export const getUserActiveTheme = async ({
+  token,
+  user,
+}: {
+  token?: string;
+  user: IUserType;
+}) => {
+  try {
+    if (!user) return;
+    const response = await fetch(`${URL_SERVER}/theme`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(
+        "can't get user active theme, please check your connection!!"
+      );
+    }
+    const data = await response.json();
+    const theme: IThemeType = data.data;
+    return theme;
+  } catch (err) {
+    toast.error((err as Error).message);
+    return;
+  }
+};

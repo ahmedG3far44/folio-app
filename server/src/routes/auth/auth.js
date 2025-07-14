@@ -32,24 +32,16 @@ router.post("/auth/login", async (req, res) => {
         picture: true,
         role: true,
         resume: true,
-        theme: {
-          select: {
-            id: true,
-            themeName: true,
-            backgroundColor: true,
-            cardColor: true,
-            primaryText: true,
-            secondaryText: true,
-            borderColor: true,
-          },
-        },
+        activeTheme: true,
       },
     });
 
     if (!user) throw new Error("this user not found!!");
 
-    const hashedPassowrd = await bcrypt.hash(password, salt);
-    const isPasswordCorrect = await bcrypt.compare(password, hashedPassowrd);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
+
     if (!isPasswordCorrect) throw new Error("wrong email or password !!");
 
     const payload = {
@@ -58,7 +50,9 @@ router.post("/auth/login", async (req, res) => {
       email,
       role: user.role,
     };
+
     const token = jwt.sign(payload, process.env.JWT_SECRET);
+
     return res
       .status(200)
       .json({ data: { user, token }, message: "a user login success" });
@@ -85,17 +79,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         picture: true,
         role: true,
         resume: true,
-        theme: {
-          select: {
-            id: true,
-            themeName: true,
-            backgroundColor: true,
-            cardColor: true,
-            borderColor: true,
-            secondaryText: true,
-            primaryText: true,
-          },
-        },
+        activeTheme: true,
       },
     });
 
@@ -122,16 +106,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         email,
         password: hashedPassword,
         picture: `${BUCKET_DOMAIN}/${pictureKey}`,
-        theme: {
-          create: {
-            themeName: "Midnight Eclipse",
-            backgroundColor: "#0a0a0a",
-            cardColor: "#171717",
-            primaryText: "#fafafa",
-            secondaryText: "#a3a3a3",
-            borderColor: "#262626",
-          },
-        },
+        activeTheme: "cmd2w717g0001uzf0y8nzzmyz",
       },
       select: {
         id: true,
@@ -140,16 +115,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         picture: true,
         role: true,
         resume: true,
-        theme: {
-          select: {
-            themeName: true,
-            backgroundColor: true,
-            cardColor: true,
-            primaryText: true,
-            secondaryText: true,
-            borderColor: true,
-          },
-        },
+        activeTheme: true,
       },
     });
 
@@ -171,18 +137,6 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         usersId: newUser.id,
       },
     });
-
-    // await prisma.theme.create({
-    //   data: {
-    //     themeName: "midnight",
-    //     backgroundColor: "#121212",
-    //     cardColor: "#1F1F1F",
-    //     primaryText: "#E0E0E0",
-    //     secondaryText: "#B0B0B0",
-    //     borderColor: "#5A5A5A",
-    //     usersId: newUser.id,
-    //   },
-    // });
 
     await prisma.contacts.create({
       data: {

@@ -1,9 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { IThemeType } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { Navigate, useParams } from "react-router-dom";
+
 import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
-import { useEffect, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
 
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
@@ -14,8 +16,7 @@ import ExperienceSection from "@/components/sections/ExperienceSection";
 import ProjectSection from "@/components/sections/ProjectSection";
 import SkillSection from "@/components/sections/SkillSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
-
-
+import toast from "react-hot-toast";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -37,6 +38,7 @@ function UserPage() {
     setContacts,
     setProjects,
     setLayouts,
+    setActiveTheme,
   } = useUser();
 
   const [pending, setPending] = useState(false);
@@ -47,6 +49,7 @@ function UserPage() {
       setPending(true);
       const response = await fetch(`${URL_SERVER}/user/${id}`);
       const info = await response.json();
+      console.log(info);
       return info.data;
     } catch (err) {
       return { data: "error", message: (err as Error).message };
@@ -57,6 +60,8 @@ function UserPage() {
   useEffect(() => {
     getUserInfoById(userId as string)
       .then((data) => {
+        console.log(data);
+
         const { bio, user, contacts, layouts } = data;
         setBio({ ...bio });
         setExperiences(user.ExperiencesList);
@@ -65,13 +70,51 @@ function UserPage() {
         setTestimonials(user.Testimonials);
         setContacts({ ...contacts });
         setLayouts({ ...layouts });
-        localStorage.setItem("theme", JSON.stringify(user.theme));
       })
       .catch((err) => {
         setError(err.message);
         return;
       });
+    async function fetchTheme(userId: string) {
+      try {
+        setPending(true);
+        const theme = await getUnAuthorizedActiveTheme(userId);
+        console.log(theme)
+        if (theme) {
+          setActiveTheme({ ...theme });
+        }
+      } catch (error) {
+        toast.error((error as Error).message);
+      } finally {
+        setPending(false);
+      }
+    }
+    fetchTheme(userId as string);
   }, [userId]);
+
+  const getUnAuthorizedActiveTheme = async (userId: string) => {
+    try {
+      if (!userId) return;
+
+      const response = await fetch(`${URL_SERVER}/theme/${userId}`);
+
+      if (!response.ok) {
+        throw new Error(
+          "can't get user active theme, please check your connection!!"
+        );
+      }
+      const data = await response.json();
+
+      console.log(data)
+
+      const theme: IThemeType = data.data;
+
+      return theme;
+    } catch (err) {
+      console.log(err);
+      return;
+    }
+  };
 
   if (isAdmin) return <Navigate to={"/dashboard/insights"} />;
   if (error) return <ErrorMessage message={error} />;

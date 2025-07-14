@@ -31,13 +31,13 @@ export const UserContext = createContext<UserInfoContextType>({
   skills: [],
   testimonials: [],
   userActiveTheme: {
-        id: "84899843984",
-    themeName: "Default",
-    backgroundColor: "#1A2F23",
-    cardColor: "#2D3B33",
-    primaryText: "#7CC68D",
-    secondaryText: "#B8C4B9",
-    borderColor: "#4E7D53",
+    id: "",
+    themeName: "",
+    backgroundColor: "",
+    cardColor: "",
+    primaryText: "",
+    secondaryText: "",
+    borderColor: "",
   },
   layouts: {
     id: "",
@@ -109,7 +109,7 @@ export const UserProvider: FC<PropsWithChildren> = ({ children }) => {
         setTestimonials(user?.Testimonials);
         setContacts({ ...contacts });
         setLayouts({ ...layouts });
-        localStorage.setItem("theme", JSON.stringify(user?.theme));
+        localStorage.setItem("theme", JSON.stringify(user?.activeTheme));
       })
       .catch((error) => {
         setError(error.message);

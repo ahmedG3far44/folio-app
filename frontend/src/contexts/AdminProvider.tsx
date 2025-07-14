@@ -83,4 +83,5 @@ const AdminProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useAdmin = () => useContext(AdminContext);
+
 export default AdminProvider;

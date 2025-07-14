@@ -15,13 +15,13 @@ function ThemesList() {
   const { themesList, setThemesList, activeTheme } = useTheme();
   const { backgroundColor, cardColor, borderColor } = activeTheme;
   const [newTheme, setNewTheme] = useState<IThemeType>({
-    id: "1",
-    themeName: "Untitled",
-    backgroundColor: "#000000",
-    cardColor: "#0000",
-    primaryText: "#ffffff",
-    secondaryText: "#000000",
-    borderColor: "#000000",
+    id: "",
+    themeName: "",
+    backgroundColor: "",
+    cardColor: "",
+    primaryText: "",
+    secondaryText: "",
+    borderColor: "",
   });
   const [submitting, setSubmitting] = useState<{
     pending: boolean;
@@ -47,19 +47,28 @@ function ThemesList() {
         pending: true,
         error: null,
       });
-      const response = await fetch(`${URL_SERVER}/theme`, {
+
+      const {
+        themeName,
+        backgroundColor,
+        cardColor,
+        primaryText,
+        secondaryText,
+        borderColor,
+      } = newTheme;
+      const response = await fetch(`${URL_SERVER}/admin/themes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          themeName: newTheme.themeName,
-          backgroundColor: newTheme.backgroundColor,
-          cardColor: newTheme.cardColor,
-          primaryText: newTheme.primaryText,
-          secondaryText: newTheme.secondaryText,
-          borderColor: newTheme.borderColor,
+          themeName,
+          backgroundColor,
+          cardColor,
+          primaryText,
+          secondaryText,
+          borderColor,
         }),
       });
 
@@ -71,12 +80,12 @@ function ThemesList() {
 
       setNewTheme({
         id: "",
-        themeName: "Untitled",
-        backgroundColor: "#000000",
-        cardColor: "#0000",
-        primaryText: "#ffffff",
-        secondaryText: "#000000",
-        borderColor: "#000000",
+        themeName: "",
+        backgroundColor: "",
+        cardColor: "",
+        primaryText: "",
+        secondaryText: "",
+        borderColor: "",
       });
       setThemesList(data.data);
       return data;

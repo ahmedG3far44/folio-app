@@ -7,7 +7,7 @@ export interface IUserType {
   picture: string | null;
   role: string | "USER" | "ADMIN";
   resume: string;
-  theme: IThemeType | null;
+  activeTheme: IThemeType;
 }
 
 export interface IAuthContextType {
@@ -131,7 +131,7 @@ export interface IFeatureType {
 export interface ThemeContextType {
   activeTheme: IThemeType;
   themesList: IThemeType[];
-  switchTheme: ({ newActiveTheme }: { newActiveTheme: IThemeType }) => void;
+  switchTheme: ({ newActiveThemeId }: { newActiveThemeId: string }) => void;
   setThemesList: ({ newActiveTheme }: { newActiveTheme?: IThemeType }) => void;
   loading: boolean;
 }
