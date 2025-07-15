@@ -30,8 +30,8 @@ jobs:
 
     - name: Start server with PM2
       run: |
+        cd server
         pm2 start --name "folio-server" "npm start"
-        pm2 startup
         pm2 save
       env:
         PORT: 8000
@@ -45,3 +45,8 @@ jobs:
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
         SSL_CERT: ${{ secrets.SSL_CERT }}
         SSL_KEY: ${{ secrets.SSL_KEY }}
+    - name: Setup PM2 startup (manual step - run once on server)
+      if: false  # This step is disabled by default
+      run: |
+        sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u folio --hp /home/folio
+        pm2 save
