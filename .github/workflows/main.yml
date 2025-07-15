@@ -12,9 +12,8 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Navigate to correct directory
-      run: |
-        cd /home/folio/actions-runner/_work/folio-app/folio-app/
+    - name: Debug - Show directory structure
+      run: ls -la
 
     - name: Install server dependencies
       run: |
