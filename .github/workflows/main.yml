@@ -9,9 +9,16 @@ jobs:
     runs-on: self-hosted
     
     steps:
-    - name: Navigate to server directory and install dependencies
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Navigate to correct directory
       run: |
-        cd ./server
+        cd _work/folio-app/folio-app/
+
+    - name: Install server dependencies
+      run: |
+        cd server
         npm install
 
     - name: Stop any existing server
@@ -21,6 +28,7 @@ jobs:
 
     - name: Start server with PM2
       run: |
+        cd server
         pm2 start --name "folio-server" "npm start"
         pm2 save
         pm2 startup
