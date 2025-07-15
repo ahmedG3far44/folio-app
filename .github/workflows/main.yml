@@ -28,7 +28,7 @@ jobs:
 
     - name: Start server with PM2
       run: |
-        cd server
+        pwd
         pm2 start --name "folio-server" "npm start"
         pm2 save
         pm2 startup
