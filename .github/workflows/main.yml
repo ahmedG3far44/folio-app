@@ -15,6 +15,9 @@ jobs:
     - name: Debug - Show directory structure
       run: ls -la
 
+    - name: Remove unused files
+      run: |
+        rm -fr README.md frontend 'showcase(1).gif'
     - name: Install server dependencies
       run: |
         cd server
@@ -27,8 +30,6 @@ jobs:
 
     - name: Start server with PM2
       run: |
-        pwd
-        cd /server
         pm2 start --name "folio-server" "npm start"
         pm2 startup
         pm2 save
