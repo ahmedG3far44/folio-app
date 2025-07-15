@@ -29,9 +29,10 @@ jobs:
     - name: Start server with PM2
       run: |
         pwd
+        cd /server
         pm2 start --name "folio-server" "npm start"
-        pm2 save
         pm2 startup
+        pm2 save
       env:
         PORT: 8000
         ENV: production
@@ -42,3 +43,5 @@ jobs:
         AWS_S3_BUCKET_DOMAIN: ${{ secrets.AWS_S3_BUCKET_DOMAIN }}
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
         JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        SSL_CERT: ${{ secrets.SSL_CERT }}
+        SSL_KEY: ${{ secrets.SSL_KEY }}
