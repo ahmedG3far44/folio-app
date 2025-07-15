@@ -1,0 +1,44 @@
+name: Deploy to Development (Self-Hosted)
+
+on:
+  push:
+    branches: [ "development" ]
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Navigate to server directory and install dependencies
+      run: |
+        cd ./server
+        npm install
+
+    - name: Stop any existing server
+      run: |
+        pm2 stop folio-server || true
+        pm2 delete folio-server || true
+
+    - name: Start server with PM2
+      run: |
+        cd ./server
+        pm2 start --name "folio-server" "npm start"
+        pm2 save
+        pm2 startup
+      env:
+        PORT: 8000
+        ENV: production
+        AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
+        AWS_S3_ACCESS_SECRET_KEY: ${{ secrets.AWS_S3_ACCESS_SECRET_KEY }}
+        AWS_S3_REGION: ${{ secrets.AWS_S3_REGION }}
+        AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+        AWS_S3_BUCKET_DOMAIN: ${{ secrets.AWS_S3_BUCKET_DOMAIN }}
+        DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
