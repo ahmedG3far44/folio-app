@@ -2,7 +2,7 @@
 
 A web app for tech professionals to **build customized portfolios** showcasing projects, skills, and experiences with full CRUD functionality, theme and layout sections customization.
 
-**Live Demo**: [Coming Soon]() _(Share URL if deployed)_
+**Live Demo**: https://presento.cloud
 
 ---
 
@@ -62,7 +62,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 - Create `.env` in `/server`:
   
   ```env
-  PORT=5000
+  PORT=4000
   ENV=development # or "production"
   AWS_S3_ACCESS_SECRETE_KEY=your_aws_s3_secret_key
   AWS_S3_ACCESS_KEY=your_aws_s3_access_key
