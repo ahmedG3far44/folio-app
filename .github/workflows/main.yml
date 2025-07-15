@@ -14,7 +14,7 @@ jobs:
 
     - name: Navigate to correct directory
       run: |
-        cd _work/folio-app/folio-app/
+        cd /home/folio/actions-runner/_work/folio-app/folio-app/
 
     - name: Install server dependencies
       run: |
