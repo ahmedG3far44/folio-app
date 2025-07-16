@@ -37,7 +37,7 @@ jobs:
         PORT: 8000
         ENV: production
         AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
-        AWS_S3_ACCESS_SECRET_KEY: ${{ secrets.AWS_S3_ACCESS_SECRET_KEY }}
+        AWS_S3_ACCESS_SECRETE_KEY: ${{ secrets.AWS_S3_ACCESS_SECRETE_KEY }}
         AWS_S3_REGION: ${{ secrets.AWS_S3_REGION }}
         AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
         AWS_S3_BUCKET_DOMAIN: ${{ secrets.AWS_S3_BUCKET_DOMAIN }}
