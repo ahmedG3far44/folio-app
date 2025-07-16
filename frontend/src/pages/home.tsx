@@ -46,7 +46,7 @@ const ProfileImage = memo(() => (
       width={40}
       height={40}
       className="w-full h-full object-cover"
-      src="https://media.licdn.com/dms/image/v2/D4D03AQHYaJyb47RqrA/profile-displayphoto-shrink_200_200/B4DZZUMvChGwAc-/0/1745169347596?e=1750896000&v=beta&t=qAnlNxEDOKbQxJN98k-layJMsZmnZtPpeDJfZDFseCo"
+      src="../assets/OIP.webp"
       alt="profile developer"
     />
   </motion.div>

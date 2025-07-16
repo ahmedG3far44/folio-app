@@ -183,7 +183,7 @@ export const getUserActiveTheme = async ({
 }) => {
   try {
     if (!user) return;
-    const response = await fetch(`${URL_SERVER}/theme`, {
+    const response = await fetch(`${URL_SERVER}/theme/${user.id}`, {
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,

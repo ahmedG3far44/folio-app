@@ -52,7 +52,7 @@ function ProjectDetails() {
       }}
       className="w-full p-4 lg:full m-auto   min-h-screen relative"
     >
-      <div className="lg:w-3/4 md:w-[90%] m-auto w-full">
+      <div className="lg:w-1/2 md:w-[90%] m-auto w-full">
         {pending ? (
           <div className="w-full min-h-[700px] flex-col flex items-center justify-center mt-8">
             <Loader size="md" />
@@ -64,10 +64,10 @@ function ProjectDetails() {
                 backgroundColor: activeTheme.cardColor,
                 border: `1px solid ${activeTheme.borderColor}`,
               }}
-              className="w-full lg:w-[70%]  px-4 py-8 gap-4 "
+              className="w-full lg:w-3/4  px-4 py-8 gap-4 "
             >
               <Button
-                className="w-[100px] fixed z-[9999] left-40 top-20 cursor-pointer"
+                className="w-[100px] fixed z-[9999] shadow-2xl lg:shadow-md left-8 top-5 lg:left-40 lg:top-20 cursor-pointer"
                 type="button"
                 onClick={handelNavigateBack}
               >
@@ -157,7 +157,7 @@ function ProjectDetails() {
               )}
             </Card>
 
-            <div className="w-full flex flex-col items-center justify-center lg:w-[70%] relative">
+            <div className="w-full flex flex-col items-center justify-center lg:w-3/4 relative">
               {project?.ImagesList ? (
                 <div className="w-full flex flex-col items-center justify-center gap-4">
                   {project?.ImagesList.map((image) => {

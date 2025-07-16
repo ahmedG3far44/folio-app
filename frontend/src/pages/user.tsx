@@ -7,23 +7,23 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
 
-import Footer from "@/components/Footer";
+import toast from "react-hot-toast";
 import Header from "@/components/Header";
 import Loader from "@/components/loader";
 import Hero from "@/components/sections/Hero";
+import Footer from "@/components/Footer";
 import ErrorMessage from "@/components/ErrorMessage";
 import ExperienceSection from "@/components/sections/ExperienceSection";
 import ProjectSection from "@/components/sections/ProjectSection";
 import SkillSection from "@/components/sections/SkillSection";
 import TestimonialSection from "@/components/sections/TestimonialSection";
-import toast from "react-hot-toast";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function UserPage() {
   const { isAdmin } = useAuth();
   const { userId } = useParams();
-  const { activeTheme } = useTheme();
+  const { activeTheme, setActiveTheme } = useTheme();
   const {
     bio,
     experiences,
@@ -38,7 +38,6 @@ function UserPage() {
     setContacts,
     setProjects,
     setLayouts,
-    setActiveTheme,
   } = useUser();
 
   const [pending, setPending] = useState(false);
@@ -49,7 +48,6 @@ function UserPage() {
       setPending(true);
       const response = await fetch(`${URL_SERVER}/user/${id}`);
       const info = await response.json();
-      console.log(info);
       return info.data;
     } catch (err) {
       return { data: "error", message: (err as Error).message };
@@ -60,8 +58,6 @@ function UserPage() {
   useEffect(() => {
     getUserInfoById(userId as string)
       .then((data) => {
-        console.log(data);
-
         const { bio, user, contacts, layouts } = data;
         setBio({ ...bio });
         setExperiences(user.ExperiencesList);
@@ -79,9 +75,9 @@ function UserPage() {
       try {
         setPending(true);
         const theme = await getUnAuthorizedActiveTheme(userId);
-        console.log(theme)
+
         if (theme) {
-          setActiveTheme({ ...theme });
+          setActiveTheme(theme);
         }
       } catch (error) {
         toast.error((error as Error).message);
@@ -96,7 +92,11 @@ function UserPage() {
     try {
       if (!userId) return;
 
-      const response = await fetch(`${URL_SERVER}/theme/${userId}`);
+      const response = await fetch(`${URL_SERVER}/theme/${userId}`, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error(
@@ -105,19 +105,25 @@ function UserPage() {
       }
       const data = await response.json();
 
-      console.log(data)
-
       const theme: IThemeType = data.data;
 
       return theme;
     } catch (err) {
-      console.log(err);
+      console.log((err as Error).message);
       return;
     }
   };
 
   if (isAdmin) return <Navigate to={"/dashboard/insights"} />;
   if (error) return <ErrorMessage message={error} />;
+
+  if (pending)
+    return (
+      <div className="min-h-screen w-full flex items-center justify-center">
+        <Loader size="lg" />
+      </div>
+    );
+
   return (
     <div
       style={{
@@ -133,22 +139,14 @@ function UserPage() {
             <h4>there is not user profile found.</h4>
           </div>
         ) : (
-          <>
-            {pending ? (
-              <div className="min-h-screen w-full flex items-center justify-center">
-                <Loader size="lg" />
-              </div>
-            ) : (
-              <div className="w-full flex flex-col items-center justify-around gap-20 p-4 lg:p-8">
-                <Header />
-                <Hero bioInfo={bio} contacts={contacts} />
-                <ExperienceSection experiences={experiences} />
-                <ProjectSection projects={projects} />
-                <SkillSection skills={skills} />
-                <TestimonialSection testimonials={testimonials} />
-              </div>
-            )}
-          </>
+          <div className="w-full flex flex-col items-center justify-around gap-20 p-4 lg:p-8">
+            <Header />
+            <Hero bioInfo={bio} contacts={contacts} />
+            <ExperienceSection experiences={experiences} />
+            <ProjectSection projects={projects} />
+            <SkillSection skills={skills} />
+            <TestimonialSection testimonials={testimonials} />
+          </div>
         )}
       </div>
       <Footer />

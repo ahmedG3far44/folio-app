@@ -437,7 +437,10 @@ function ProjectForm() {
                 />
               )}
             </Card>
-            <Tiptap content={description} setContent={setDescription} />
+            <Card className="w-full">
+              <Tiptap content={description} setContent={setDescription} />
+
+            </Card>
 
             <SubmitButton
               className="w-full"

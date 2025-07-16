@@ -79,7 +79,7 @@ const getUserActiveTheme = async (req, res) => {
 
     const userInfo = await prisma.users.findFirst({
       where: {
-        id: user.id ? user.id : userId,
+        id: user ? user.id : userId,
       },
       select: {
         activeTheme: true,
