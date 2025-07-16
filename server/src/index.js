@@ -39,16 +39,16 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
   return res.send(`Folio app is working.... , 
-    PORT: ${process.env.PORT}
-    ENV: ${process.env.ENV}
-    JWT_SECRET: ${process.env.JWT_SECRET}
-    AWS_S3_ACCESS_KEY: ${process.env.AWS_S3_ACCESS_KEY}
-    AWS_S3_ACCESS_SECRETE_KEY: ${process.env.AWS_S3_ACCESS_SECRETE_KEY}
-    AWS_S3_REGION: ${process.env.AWS_S3_REGION}
-    AWS_S3_BUCKET_NAME: ${process.env.AWS_S3_BUCKET_NAME}
-    AWS_S3_BUCKET_DOMAIN: ${process.env.AWS_S3_BUCKET_DOMAIN}
-    SSL_CERT: ${process.env.SSL_CERT}
-    SSL_KEY: ${process.env.SSL_KEY}
+    PORT: ${process.env.PORT} \n
+    ENV: ${process.env.ENV} \n
+    JWT_SECRET: ${process.env.JWT_SECRET}  \n
+    AWS_S3_ACCESS_KEY: ${process.env.AWS_S3_ACCESS_KEY} \n
+    AWS_S3_ACCESS_SECRETE_KEY: ${process.env.AWS_S3_ACCESS_SECRETE_KEY} \n
+    AWS_S3_REGION: ${process.env.AWS_S3_REGION} \n
+    AWS_S3_BUCKET_NAME: ${process.env.AWS_S3_BUCKET_NAME} \n
+    AWS_S3_BUCKET_DOMAIN: ${process.env.AWS_S3_BUCKET_DOMAIN} \n
+    SSL_CERT: ${process.env.SSL_CERT} \n
+    SSL_KEY: ${process.env.SSL_KEY} \n
     
     `);
 });
