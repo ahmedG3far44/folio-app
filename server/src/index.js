@@ -38,7 +38,19 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
-  return res.send(`Folio app is working.... , ${process.env.DATABASE_URL}`);
+  return res.send(`Folio app is working.... , 
+    PORT: ${process.env.PORT}
+    ENV: ${process.env.ENV}
+    JWT_SECRET: ${process.env.JWT_SECRET}
+    AWS_S3_ACCESS_KEY: ${process.env.AWS_S3_ACCESS_KEY}
+    AWS_S3_ACCESS_SECRETE_KEY: ${process.env.AWS_S3_ACCESS_SECRETE_KEY}
+    AWS_S3_REGION: ${process.env.AWS_S3_REGION}
+    AWS_S3_BUCKET_NAME: ${process.env.AWS_S3_BUCKET_NAME}
+    AWS_S3_BUCKET_DOMAIN: ${process.env.AWS_S3_BUCKET_DOMAIN}
+    SSL_CERT: ${process.env.SSL_CERT}
+    SSL_KEY: ${process.env.SSL_KEY}
+    
+    `);
 });
 
 app.get("/healthz", async (req, res) => {

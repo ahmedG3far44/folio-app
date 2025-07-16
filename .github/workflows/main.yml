@@ -31,7 +31,7 @@ jobs:
     - name: Start server with PM2
       run: |
         cd server
-        pm2 start --name "folio-server" "npm start"
+        pm2 start --name "folio-server" "npm start" --watch
         pm2 save
       env:
         PORT: 8000
