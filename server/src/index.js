@@ -49,8 +49,8 @@ app.use("/api", rootRouter);
 
 if (ENV === "production") {
   const options = {
-    cert: fs.readFileSync(process.env.SSL_CERT),
-    key: fs.readFileSync(process.env.SSL_KEY),
+    cert: fs.readFileSync(process.env.SSL_CERT, "utf-8"),
+    key: fs.readFileSync(process.env.SSL_KEY, "utf-8"),
     minVersion: "TLSv1.2",
   };
 
