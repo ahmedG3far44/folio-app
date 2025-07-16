@@ -38,7 +38,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
-  return res.send("Folio app is working....");
+  return res.send(`Folio app is working.... , ${process.env.DATABASE_URL}`);
 });
 
 app.get("/healthz", async (req, res) => {
