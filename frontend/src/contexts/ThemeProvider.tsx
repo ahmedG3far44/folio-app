@@ -9,9 +9,11 @@ import {
   useEffect,
   useState,
 } from "react";
+
 import { useAuth } from "./AuthProvider";
+
 import toast from "react-hot-toast";
-// import { useUser } from "./UserProvider";
+
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
@@ -42,11 +44,6 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
-  // const { userActiveTheme } = useUser();
-  // const storedTheme = JSON.parse(localStorage.getItem("theme") as string);
-  // const [defaultTheme] = useState<IThemeType | null>(
-  //   storedTheme !== null ? storedTheme : null
-  // );
   const [userTheme, setActiveTheme] = useState<IThemeType>({
     id: "1",
     themeName: "Slate",
@@ -65,7 +62,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
         setLoading(true);
         const listThemes = await getThemesList(token, user);
         const activeTheme = await getUserActiveTheme({ token, user });
-        if (activeTheme && activeTheme.id) {
+        if (activeTheme) {
           setActiveTheme(activeTheme as IThemeType);
         }
 
@@ -198,7 +195,7 @@ export const getUserActiveTheme = async ({
     const theme: IThemeType = data.data;
     return theme;
   } catch (err) {
-    toast.error((err as Error).message);
-    return;
+    // toast.error((err as Error).message);
+    return err;
   }
 };

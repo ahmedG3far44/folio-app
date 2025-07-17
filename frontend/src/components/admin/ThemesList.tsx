@@ -7,12 +7,13 @@ import toast from "react-hot-toast";
 import ThemeCard from "../cards/ThemeCard";
 import ErrorMessage from "../ErrorMessage";
 import SubmitButton from "../submit-button";
+import Loader from "../loader";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function ThemesList() {
   const { token } = useAuth();
-  const { themesList, setThemesList, activeTheme } = useTheme();
+  const { themesList, setThemesList, activeTheme, loading } = useTheme();
   const { backgroundColor, cardColor, borderColor } = activeTheme;
   const [newTheme, setNewTheme] = useState<IThemeType>({
     id: "",
@@ -87,6 +88,7 @@ function ThemesList() {
         secondaryText: "",
         borderColor: "",
       });
+
       setThemesList(data.data);
       return data;
     } catch (err) {
@@ -119,12 +121,12 @@ function ThemesList() {
           value={newTheme.themeName}
           placeholder="Theme Name"
           onChange={handleColorChange}
-          className="w-full p-4 rounded-md  overflow-hidden"
+          className="w-full p-4 rounded-md  border overflow-hidden"
         />
 
         <div
-          style={{ backgroundColor: cardColor }}
-          className="w-full p-4 rounded-md flex justify-between items-center gap-4"
+          style={{ backgroundColor: cardColor, borderColor: borderColor }}
+          className="w-full p-4 rounded-md flex border justify-between items-center gap-4"
         >
           <label htmlFor="backgroundColor">Background Color</label>
 
@@ -139,8 +141,8 @@ function ThemesList() {
         </div>
 
         <div
-          style={{ backgroundColor: cardColor }}
-          className="w-full p-4 rounded-md flex justify-between items-center gap-4"
+          style={{ backgroundColor: cardColor, borderColor: borderColor }}
+          className="w-full p-4 rounded-md flex border justify-between items-center gap-4"
         >
           <label htmlFor="cardColor">Cards Color</label>
 
@@ -154,8 +156,8 @@ function ThemesList() {
           />
         </div>
         <div
-          style={{ backgroundColor: cardColor }}
-          className="w-full p-4 rounded-md flex justify-between items-center gap-4"
+          style={{ backgroundColor: cardColor, borderColor: borderColor }}
+          className="w-full p-4 rounded-md flex justify-between items-center  border gap-4"
         >
           <label htmlFor="borderColor">Borders Color</label>
 
@@ -169,13 +171,13 @@ function ThemesList() {
           />
         </div>
         <div
-          style={{ backgroundColor: cardColor }}
-          className="w-full p-4 rounded-md flex justify-between items-center gap-4"
+          style={{ backgroundColor: cardColor, borderColor: borderColor }}
+          className="w-full p-4 rounded-md flex justify-between items-center  border gap-4"
         >
           <label htmlFor="primaryText">Primary Text Color</label>
 
           <input
-            style={{ backgroundColor: cardColor, borderColor }}
+            style={{ backgroundColor: cardColor, borderColor: borderColor }}
             type="color"
             name="primaryText"
             value={newTheme.primaryText}
@@ -184,8 +186,8 @@ function ThemesList() {
           />
         </div>
         <div
-          style={{ backgroundColor: cardColor }}
-          className="w-full p-4 rounded-md flex justify-between items-center gap-4"
+          style={{ backgroundColor: cardColor, borderColor: borderColor }}
+          className="w-full p-4 rounded-md flex justify-between border items-center gap-4"
         >
           <label htmlFor="secondaryText">Secondary Text Color</label>
 
@@ -209,32 +211,40 @@ function ThemesList() {
       </form>
 
       <div className="flex items-center justify-start flex-wrap gap-4  my-4">
-        {themesList.map(
-          (
-            {
-              themeName,
-              backgroundColor,
-              cardColor,
-              borderColor,
-              primaryText,
-              secondaryText,
-              id,
-            },
-            index
-          ) => {
-            return (
-              <ThemeCard
-                key={index}
-                id={id}
-                themeName={themeName}
-                backgroundColor={backgroundColor}
-                cardColor={cardColor}
-                borderColor={borderColor}
-                primaryText={primaryText}
-                secondaryText={secondaryText}
-              />
-            );
-          }
+        {loading ? (
+          <div className="w-full min-h-[200px] flex items-center justify-center">
+            <Loader size="md" />
+          </div>
+        ) : (
+          <>
+            {themesList.map(
+              (
+                {
+                  themeName,
+                  backgroundColor,
+                  cardColor,
+                  borderColor,
+                  primaryText,
+                  secondaryText,
+                  id,
+                },
+                index
+              ) => {
+                return (
+                  <ThemeCard
+                    key={index}
+                    id={id}
+                    themeName={themeName}
+                    backgroundColor={backgroundColor}
+                    cardColor={cardColor}
+                    borderColor={borderColor}
+                    primaryText={primaryText}
+                    secondaryText={secondaryText}
+                  />
+                );
+              }
+            )}
+          </>
         )}
       </div>
     </div>

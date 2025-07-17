@@ -100,13 +100,29 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     } catch (err) {
       res.status(500).json({ data: "error", message: err.message });
     }
+    const theme = await prisma.theme.findMany();
+
+    if (!theme || theme.length <= 0) {
+      await prisma.theme.create({
+        data: {
+          themeName: "Dark",
+          backgroundColor: "#0f172a",
+          cardColor: "#1e293b",
+          primaryText: "#f8fafc",
+          secondaryText: "#94a3b8",
+          borderColor: "#334155",
+        },
+      });
+    }
+    const newTheme = await prisma.theme.findMany();
+
     const newUser = await prisma.users.create({
       data: {
         name,
         email,
         password: hashedPassword,
         picture: `${BUCKET_DOMAIN}/${pictureKey}`,
-        activeTheme: "cmd2w717g0001uzf0y8nzzmyz",
+        activeTheme: theme ? theme[0].id : newTheme[0].id,
       },
       select: {
         id: true,
@@ -118,7 +134,6 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         activeTheme: true,
       },
     });
-
     const payload = {
       id: newUser.id,
       name: newUser.name,
@@ -130,9 +145,9 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
 
     await prisma.bio.create({
       data: {
-        bio: "change your bio info...",
+        bio: "update your bio info...",
         bioName: newUser.name,
-        jobTitle: "Change Your Job Title...",
+        jobTitle: "update your job title...",
         heroImage: `${BUCKET_DOMAIN}/${pictureKey}`,
         usersId: newUser.id,
       },

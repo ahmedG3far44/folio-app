@@ -10,15 +10,15 @@ const router = express.Router();
 const addNewTheme = async (req, res) => {
   try {
     const newTheme = req.body;
-    // const user = req.user;
+    const user = req.user;
 
     if (!newTheme) {
       throw new Error("theme data is required!!");
     }
 
-    // if (user.role !== "ADMIN") {
-    //   throw new Error("you are not authorized to do this action!!");
-    // }
+    if (user.role !== "ADMIN") {
+      throw new Error("you are not authorized to do this action!!");
+    }
 
     const validThemeData = themeSchema.safeParse(newTheme);
 
@@ -34,13 +34,13 @@ const addNewTheme = async (req, res) => {
       },
     });
 
-    const theme = await prisma.theme.findMany({
+    const themes = await prisma.theme.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
 
-    res.status(201).json({ data: theme, message: "a new theme was added!!" });
+    res.status(201).json({ data: themes, message: "a new theme was added!!" });
   } catch (error) {
     res
       .status(500)
@@ -279,7 +279,7 @@ const addDefaultThemes = async (req, res) => {
 router.post("/admin/default/themes", addDefaultThemes);
 
 // admin add a new theme
-router.post("/admin/themes", addNewTheme);
+router.post("/admin/themes",verifyAdminAccessToken,  addNewTheme);
 
 // show available themes list
 router.get("/themes", verifyAccessToken, showAvailableThemes);
