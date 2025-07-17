@@ -4,7 +4,7 @@ import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
 
 import { Link } from "react-router-dom";
-// import { Card } from "../ui/card";
+import { Card } from "../ui/card";
 
 import LayoutJson from "@/lib/layouts.json";
 import Image from "../ui/image";
@@ -22,7 +22,7 @@ function ProjectCard({
   const { child } = projectsLayout;
 
   return (
-    <div
+    <Card
       style={{
         backgroundColor: activeTheme.cardColor,
         borderColor: activeTheme.borderColor,
@@ -55,7 +55,7 @@ function ProjectCard({
       <div className="flex flex-col justify-end items-start gap-2">
         <Link
           to={`/project/${id}`}
-          className="text-xl font-semibold hover:underline my-1 cursor-pointer duration-150"
+          className="text-lg font-semibold hover:underline my-1 cursor-pointer duration-150"
         >
           {title}
         </Link>
@@ -65,7 +65,7 @@ function ProjectCard({
           dangerouslySetInnerHTML={{ __html: description }}
         />
       </div>
-    </div>
+    </Card>
   );
 }
 
