@@ -8,8 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
 
-import ErrorMessage from "@/components/ErrorMessage";
 import Logo from "@/components/Logo";
+import ErrorMessage from "@/components/ErrorMessage";
 
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
