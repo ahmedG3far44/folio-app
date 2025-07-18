@@ -2,51 +2,72 @@ name: Deploy to Development (Self-Hosted)
 
 on:
   push:
-    branches: [ "development" ]
+    branches: ["development"]
+  # Optional: Add workflow_dispatch to allow manual triggers
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: self-hosted
-    
+
+    # Add timeout minutes to prevent hanging jobs
+    timeout-minutes: 15
+
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4 # Updated to latest version
 
-    - name: Debug - Show directory structure
-      run: ls -la
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # Specify your Node.js version
+          cache: "npm"
 
-    - name: Remove unused files
-      run: |
-        rm -fr README.md frontend 'showcase(1).gif'
-    - name: Install server dependencies
-      run: |
-        cd server
-        npm install
+      - name: Debug - Show directory structure
+        run: ls -la
 
-    - name: Stop any existing server
-      run: |
-        pm2 stop folio-server || true
-        pm2 delete folio-server || true
+      - name: Remove unused files
+        run: |
+          rm -fr README.md frontend 'showcase(1).gif'
 
-    - name: Start server with PM2
-      run: |
-        cd server
-        pm2 start --name "folio-server" "npm start" --watch
-        pm2 save
-      env:
-        PORT: 8000
-        ENV: production
-        AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
-        AWS_S3_ACCESS_SECRETE_KEY: ${{ secrets.AWS_S3_ACCESS_SECRETE_KEY }}
-        AWS_S3_REGION: ${{ secrets.AWS_S3_REGION }}
-        AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
-        AWS_S3_BUCKET_DOMAIN: ${{ secrets.AWS_S3_BUCKET_DOMAIN }}
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
-        SSL_CERT: ${{ secrets.SSL_CERT }}
-        SSL_KEY: ${{ secrets.SSL_KEY }}
-    - name: Setup PM2 startup (manual step - run once on server)
-      if: false  # This step is disabled by default
-      run: |
-        sudo env PATH=$PATH:/usr/bin /usr/local/lib/node_modules/pm2/bin/pm2 startup systemd -u folio --hp /home/folio
-        pm2 save
+      - name: Install server dependencies
+        working-directory: ./server # Better than cd
+        run: npm ci # Clean install for more reliable builds
+
+      - name: Verify PM2 installation
+        run: |
+          if ! command -v pm2 &> /dev/null; then
+            echo "PM2 not found, installing..."
+            npm install -g pm2
+          else
+            echo "PM2 is already installed"
+          fi
+
+      - name: Stop any existing server
+        run: |
+          pm2 stop folio-server || echo "No existing server to stop"
+          pm2 delete folio-server || echo "No existing server to delete"
+
+      - name: Start server with PM2
+        working-directory: ./server
+        env:
+          PORT: 80
+          ENV: production
+          AWS_S3_ACCESS_KEY: ${{ secrets.AWS_S3_ACCESS_KEY }}
+          AWS_S3_ACCESS_SECRETE_KEY: ${{ secrets.AWS_S3_ACCESS_SECRETE_KEY }}
+          AWS_S3_REGION: ${{ secrets.AWS_S3_REGION }}
+          AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
+          AWS_S3_BUCKET_DOMAIN: ${{ secrets.AWS_S3_BUCKET_DOMAIN }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SSL_CERT: ${{ secrets.SSL_CERT }}
+          SSL_KEY: ${{ secrets.SSL_KEY }}
+        run: |
+          pm2 start --name folio-server "npm run start:prod" --watch
+          pm2 save
+          pm2 list  # Show running processes for verification
+
+      - name: Health check
+        run: |
+          sleep 10  # Give server time to start
+          curl -f http://localhost:$PORT/healthz || exit 1

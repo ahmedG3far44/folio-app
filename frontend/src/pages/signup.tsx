@@ -11,7 +11,6 @@ import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
 import Logo from "@/components/Logo";
 import ErrorMessage from "@/components/ErrorMessage";
 
-
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function SignUpPage() {
@@ -36,14 +35,12 @@ function SignUpPage() {
       const formData = new FormData();
       const { name, email, password } = registerUser;
 
-      if (!profile){
-
+      if (!profile) {
         throw new Error("Profile picture is required to register!!");
       }
-      if (!email || !password || !name){
-        
+      if (!email || !password || !name) {
         throw new Error(
-          "The email or passowrd field is required, make sure to fill all the fields correctly!!"
+          "The email or password field is required, make sure to fill all the fields correctly!!"
         );
       }
 
@@ -62,12 +59,13 @@ function SignUpPage() {
         body: formData,
       });
 
-      if (!response.ok) throw new Error("This email is already exist!!");
+      if (!response.ok)
+        throw new Error("connection server error, check your network status!!");
 
       const data = await response.json();
 
-      if (!data){
-        throw new Error("can't login your email or passowrd is Wrong!!");
+      if (!data) {
+        throw new Error("can't login your email or password is Wrong!!");
       }
 
       const { user, token } = data.data;

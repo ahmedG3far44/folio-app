@@ -43,25 +43,25 @@ function ProjectCard({
             : "1"
         }`}
     >
-      <div className="flex-1 min-w-1/2 rounded-md overflow-hidden">
+      <div className="w-full h-[250px] max-h-[250px] rounded-md border">
         <Image
           property="true"
           className="w-full h-full max-w-full max-h-full object-cover rounded-md"
           src={thumbnail}
-          alt={`${title}-${id}`}
+          alt={`project name: ${title}`}
         />
       </div>
 
-      <div className="flex flex-col justify-end items-start gap-2">
+      <div className="flex flex-col justify-end items-start gap-1">
         <Link
           to={`/project/${id}`}
-          className="text-lg font-semibold hover:underline my-1 cursor-pointer duration-150"
+          className="font-semibold hover:underline my-1 cursor-pointer duration-150"
         >
           {title}
         </Link>
         <p
           style={{ color: activeTheme.secondaryText }}
-          className="line-clamp-3 text-sm"
+          className="line-clamp-3 text-sm mt-auto"
           dangerouslySetInnerHTML={{ __html: description }}
         />
       </div>

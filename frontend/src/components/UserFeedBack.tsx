@@ -1,6 +1,5 @@
 import { z } from "zod";
 import { ChangeEvent, useState } from "react";
-import { useTheme } from "@/contexts/ThemeProvider";
 import { useParams } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,7 +17,7 @@ import toast from "react-hot-toast";
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function UserFeedBack() {
-  const { activeTheme } = useTheme();
+  // const { activeTheme } = useTheme();
   const { userId } = useParams();
   const [profile, setProfile] = useState<File | null>(null);
   const [isFeedBackAdded, setSuccess] = useState<boolean>(false);
@@ -36,18 +35,18 @@ function UserFeedBack() {
   return (
     <div
       style={{
-        backgroundColor: activeTheme.backgroundColor,
-        color: activeTheme.primaryText,
+        backgroundColor: "#f8fafc",
+        color: "#1e293b",
       }}
       className="w-full flex flex-col items-center justify-center min-h-screen lg:p-24 p-4"
     >
       {isFeedBackAdded ? (
-        <Card
-          className="flex flex-col items-center border shadow-md justify-center gap-1"
+        <div
+          className="flex flex-col items-center border shadow-sm justify-center rounded-md px-4 py-8 gap-1"
           style={{
-            color: activeTheme.primaryText,
-            backgroundColor: activeTheme.backgroundColor,
-            borderColor: activeTheme.borderColor,
+            color: "#1e293b",
+            backgroundColor: "#f8fafc",
+            borderColor: "#cbd5e1",
           }}
         >
           <div className=" p-2">
@@ -56,29 +55,26 @@ function UserFeedBack() {
 
           <CardContent>
             <h2 className="text-lg lg:text-2xl font-bold text-center ">
-              Your feedback is Added Successfull.
+              Your feedback is Added Successful.
             </h2>
           </CardContent>
           <CardFooter>
             <p
-              style={{ color: activeTheme.secondaryText }}
+              style={{ color: "#475569" }}
               className="w-3/4 m-auto text-center text-sm"
             >
-              Congrates your feedback is created success to user {userId}
+              Congratulations your feedback is created success
             </p>
           </CardFooter>
-        </Card>
+        </div>
       ) : (
-        <Card className="w-full lg:w-1/2">
+        <div className="w-full lg:w-1/2">
           <form
             className="flex flex-col justify-start items-center gap-4 p-4"
             onSubmit={handleSubmit(async () => {
               try {
                 const values = getValues();
                 const formData = new FormData();
-                // Object.keys(values).forEach(([key, values]) => {
-                //   formData.append(key, values);
-                // });
                 const { name, position } = values;
                 formData.append("profile", profile!);
                 formData.append("name", name);
@@ -103,7 +99,7 @@ function UserFeedBack() {
                 setFeedBackVideo(null);
                 reset();
                 setSuccess(true);
-                toast.success("your feedback is added sucess!!");
+                toast.success("your feedback is added success!!");
                 return data;
               } catch (err) {
                 toast.error((err as Error).message);
@@ -115,7 +111,7 @@ function UserFeedBack() {
               <div className="w-full flex items-center justify-center flex-col">
                 {profile ? (
                   <div
-                    style={{ borderColor: activeTheme.borderColor }}
+                    style={{ borderColor: "#cbd5e1" }}
                     className="relative w-30 h-30 rounded-full border p-2 flex items-center justify-center"
                   >
                     <img
@@ -152,9 +148,9 @@ function UserFeedBack() {
             <div className="w-full ">
               <input
                 style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
+                  color: "#1e293b",
+                  backgroundColor: "#f8fafc",
+                  borderColor: "#cbd5e1",
                 }}
                 readOnly={isSubmitting}
                 className="p-2 border w-full rounded-md"
@@ -173,9 +169,9 @@ function UserFeedBack() {
             <div className="w-full ">
               <input
                 style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
+                  color: "#1e293b",
+                  backgroundColor: "#f8fafc",
+                  borderColor: "#cbd5e1",
                 }}
                 readOnly={isSubmitting}
                 className="p-2 border w-full rounded-md"
@@ -212,9 +208,9 @@ function UserFeedBack() {
                 <div className="w-full ">
                   <textarea
                     style={{
-                      backgroundColor: activeTheme.backgroundColor,
-                      color: activeTheme.primaryText,
-                      borderColor: activeTheme.borderColor,
+                      color: "#1e293b",
+                      backgroundColor: "#f8fafc",
+                      borderColor: "#cbd5e1",
                     }}
                     readOnly={isSubmitting}
                     className="p-2 border w-full rounded-md h-44"
@@ -277,7 +273,7 @@ function UserFeedBack() {
               create feedback
             </SubmitButton>
           </form>
-        </Card>
+        </div>
       )}
     </div>
   );
