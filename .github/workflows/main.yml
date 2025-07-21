@@ -10,7 +10,6 @@ jobs:
   deploy:
     runs-on: self-hosted
 
-    # Add timeout minutes to prevent hanging jobs
     timeout-minutes: 15
 
     steps:
@@ -24,8 +23,8 @@ jobs:
           rm -fr README.md frontend 'showcase(1).gif'
 
       - name: Install server dependencies
-        working-directory: ./server # Better than cd
-        run: npm ci # Clean install for more reliable builds
+        working-directory: ./server 
+        run: npm ci 
 
       - name: Verify PM2 installation
         run: |
@@ -56,9 +55,9 @@ jobs:
           SSL_CERT: ${{ secrets.SSL_CERT }}
           SSL_KEY: ${{ secrets.SSL_KEY }}
         run: |
-          sudo pm2 start --name folio-server "npm run start:prod" --watch
-          sudo pm2 save
-          sudo pm2 list  # Show running processes for verification
+          echo "442002" | sudo -S pm2 start --name folio-server "npm run start:prod" --watch
+          echo "442002" | sudo -S pm2 save
+          echo "442002" | sudo -S pm2 list  
 
       - name: Health check
         run: |

@@ -78,7 +78,7 @@ if (ENV === "production") {
   };
 
   https.createServer(options, app).listen(443, () => {
-    console.log(`HTTPS server running on port 443 ==> ${ENV} environment`);
+    console.log(`HTTPS server running on port 443 ==> ${ENV} environment `);
   });
 } else {
   app.listen(PORT || 80, () => {
