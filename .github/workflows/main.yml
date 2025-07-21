@@ -63,9 +63,9 @@ jobs:
           SSL_CERT: ${{ secrets.SSL_CERT }}
           SSL_KEY: ${{ secrets.SSL_KEY }}
         run: |
-          pm2 start --name folio-server "npm run start:prod" --watch
-          pm2 save
-          pm2 list  # Show running processes for verification
+          sudo pm2 start --name folio-server "npm run start:prod" --watch
+          sudo pm2 save
+          sudo pm2 list  # Show running processes for verification
 
       - name: Health check
         run: |
