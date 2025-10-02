@@ -100,9 +100,10 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     } catch (err) {
       res.status(500).json({ data: "error", message: err.message });
     }
-    const theme = await prisma.theme.findMany();
-
-    if (!theme || theme.length <= 0) {
+    const themes = await prisma.theme.findMany();
+    
+    console.log(themes);
+    if (!themes) {
       await prisma.theme.create({
         data: {
           themeName: "Dark",
@@ -114,7 +115,6 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         },
       });
     }
-    const newTheme = await prisma.theme.findMany();
 
     const newUser = await prisma.users.create({
       data: {
@@ -122,7 +122,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         email,
         password: hashedPassword,
         picture: `${BUCKET_DOMAIN}/${pictureKey}`,
-        activeTheme: theme ? theme[0].id : newTheme[0].id,
+        activeTheme: themes[0].id,
       },
       select: {
         id: true,
@@ -134,11 +134,13 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         activeTheme: true,
       },
     });
+
     const payload = {
       id: newUser.id,
       name: newUser.name,
-      email,
+      picture: `${BUCKET_DOMAIN}/${pictureKey}`,
       role: newUser.role,
+      email,
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET);

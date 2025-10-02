@@ -185,12 +185,12 @@ const addDefaultThemes = async (req, res) => {
         borderColor: "#e2e8f0",
       },
       {
-        themeName: "Dark",
-        backgroundColor: "#0f172a",
-        cardColor: "#1e293b",
+        themeName: "Defualt Dark Slate",
+        backgroundColor: "#020817",
+        cardColor: "#0f172a",
         primaryText: "#f8fafc",
         secondaryText: "#94a3b8",
-        borderColor: "#334155",
+        borderColor: "#1e293b",
       },
       {
         themeName: "Slate",
@@ -279,7 +279,7 @@ const addDefaultThemes = async (req, res) => {
 router.post("/admin/default/themes", addDefaultThemes);
 
 // admin add a new theme
-router.post("/admin/themes",verifyAdminAccessToken,  addNewTheme);
+router.post("/admin/themes", verifyAdminAccessToken, addNewTheme);
 
 // show available themes list
 router.get("/themes", verifyAccessToken, showAvailableThemes);

@@ -4,6 +4,7 @@ import { IActiveLayout } from "@/lib/types";
 import { useUser } from "@/contexts/UserProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
+import { LucideSave } from "lucide-react";
 
 import toast from "react-hot-toast";
 import SubmitButton from "../submit-button";
@@ -146,7 +147,8 @@ export const ApplyLayout = ({
 
 export const ChangeLayoutForm = ({ sectionName }: { sectionName: string }) => {
   const { token } = useAuth();
-  const { activeTheme } = useTheme();
+  const { activeTheme, defaultTheme } = useTheme();
+  const { isLogged } = useAuth();
   const [pending, setPending] = useState<boolean>(false);
   const { layouts, setLayouts } = useUser();
   const { heroLayout, expLayout, projectsLayout, skillsLayout } = layouts;
@@ -180,7 +182,7 @@ export const ChangeLayoutForm = ({ sectionName }: { sectionName: string }) => {
   return (
     <form
       onSubmit={handleChangeLayout}
-      className="w-3/4 md:w-[50%] lg:w-[40%] ml-auto flex justify-end items-center gap-4 lg:gap-2  "
+      className="ml-auto flex justify-end items-center gap-4 lg:gap-2  "
     >
       <select
         defaultValue={
@@ -204,10 +206,19 @@ export const ChangeLayoutForm = ({ sectionName }: { sectionName: string }) => {
         }}
         name={sectionName}
         id={sectionName}
-        style={{
-          backgroundColor: activeTheme.cardColor,
-          borderColor: activeTheme.borderColor,
-        }}
+        style={
+          isLogged
+            ? {
+                backgroundColor: activeTheme.cardColor,
+                borderColor: activeTheme.borderColor,
+                color: activeTheme.primaryText,
+              }
+            : {
+                backgroundColor: defaultTheme.cardColor,
+                borderColor: defaultTheme.borderColor,
+                color: defaultTheme.primaryText,
+              }
+        }
         className="appearance-none  w-full py-1 px-4 rounded-md  border focus:border-blue-500 focus:ring focus:ring-blue-500/20 focus:outline-none cursor-pointer relative pr-10 shadow-sm hover:opacity-65 transition-colors duration-200"
       >
         <option value="1">Default</option>
@@ -216,8 +227,10 @@ export const ChangeLayoutForm = ({ sectionName }: { sectionName: string }) => {
         <option value="4">Wizard</option>
         <option value="5">Accent</option>
       </select>
-      <SubmitButton  loading={pending} type="submit">
-        save
+      <SubmitButton loading={pending} type="submit">
+        <LucideSave
+          color={isLogged ? activeTheme.primaryText : defaultTheme.primaryText}
+        />
       </SubmitButton>
     </form>
   );

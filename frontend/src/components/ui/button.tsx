@@ -48,21 +48,21 @@ function Button({
     asChild?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
-  const { activeTheme } = useTheme();
+  const { activeTheme, defaultTheme } = useTheme();
   const { isLogged } = useAuth();
   return (
     <Comp
       style={
         isLogged
           ? {
-              backgroundColor: activeTheme.backgroundColor,
+              backgroundColor: activeTheme.cardColor,
               color: activeTheme.primaryText,
               border: `1px solid ${activeTheme.borderColor}`,
             }
           : {
-              backgroundColor: "oklch(14.1% 0.005 285.823)",
-              color: "#fff",
-              border: `1px solid oklch(21% 0.006 285.885)`,
+              backgroundColor: defaultTheme.cardColor,
+              color: defaultTheme.primaryText,
+              border: `1px solid ${defaultTheme.borderColor}`,
             }
       }
       data-slot="button"

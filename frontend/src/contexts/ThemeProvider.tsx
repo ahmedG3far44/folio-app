@@ -14,11 +14,11 @@ import { useAuth } from "./AuthProvider";
 
 import toast from "react-hot-toast";
 
-
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 interface ThemeContextType {
   activeTheme: IThemeType;
+  defaultTheme: IThemeType;
   themesList: IThemeType[] | [];
   switchTheme: ({ newActiveThemeId }: { newActiveThemeId: string }) => void;
   setThemesList: Dispatch<SetStateAction<IThemeType[] | []>>;
@@ -28,6 +28,15 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType>({
   activeTheme: {
+    id: "1",
+    themeName: "Slate",
+    backgroundColor: "#f8fafc",
+    cardColor: "#f1f5f9",
+    primaryText: "#1e293b",
+    secondaryText: "#475569",
+    borderColor: "#cbd5e1",
+  },
+  defaultTheme: {
     id: "1",
     themeName: "Slate",
     backgroundColor: "#f8fafc",
@@ -53,6 +62,15 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
     secondaryText: "#475569",
     borderColor: "#cbd5e1",
   });
+  const defaultTheme: IThemeType = {
+    id: "2",
+    themeName: "Slate Dark",
+    backgroundColor: "#0a0a0a", // base dark slate (similar to bg-slate-950)
+    cardColor: "#2b2b2b", // slightly lighter slate (card separation)
+    primaryText: "#f7f7f2", // light slate (muted white, not harsh)
+    secondaryText: "#9e9b98", // softer grayish-slate for secondary info
+    borderColor: "#202020", // subtle border (matches slate-700/800 vibes)
+  };
 
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
@@ -131,6 +149,7 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
     <ThemeContext.Provider
       value={{
         activeTheme: userTheme,
+        defaultTheme,
         themesList,
         switchTheme,
         setThemesList,

@@ -22,7 +22,7 @@ model Users {
   ContactsList    Contacts[]
   Bio             Bio[]
   Layouts         Layouts[]
-  activeTheme     String         @unique
+  activeTheme     String
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 }

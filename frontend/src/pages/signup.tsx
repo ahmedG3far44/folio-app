@@ -1,20 +1,30 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ChangeEvent, useState } from "react";
 import { Card, CardTitle } from "@/components/ui/card";
-import SubmitButton from "@/components/submit-button";
 
 import { useAuth } from "@/contexts/AuthProvider";
+import { useTheme } from "@/contexts/ThemeProvider";
 import { Link, useNavigate } from "react-router-dom";
 
-import { EyeOff, Eye, LucideUser, XIcon } from "lucide-react";
+import {
+  EyeOff,
+  Eye,
+  User,
+  Mail,
+  Lock,
+  Camera,
+  XIcon,
+  Upload,
+} from "lucide-react";
 
 import Logo from "@/components/Logo";
+import SubmitButton from "@/components/submit-button";
 import ErrorMessage from "@/components/ErrorMessage";
 
 const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
 
 function SignUpPage() {
   const { login } = useAuth();
+  const { defaultTheme } = useTheme();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<File | null>(null);
   const [pending, setPending] = useState(false);
@@ -81,44 +91,90 @@ function SignUpPage() {
       setPending(false);
     }
   };
+
   return (
-    <div className="w-full min-h-screen flex items-center justify-center bg-zinc-950 ">
-      <Card className="p-8 bg-zinc-700 text-white">
-        <CardTitle className="flex items-center justify-center flex-col gap-2 my-8">
-          <Logo />
-          <h1 className="text-lg font-bold text-start">
-            Welcome, create new account now
-          </h1>
+    <div
+      style={{ backgroundColor: defaultTheme.backgroundColor }}
+      className="w-full min-h-screen flex items-center justify-center p-4"
+    >
+      <Card
+        style={{
+          backgroundColor: defaultTheme.cardColor,
+          borderColor: defaultTheme.borderColor,
+          color: defaultTheme.primaryText,
+        }}
+        className="w-full max-w-md p-8 shadow-2xl border-2 rounded-2xl"
+      >
+        
+        <CardTitle className="flex items-center justify-center flex-col gap-4 mb-8">
+          <div className="transform hover:scale-105 transition-transform duration-200">
+            <Logo />
+          </div>
+          <div className="text-center space-y-2">
+            <h1
+              style={{ color: defaultTheme.secondaryText }}
+              className="text-2xl font-bold tracking-tight"
+            >
+              Create Account
+            </h1>
+            <p
+              style={{ color: defaultTheme.secondaryText }}
+              className="text-sm opacity-70"
+            >
+              Sign up to get started with your new account
+            </p>
+          </div>
         </CardTitle>
-        <form
-          className="w-[400px] flex flex-col items-start gap-4 mt-4"
-          onSubmit={handleLogin}
-        >
-          <div className="self-center">
+
+        
+        <form className="w-full flex flex-col gap-2" onSubmit={handleLogin}>
+          
+          <div className="flex flex-col items-center gap-2">
             {profile ? (
-              <div className="w-20 h-20 rounded-full  flex items-center justify-center border-2 relative">
-                <img
-                  className="w-full h-full rounded-full object-cover"
-                  src={URL.createObjectURL(profile)}
-                  alt="profile picture"
-                />
+              <div className="relative group">
+                <div
+                  style={{ borderColor: defaultTheme.borderColor }}
+                  className="w-24 h-24 rounded-full flex items-center justify-center border-2 overflow-hidden"
+                >
+                  <img
+                    className="w-full h-full object-cover"
+                    src={URL.createObjectURL(profile)}
+                    alt="profile picture"
+                  />
+                </div>
                 {!pending && (
                   <button
                     onClick={() => setProfile(null)}
                     type="button"
-                    className="bg-red-600 text-white p-2 rounded-full absolute -right-4 -top-1 hover:bg-red-700 duration-150 cursor-pointer"
+                    className="bg-red-500 hover:bg-red-600 text-white p-1.5 rounded-full absolute -right-1 -top-1 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-110"
+                    aria-label="Remove profile picture"
                   >
-                    <XIcon size={15} />
+                    <XIcon size={14} />
                   </button>
                 )}
               </div>
             ) : (
-              <>
+              <div className="flex flex-col items-center gap-2">
                 <label
-                  className="w-20 h-20 rounded-full bg-zinc-950   border border-dashed   flex items-center justify-center cursor-pointer hover:opacity-70 duration-150"
+                  style={{
+                    backgroundColor: defaultTheme.backgroundColor,
+                    borderColor: defaultTheme.borderColor,
+                  }}
+                  className="w-24 h-24 rounded-full border-2 border-dashed flex items-center justify-center cursor-pointer hover:border-opacity-60 transition-all duration-200 group relative overflow-hidden"
                   htmlFor="profile"
                 >
-                  <LucideUser size={40} />
+                  <div className="flex flex-col items-center justify-center gap-1">
+                    <Camera
+                      size={28}
+                      style={{ color: defaultTheme.secondaryText }}
+                      className="opacity-50 group-hover:opacity-70 transition-opacity"
+                    />
+                    <Upload
+                      size={16}
+                      style={{ color: defaultTheme.secondaryText }}
+                      className="opacity-40 group-hover:opacity-60 transition-opacity"
+                    />
+                  </div>
                 </label>
                 <input
                   id="profile"
@@ -129,64 +185,173 @@ function SignUpPage() {
                   accept="image/*"
                   className="hidden"
                 />
-              </>
+                <p
+                  style={{ color: defaultTheme.secondaryText }}
+                  className="text-xs opacity-60"
+                >
+                  Upload profile picture
+                </p>
+              </div>
             )}
           </div>
 
-          {error && <ErrorMessage className={"text-center"} message={error} />}
-          <input
-            className="w-full p-2 rounded-md  border border-zinc-800 bg-zinc-950  "
-            onChange={(e) =>
-              setRegisterUser({ ...registerUser, name: e.target.value })
-            }
-            type="text"
-            placeholder="name"
-          />
+          {error && (
+            <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+              <ErrorMessage className="text-center" message={error} />
+            </div>
+          )}
 
-          <input
-            className="w-full p-2 rounded-md  border border-zinc-800 bg-zinc-950  "
-            onChange={(e) =>
-              setRegisterUser({ ...registerUser, email: e.target.value })
-            }
-            type="email"
-            placeholder="email"
-          />
-          <div className="w-full flex items-center justify-between  rounded-md relative">
-            <input
-              className="w-full h-full p-2 rounded-md relative border border-zinc-800 bg-zinc-950  "
-              onChange={(e) =>
-                setRegisterUser({ ...registerUser, password: e.target.value })
-              }
-              type={showPassword ? "text" : "password"}
-              placeholder="password"
-            />
-            <span
-              className="hover:opacity-80 duration-150 cursor-pointer p-2 rounded-md  absolute right-0"
-              onClick={() => setShowPassword(!showPassword)}
+          
+          <div className="space-y-2">
+            <label
+              style={{ color: defaultTheme.secondaryText }}
+              className="text-sm font-medium opacity-90"
             >
-              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-            </span>
+              Full Name
+            </label>
+            <div className="relative group">
+              <User
+                size={18}
+                style={{ color: defaultTheme.secondaryText }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50 group-focus-within:opacity-100 transition-opacity"
+              />
+              <input
+                style={{
+                  backgroundColor: defaultTheme.backgroundColor,
+                  borderColor: defaultTheme.borderColor,
+                  color: defaultTheme.secondaryText,
+                }}
+                className="w-full pl-10 pr-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-opacity-80"
+                onChange={(e) =>
+                  setRegisterUser({ ...registerUser, name: e.target.value })
+                }
+                type="text"
+                placeholder="John Doe"
+                autoComplete="name"
+              />
+            </div>
           </div>
-          <SubmitButton className="w-full" loading={pending} type="submit">
-            Create Account
-          </SubmitButton>
-          <div className="w-full flex items-center justify-center">
-            <div className="w-full h-[1px] bg-zinc-700"></div>
-            <p className="text-sm text-zinc-500 px-4">Or</p>
-            <div className="w-full h-[1px] bg-zinc-700"></div>
+
+          
+          <div className="space-y-2">
+            <label
+              style={{ color: defaultTheme.secondaryText }}
+              className="text-sm font-medium opacity-90"
+            >
+              Email Address
+            </label>
+            <div className="relative group">
+              <Mail
+                size={18}
+                style={{ color: defaultTheme.secondaryText }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50 group-focus-within:opacity-100 transition-opacity"
+              />
+              <input
+                style={{
+                  backgroundColor: defaultTheme.backgroundColor,
+                  borderColor: defaultTheme.borderColor,
+                  color: defaultTheme.secondaryText,
+                }}
+                className="w-full pl-10 pr-4 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-opacity-80"
+                onChange={(e) =>
+                  setRegisterUser({ ...registerUser, email: e.target.value })
+                }
+                type="email"
+                placeholder="you@example.com"
+                autoComplete="email"
+              />
+            </div>
           </div>
-          <div className="p-2 text-sm text-center self-center">
-            <p>
-              I have already account{" "}
-              <Link
-                className={"underline duration-150 hover:opacity-70"}
-                to={"/login"}
+
+          
+          <div className="space-y-2">
+            <label
+              style={{ color: defaultTheme.secondaryText }}
+              className="text-sm font-medium opacity-90"
+            >
+              Password
+            </label>
+            <div className="relative group">
+              <Lock
+                size={18}
+                style={{ color: defaultTheme.secondaryText }}
+                className="absolute left-3 top-1/2 -translate-y-1/2 opacity-50 group-focus-within:opacity-100 transition-opacity"
+              />
+              <input
+                style={{
+                  backgroundColor: defaultTheme.backgroundColor,
+                  borderColor: defaultTheme.borderColor,
+                  color: defaultTheme.secondaryText,
+                }}
+                className="w-full pl-10 pr-12 py-3 border-2 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-opacity-50 focus:border-opacity-80"
+                onChange={(e) =>
+                  setRegisterUser({ ...registerUser, password: e.target.value })
+                }
+                type={showPassword ? "text" : "password"}
+                placeholder="Minimum 8 characters"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                style={{ color: defaultTheme.secondaryText }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 transition-opacity p-1 rounded-md"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
               >
-                Login
-              </Link>{" "}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <p
+              style={{ color: defaultTheme.secondaryText }}
+              className="text-xs opacity-60 mt-1"
+            >
+              Must be at least 8 characters long
             </p>
           </div>
+
+          
+          <SubmitButton
+            className="w-full mt-2 py-3 rounded-lg font-medium transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+            loading={pending}
+            type="submit"
+          >
+            Create Account
+          </SubmitButton>
         </form>
+
+        
+        <div className="flex items-center gap-4 my-8">
+          <div
+            style={{ backgroundColor: defaultTheme.secondaryText }}
+            className="flex-1 h-px opacity-20"
+          />
+          <span
+            style={{ color: defaultTheme.secondaryText }}
+            className="text-xs opacity-50 font-medium"
+          >
+            OR
+          </span>
+          <div
+            style={{ backgroundColor: defaultTheme.secondaryText }}
+            className="flex-1 h-px opacity-20"
+          />
+        </div>
+
+        
+        <div
+          style={{ color: defaultTheme.secondaryText }}
+          className="w-full text-center"
+        >
+          <p className="text-sm opacity-70">
+            Already have an account?{" "}
+            <Link
+              className="font-medium opacity-100 hover:underline transition-all duration-150"
+              to="/login"
+            >
+              Sign In
+            </Link>
+          </p>
+        </div>
       </Card>
     </div>
   );
