@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import favicon from "@/assets/favicon-1.svg";
 
 function Logo() {
   return (
@@ -11,7 +10,7 @@ function Logo() {
         className="rounded-2xl"
         width={40}
         height={40}
-        src={favicon}
+        src={"./favicon.svg"}
         alt="folio app portfolio builder logo"
       />
       <h1 className="text-3xl font-black hover:scale-1.1 duration-150 dark:text-white light:text-black">

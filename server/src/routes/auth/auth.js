@@ -4,9 +4,12 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../../database/db.js";
 import s3Client from "../../s3/s3Client.js";
+// import fetch from "node-fetch";
+import sharp from "sharp";
 
 import { upload } from "../skills.js";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+// import removeBg from "../../utils/removeBg.js";
 
 const router = express.Router();
 
@@ -88,10 +91,11 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const pictureKey = `${crypto.randomUUID()}`;
+
     try {
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
-        Body: file.buffer,
+        Body: file.buffer(),
         Key: pictureKey,
         ContentType: file.mimetype,
       });
@@ -101,8 +105,8 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
       res.status(500).json({ data: "error", message: err.message });
     }
     const themes = await prisma.theme.findMany();
-    
-    console.log(themes);
+
+    // console.log(themes);
     if (!themes) {
       await prisma.theme.create({
         data: {
@@ -168,7 +172,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     });
 
     return res.status(201).json({
-      data: { user: newUser, token },
+      data: { user: "newUser, token" },
       message: "a new user was created!",
     });
   } catch (err) {

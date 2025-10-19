@@ -12,9 +12,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthProvider";
 
 import Container from "@/components/Container";
-// import videoOne from "../assets/videos/video-1.mp4";
-import videoTwo from "../assets/videos/video-2.mp4";
-import gifShowcase from "../assets/videos/showcase.gif";
+
 
 import {
   Atom,
@@ -31,10 +29,7 @@ import PrimaryBtn from "@/components/buttons/PrimaryBtn";
 import Logo from "@/components/Logo";
 import User from "@/components/User";
 import Image from "@/components/ui/image";
-// Lazy load heavy components
-// const VideoGallerySection = lazy(() => import("VideoGallerySection"));
 
-// Memoized profile image component with loading optimization
 const ProfileImage = memo(() => (
   <motion.div
     initial={{ scale: 0.8 }}
@@ -46,14 +41,14 @@ const ProfileImage = memo(() => (
       width={40}
       height={40}
       className="w-full h-full object-cover"
-      src="../assets/OIP.webp"
+      src="OIP.webp"
       alt="profile developer"
     />
   </motion.div>
 ));
 ProfileImage.displayName = "ProfileImage";
 
-// Optimized FeatureCard with reduced re-renders
+
 const FeatureCard = memo(({ feature }: { feature: IFeatureType }) => (
   <motion.div
     whileHover={{ translateY: -5 }}
@@ -73,7 +68,6 @@ const FeatureCard = memo(({ feature }: { feature: IFeatureType }) => (
 ));
 FeatureCard.displayName = "FeatureCard";
 
-// Optimized HeroSection with better animation handling
 const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
   <section className="lg:h-screen p-4 flex flex-col items-center justify-center lg:gap-4 relative">
     <motion.div
@@ -153,7 +147,7 @@ const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
 ));
 HeroSection.displayName = "HeroSection";
 
-// Optimized VideoSection with Intersection Observer
+
 const VideoSection = memo(({ activeState }: { activeState?: boolean }) => (
   <section className="w-full p-4 flex flex-col items-center justify-center lg:gap-4 gap-2 relative">
     <motion.h1
@@ -177,7 +171,7 @@ const VideoSection = memo(({ activeState }: { activeState?: boolean }) => (
       <Image
         property="true"
         className="rounded-2xl object-cover z-4 shadow-2xl border border-zinc-950"
-        src={gifShowcase}
+        src={"./showcase.gif"}
         alt="Animated example"
         width={700}
       />
@@ -186,7 +180,6 @@ const VideoSection = memo(({ activeState }: { activeState?: boolean }) => (
 ));
 VideoSection.displayName = "VideoSection";
 
-// Optimized VideoGallerySection with lazy loading
 const VideoGalleryComponent = memo(() => (
   <section className="w-full lg:h-[700px] h-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4 p-4">
     <div className="border rounded-2xl lg:col-start-1 lg:col-end-3 border-zinc-900">
@@ -198,7 +191,7 @@ const VideoGalleryComponent = memo(() => (
         playsInline
         className="w-full h-full rounded-2xl object-cover"
       >
-        <source src={videoTwo} type="video/mp4" />
+        <source src={"./video-2.mp4"} type="video/mp4" />
       </video>
     </div>
 
@@ -237,9 +230,10 @@ const VideoGalleryComponent = memo(() => (
     </div>
   </section>
 ));
+
 VideoGalleryComponent.displayName = "VideoGalleryComponent";
 
-// Optimized FeaturesSection with virtual rendering consideration
+
 const FeaturesSection = memo(
   ({ featuresCard }: { featuresCard: IFeatureType[] }) => (
     <>
