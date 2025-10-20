@@ -4,12 +4,9 @@ import express from "express";
 import jwt from "jsonwebtoken";
 import prisma from "../../database/db.js";
 import s3Client from "../../s3/s3Client.js";
-// import fetch from "node-fetch";
-import sharp from "sharp";
 
 import { upload } from "../skills.js";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-// import removeBg from "../../utils/removeBg.js";
 
 const router = express.Router();
 
@@ -67,6 +64,7 @@ router.post("/auth/login", async (req, res) => {
 router.post("/auth/register", upload.single("profile"), async (req, res) => {
   try {
     const { name, email, password } = req.body;
+
     const file = req.file;
 
     const salt = 10;
@@ -95,7 +93,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     try {
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
-        Body: file.buffer(),
+        Body: file.buffer,
         Key: pictureKey,
         ContentType: file.mimetype,
       });
@@ -104,18 +102,23 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     } catch (err) {
       res.status(500).json({ data: "error", message: err.message });
     }
-    const themes = await prisma.theme.findMany();
 
-    // console.log(themes);
+    const themes = await prisma.theme.findMany();
+    const defaultTheme = await prisma.theme.findUnique({
+      where: {
+        id: "cmgz6hr8h0007v5so9xbzt91s",
+      },
+    });
+
     if (!themes) {
       await prisma.theme.create({
         data: {
-          themeName: "Dark",
-          backgroundColor: "#0f172a",
-          cardColor: "#1e293b",
+          themeName: "shadcn Dark",
+          backgroundColor: "#020817",
+          cardColor: "#020817",
           primaryText: "#f8fafc",
           secondaryText: "#94a3b8",
-          borderColor: "#334155",
+          borderColor: "#1e293b",
         },
       });
     }
@@ -126,7 +129,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         email,
         password: hashedPassword,
         picture: `${BUCKET_DOMAIN}/${pictureKey}`,
-        activeTheme: themes[0].id,
+        activeTheme: defaultTheme ? defaultTheme.id : themes[0].id,
       },
       select: {
         id: true,
@@ -172,7 +175,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     });
 
     return res.status(201).json({
-      data: { user: "newUser, token" },
+      data: { user: newUser, token },
       message: "a new user was created!",
     });
   } catch (err) {

@@ -13,7 +13,6 @@ import { useAuth } from "@/contexts/AuthProvider";
 
 import Container from "@/components/Container";
 
-
 import {
   Atom,
   BookAIcon,
@@ -47,7 +46,6 @@ const ProfileImage = memo(() => (
   </motion.div>
 ));
 ProfileImage.displayName = "ProfileImage";
-
 
 const FeatureCard = memo(({ feature }: { feature: IFeatureType }) => (
   <motion.div
@@ -147,7 +145,6 @@ const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
 ));
 HeroSection.displayName = "HeroSection";
 
-
 const VideoSection = memo(({ activeState }: { activeState?: boolean }) => (
   <section className="w-full p-4 flex flex-col items-center justify-center lg:gap-4 gap-2 relative">
     <motion.h1
@@ -232,7 +229,6 @@ const VideoGalleryComponent = memo(() => (
 ));
 
 VideoGalleryComponent.displayName = "VideoGalleryComponent";
-
 
 const FeaturesSection = memo(
   ({ featuresCard }: { featuresCard: IFeatureType[] }) => (

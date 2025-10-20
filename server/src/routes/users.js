@@ -40,7 +40,7 @@ router.post("/user", verifyAccessToken, async (req, res) => {
         usersId: user.id,
       },
     });
-    
+
     return res.status(200).json({ ...userInfo, bio, layouts, contacts });
   } catch (error) {
     return res.status(500).json(new Exceptions(500, error.message));
