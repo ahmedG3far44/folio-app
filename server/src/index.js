@@ -77,11 +77,11 @@ if (ENV === "production") {
     minVersion: "TLSv1.2",
   };
 
-  https.createServer(options, app).listen(443, () => {
+  https.createServer(options, app).listen(PORT, () => {
     console.log(`HTTPS server running on port 443 ==> ${ENV} environment `);
   });
 } else {
-  app.listen(PORT || 80, () => {
+  app.listen(PORT, () => {
     console.log(`HTTP Server running on port ${PORT} ==> ${ENV} environment`);
   });
 }

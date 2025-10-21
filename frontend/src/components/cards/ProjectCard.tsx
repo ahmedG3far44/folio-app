@@ -55,6 +55,7 @@ function ProjectCard({
       <div className="flex flex-col justify-end items-start gap-1">
         <Link
           to={`/project/${id}`}
+          style={{ color: activeTheme.primaryText }}
           className="font-semibold hover:underline my-1 cursor-pointer duration-150"
         >
           {title}
