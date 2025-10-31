@@ -19,7 +19,6 @@ function Header() {
     window.addEventListener("scroll", () => {
       if (window.scrollY > 20) setScroll(window.scrollY > 20 ? true : false);
     });
-    // return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleSharePortfolio = () => {

@@ -11,11 +11,12 @@ dotenv.config();
 
 const ENV = process.env.ENV;
 const PORT = process.env.PORT;
+const allowedOrigins = process.env.ALLOWED_ORIGINS;
 
 const app = express();
 
 const corsOptions = {
-  origin: "*",
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -39,28 +40,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get("/", async (req, res) => {
   return res.send(`
-    <h1>Folio app is working....</h1> 
-    
-    PORT: ${process.env.PORT} <br>
-    
-    ENV: ${process.env.ENV} <br>
-    
-    JWT_SECRET: ${process.env.JWT_SECRET}  <br>
-    
-    AWS_S3_ACCESS_KEY: ${process.env.AWS_S3_ACCESS_KEY} <br>
-    
-    AWS_S3_ACCESS_SECRETE_KEY: ${process.env.AWS_S3_ACCESS_SECRETE_KEY} <br>
-    
-    AWS_S3_REGION: ${process.env.AWS_S3_REGION} <br>
-    
-    AWS_S3_BUCKET_NAME: ${process.env.AWS_S3_BUCKET_NAME} <br>
-    
-    AWS_S3_BUCKET_DOMAIN: ${process.env.AWS_S3_BUCKET_DOMAIN} <br>
-    
-    SSL_CERT: ${process.env.SSL_CERT} <br>
-    
-    SSL_KEY: ${process.env.SSL_KEY} <br>
-    
+    <h1>Folio server is running good....</h1> 
     `);
 });
 
