@@ -92,7 +92,6 @@ function ShowListCard({
             className={` w-full h-full object-cover ${
               vertical ? "rounded-full" : " rounded-2xl"
             }`}
-            
             src={image}
             alt={title}
           />
@@ -127,22 +126,8 @@ function ShowListCard({
         </div>
       )}
       <div className="space-x-2 lg:space-x-4">
-        {sectionName !== "feedback" && (
-          <Button
-            className="disabled:cursor-not-allowed"
-            type="button"
-            disabled={pending}
-            onClick={setUpdate}
-          >
-            {sectionName === "project" ? (
-              <Link to={`update/${id}`}>update</Link>
-            ) : (
-              "update"
-            )}
-          </Button>
-        )}
         <Button
-          className="disabled:cursor-not-allowed"
+          className="disabled:cursor-not-allowed cursor-pointer hover:opacity-75"
           type="button"
           disabled={pending}
           onClick={() => handleDelete(id)}

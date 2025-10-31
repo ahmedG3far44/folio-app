@@ -129,12 +129,7 @@ function UserMenu({
       icon: isAdmin ? <LayoutDashboard size={18} /> : <UserIcon size={18} />,
       label: isAdmin ? "Dashboard" : "Profile",
       href: isAdmin ? "/dashboard/insights" : "/profile/bio",
-    },
-    {
-      icon: <Settings size={18} />,
-      label: "Settings",
-      href: "/settings",
-    },
+    }
   ];
 
   const handleLogout = () => {
