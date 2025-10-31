@@ -1,21 +1,22 @@
-import LandingPage from "./pages/home";
 import UserPage from "./pages/user";
 import LoginPage from "./pages/login";
+import LandingPage from "./pages/home";
 import SignUpPage from "./pages/signup";
 import NotFoundPage from "./pages/error";
+import UserFeedBack from "./pages/feedback";
 import BioForm from "./components/forms/BioForm";
-import SkillForm from "./components/forms/SkillForm";
-import ProjectForm from "./components/forms/ProjectForm";
-import ExperienceForm from "./components/forms/ExperienceForm";
-import TestimonialsForm from "./components/forms/TestimonialsForm";
-import ProjectDetails from "./components/ProjectDetails";
-import ThemesForm from "./components/forms/ThemesForm";
-import UserFeedBack from "./components/UserFeedBack";
 import Insights from "./components/admin/Insights";
 import UsersList from "./components/admin/UsersList";
+import SkillForm from "./components/forms/SkillForm";
 import ThemesList from "./components/admin/ThemesList";
+import ThemesForm from "./components/forms/ThemesForm";
+import ProjectForm from "./components/forms/ProjectForm";
+import ProjectDetails from "./components/ProjectDetails";
 import ProtectedUserRoute from "./pages/ProtectedUserRoute";
 import ProtectedAdminRoute from "./pages/ProtectedAdminRoute";
+import ExperienceForm from "./components/forms/ExperienceForm";
+import TestimonialsForm from "./components/forms/TestimonialsForm";
+
 import { Routes, Route } from "react-router-dom";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
       <Route path="/project/:projectId" element={<ProjectDetails />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/signup" element={<SignUpPage />} />
+
       <Route path="/dashboard" element={<ProtectedAdminRoute />}>
         <Route path="insights" element={<Insights />} />
         <Route path="users" element={<UsersList />} />
