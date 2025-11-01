@@ -34,6 +34,7 @@ function App() {
         <Route path="users" element={<UsersList />} />
         <Route path="themes" element={<ThemesList />} />
       </Route>
+      
       <Route path="/profile" element={<ProtectedUserRoute />}>
         <Route path="bio" element={<BioForm />} />
         <Route path="experiences" element={<ExperienceForm />} />

@@ -8,7 +8,7 @@ interface SubmitButtonProps {
   children: ReactNode;
   type: string | "submit" | "reset" | "button";
   className?: string;
-  onClickFunction?: () => void;
+  onClickFunction?: (e?: React.FormEvent) => void;
   variant?:
     | string
     | "outline"

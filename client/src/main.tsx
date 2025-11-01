@@ -4,26 +4,30 @@ import { UserProvider } from "./contexts/UserProvider.tsx";
 import { AuthProvider } from "./contexts/AuthProvider.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
-
+import { HelmetProvider } from "react-helmet-async";
 import ThemeProvider from "./contexts/ThemeProvider.tsx";
 import AdminProvider from "./contexts/AdminProvider.tsx";
-
 import App from "./App.tsx";
 import "./index.css";
 
+
+const helmetContext = {};
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <AuthProvider>
-        <ThemeProvider>
-          <UserProvider>
-            <AdminProvider>
-              <Toaster position="bottom-center" />
-              <App />
-            </AdminProvider>
-          </UserProvider>
-        </ThemeProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    <HelmetProvider context={helmetContext}>
+      <BrowserRouter>
+        <AuthProvider>
+          <ThemeProvider>
+            <UserProvider>
+              <AdminProvider>
+                <Toaster position="bottom-center" />
+                <App />
+              </AdminProvider>
+            </UserProvider>
+          </ThemeProvider>
+        </AuthProvider>
+      </BrowserRouter>
+    </HelmetProvider>
   </StrictMode>
 );

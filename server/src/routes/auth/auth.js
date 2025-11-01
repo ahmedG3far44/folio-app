@@ -104,21 +104,22 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     }
 
     const themes = await prisma.theme.findMany();
+
     const defaultTheme = await prisma.theme.findUnique({
       where: {
-        id: "cmgz6hr8h0007v5so9xbzt91s",
+        id: "cmhg47i6g0000v520hqstcx5i",
       },
     });
 
     if (!themes) {
       await prisma.theme.create({
         data: {
-          themeName: "shadcn Dark",
-          backgroundColor: "#020817",
-          cardColor: "#020817",
-          primaryText: "#f8fafc",
-          secondaryText: "#94a3b8",
-          borderColor: "#1e293b",
+          themeName: "Zinc Dark",
+          backgroundColor: "#09090b",
+          cardColor: "#18181b",
+          primaryText: "#fafafa",
+          secondaryText: "#a1a1aa",
+          borderColor: "#27272a",
         },
       });
     }

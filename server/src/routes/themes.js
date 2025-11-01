@@ -177,20 +177,12 @@ const addDefaultThemes = async (req, res) => {
   try {
     const defaultThemesList = [
       {
-        themeName: "Default",
+        themeName: "Light",
         backgroundColor: "#ffffff",
-        cardColor: "#ffffff",
+        cardColor: "#f8fafc",
         primaryText: "#0f172a",
         secondaryText: "#64748b",
         borderColor: "#e2e8f0",
-      },
-      {
-        themeName: "Defualt Dark Slate",
-        backgroundColor: "#020817",
-        cardColor: "#0f172a",
-        primaryText: "#f8fafc",
-        secondaryText: "#94a3b8",
-        borderColor: "#1e293b",
       },
       {
         themeName: "Slate",
@@ -225,36 +217,249 @@ const addDefaultThemes = async (req, res) => {
         borderColor: "#d4d4d4",
       },
       {
-        themeName: "Red",
-        backgroundColor: "#fef2f2",
-        cardColor: "#fef2f2",
-        primaryText: "#7f1d1d",
-        secondaryText: "#b91c1c",
-        borderColor: "#fecaca",
+        themeName: "Dark",
+        backgroundColor: "#020617",
+        cardColor: "#0f172a",
+        primaryText: "#f8fafc",
+        secondaryText: "#94a3b8",
+        borderColor: "#1e293b",
       },
       {
-        themeName: "Orange",
-        backgroundColor: "#fff7ed",
-        cardColor: "#fff7ed",
-        primaryText: "#9a3412",
-        secondaryText: "#ea580c",
-        borderColor: "#fed7aa",
+        themeName: "Dark Slate",
+        backgroundColor: "#0f172a",
+        cardColor: "#1e293b",
+        primaryText: "#f1f5f9",
+        secondaryText: "#94a3b8",
+        borderColor: "#334155",
       },
       {
-        themeName: "Blue",
-        backgroundColor: "#eff6ff",
-        cardColor: "#eff6ff",
-        primaryText: "#1e3a8a",
-        secondaryText: "#2563eb",
-        borderColor: "#bfdbfe",
+        themeName: "Dark Stone",
+        backgroundColor: "#0c0a09",
+        cardColor: "#1c1917",
+        primaryText: "#fafaf9",
+        secondaryText: "#a8a29e",
+        borderColor: "#292524",
+      },
+      {
+        themeName: "Dark Zinc",
+        backgroundColor: "#09090b",
+        cardColor: "#18181b",
+        primaryText: "#fafafa",
+        secondaryText: "#a1a1aa",
+        borderColor: "#27272a",
+      },
+      {
+        themeName: "Midnight",
+        backgroundColor: "#0a0a0a",
+        cardColor: "#171717",
+        primaryText: "#fafafa",
+        secondaryText: "#a3a3a3",
+        borderColor: "#262626",
+      },
+      {
+        themeName: "Green Light",
+        backgroundColor: "#f0fdf4",
+        cardColor: "#dcfce7",
+        primaryText: "#14532d",
+        secondaryText: "#15803d",
+        borderColor: "#bbf7d0",
       },
       {
         themeName: "Green",
-        backgroundColor: "#f0fdf4",
-        cardColor: "#f0fdf4",
-        primaryText: "#14532d",
-        secondaryText: "#16a34a",
-        borderColor: "#bbf7d0",
+        backgroundColor: "#ecfdf5",
+        cardColor: "#d1fae5",
+        primaryText: "#065f46",
+        secondaryText: "#059669",
+        borderColor: "#a7f3d0",
+      },
+      {
+        themeName: "Green Dark",
+        backgroundColor: "#022c22",
+        cardColor: "#064e3b",
+        primaryText: "#d1fae5",
+        secondaryText: "#6ee7b7",
+        borderColor: "#065f46",
+      },
+      {
+        themeName: "Emerald Dark",
+        backgroundColor: "#052e16",
+        cardColor: "#14532d",
+        primaryText: "#dcfce7",
+        secondaryText: "#86efac",
+        borderColor: "#166534",
+      },
+      {
+        themeName: "Blue Light",
+        backgroundColor: "#eff6ff",
+        cardColor: "#dbeafe",
+        primaryText: "#1e3a8a",
+        secondaryText: "#1d4ed8",
+        borderColor: "#bfdbfe",
+      },
+      {
+        themeName: "Blue",
+        backgroundColor: "#dbeafe",
+        cardColor: "#bfdbfe",
+        primaryText: "#1e40af",
+        secondaryText: "#2563eb",
+        borderColor: "#93c5fd",
+      },
+      {
+        themeName: "Blue Dark",
+        backgroundColor: "#172554",
+        cardColor: "#1e3a8a",
+        primaryText: "#dbeafe",
+        secondaryText: "#93c5fd",
+        borderColor: "#1e40af",
+      },
+      {
+        themeName: "Navy",
+        backgroundColor: "#0c1e3d",
+        cardColor: "#1e3a5f",
+        primaryText: "#e0f2fe",
+        secondaryText: "#7dd3fc",
+        borderColor: "#1e40af",
+      },
+    
+      {
+        themeName: "Orange Light",
+        backgroundColor: "#fff7ed",
+        cardColor: "#ffedd5",
+        primaryText: "#7c2d12",
+        secondaryText: "#c2410c",
+        borderColor: "#fed7aa",
+      },
+      {
+        themeName: "Orange",
+        backgroundColor: "#ffedd5",
+        cardColor: "#fed7aa",
+        primaryText: "#9a3412",
+        secondaryText: "#ea580c",
+        borderColor: "#fdba74",
+      },
+      {
+        themeName: "Orange Dark",
+        backgroundColor: "#431407",
+        cardColor: "#7c2d12",
+        primaryText: "#fed7aa",
+        secondaryText: "#fdba74",
+        borderColor: "#9a3412",
+      },
+      {
+        themeName: "Amber Dark",
+        backgroundColor: "#451a03",
+        cardColor: "#78350f",
+        primaryText: "#fef3c7",
+        secondaryText: "#fcd34d",
+        borderColor: "#92400e",
+      },
+
+      {
+        themeName: "Purple Light",
+        backgroundColor: "#faf5ff",
+        cardColor: "#f3e8ff",
+        primaryText: "#581c87",
+        secondaryText: "#7e22ce",
+        borderColor: "#e9d5ff",
+      },
+      {
+        themeName: "Purple",
+        backgroundColor: "#f3e8ff",
+        cardColor: "#e9d5ff",
+        primaryText: "#6b21a8",
+        secondaryText: "#9333ea",
+        borderColor: "#d8b4fe",
+      },
+      {
+        themeName: "Purple Dark",
+        backgroundColor: "#2e1065",
+        cardColor: "#4c1d95",
+        primaryText: "#f3e8ff",
+        secondaryText: "#d8b4fe",
+        borderColor: "#6b21a8",
+      },
+      {
+        themeName: "Violet Dark",
+        backgroundColor: "#1e1b4b",
+        cardColor: "#312e81",
+        primaryText: "#ede9fe",
+        secondaryText: "#c4b5fd",
+        borderColor: "#4c1d95",
+      },
+    
+     
+      {
+        themeName: "Black",
+        backgroundColor: "#000000",
+        cardColor: "#0a0a0a",
+        primaryText: "#ffffff",
+        secondaryText: "#a3a3a3",
+        borderColor: "#262626",
+      },
+      {
+        themeName: "Black Elevated",
+        backgroundColor: "#000000",
+        cardColor: "#171717",
+        primaryText: "#fafafa",
+        secondaryText: "#a3a3a3",
+        borderColor: "#404040",
+      },
+      {
+        themeName: "Pure Black",
+        backgroundColor: "#000000",
+        cardColor: "#121212",
+        primaryText: "#ffffff",
+        secondaryText: "#b3b3b3",
+        borderColor: "#333333",
+      },
+
+      {
+        themeName: "Rose Light",
+        backgroundColor: "#fff1f2",
+        cardColor: "#ffe4e6",
+        primaryText: "#881337",
+        secondaryText: "#be123c",
+        borderColor: "#fecdd3",
+      },
+      {
+        themeName: "Rose Dark",
+        backgroundColor: "#4c0519",
+        cardColor: "#881337",
+        primaryText: "#ffe4e6",
+        secondaryText: "#fecdd3",
+        borderColor: "#9f1239",
+      },
+      {
+        themeName: "Teal Light",
+        backgroundColor: "#f0fdfa",
+        cardColor: "#ccfbf1",
+        primaryText: "#134e4a",
+        secondaryText: "#0f766e",
+        borderColor: "#99f6e4",
+      },
+      {
+        themeName: "Teal Dark",
+        backgroundColor: "#042f2e",
+        cardColor: "#134e4a",
+        primaryText: "#ccfbf1",
+        secondaryText: "#5eead4",
+        borderColor: "#0f766e",
+      },
+      {
+        themeName: "Indigo Light",
+        backgroundColor: "#eef2ff",
+        cardColor: "#e0e7ff",
+        primaryText: "#3730a3",
+        secondaryText: "#4f46e5",
+        borderColor: "#c7d2fe",
+      },
+      {
+        themeName: "Indigo Dark",
+        backgroundColor: "#1e1b4b",
+        cardColor: "#312e81",
+        primaryText: "#e0e7ff",
+        secondaryText: "#a5b4fc",
+        borderColor: "#4338ca",
       },
     ];
 
@@ -275,19 +480,14 @@ const addDefaultThemes = async (req, res) => {
   }
 };
 
-// adding default themes to test
 router.post("/admin/default/themes", addDefaultThemes);
 
-// admin add a new theme
 router.post("/admin/themes", verifyAdminAccessToken, addNewTheme);
 
-// show available themes list
 router.get("/themes", verifyAccessToken, showAvailableThemes);
 
-// get user active theme
 router.get("/theme/:userId", getUserActiveTheme);
 
-// user update active theme
 router.put("/theme", verifyAccessToken, updateUserActiveTheme);
 
 export default router;

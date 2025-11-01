@@ -29,21 +29,21 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType>({
   activeTheme: {
     id: "1",
-    themeName: "Slate",
-    backgroundColor: "#f8fafc",
-    cardColor: "#f1f5f9",
-    primaryText: "#1e293b",
-    secondaryText: "#475569",
-    borderColor: "#cbd5e1",
+    themeName: "Zinc",
+    backgroundColor: "#ffffff",
+    cardColor: "#fafafa",
+    primaryText: "#18181b",
+    secondaryText: "#71717a",
+    borderColor: "#e4e4e7",
   },
   defaultTheme: {
-    id: "1",
-    themeName: "Slate",
-    backgroundColor: "#f8fafc",
-    cardColor: "#f1f5f9",
-    primaryText: "#1e293b",
-    secondaryText: "#475569",
-    borderColor: "#cbd5e1",
+    id: "2",
+    themeName: "Zinc Dark",
+    backgroundColor: "#09090b",
+    cardColor: "#18181b",
+    primaryText: "#fafafa",
+    secondaryText: "#a1a1aa",
+    borderColor: "#27272a",
   },
   themesList: [],
   switchTheme: () => {},
@@ -55,25 +55,27 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
   const [userTheme, setActiveTheme] = useState<IThemeType>({
     id: "1",
-    themeName: "Slate",
-    backgroundColor: "#f8fafc",
-    cardColor: "#f1f5f9",
-    primaryText: "#1e293b",
-    secondaryText: "#475569",
-    borderColor: "#cbd5e1",
+    themeName: "Zinc Light",
+    backgroundColor: "#ffffff",
+    cardColor: "#fafafa",
+    primaryText: "#18181b",
+    secondaryText: "#71717a",
+    borderColor: "#e4e4e7",
   });
+  console.log(userTheme);
   const defaultTheme: IThemeType = {
     id: "2",
-    themeName: "Slate Dark",
-    backgroundColor: "#0a0a0a", // base dark slate (similar to bg-slate-950)
-    cardColor: "#2b2b2b", // slightly lighter slate (card separation)
-    primaryText: "#f7f7f2", // light slate (muted white, not harsh)
-    secondaryText: "#9e9b98", // softer grayish-slate for secondary info
-    borderColor: "#202020", // subtle border (matches slate-700/800 vibes)
+    themeName: "Zinc Dark",
+    backgroundColor: "#09090b",
+    cardColor: "#18181b",
+    primaryText: "#fafafa",
+    secondaryText: "#a1a1aa",
+    borderColor: "#27272a",
   };
 
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  
   useEffect(() => {
     const fetchThemes = async () => {
       try {
