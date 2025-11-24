@@ -48,13 +48,12 @@ function TestimonialSection({
         onMouseLeave={() => setIsPaused(false)}
         style={{ scrollBehavior: "auto" }}
       >
-        {/* Original set */}
         {testimonials.map((testimonial) => {
           const { id, profile, name, position, feedback, video, createdAt } =
             testimonial;
 
           return (
-            <div key={id} className="flex-shrink-0 w-72 md:w-80">
+            <div key={id} className="flex-shrink-0 w-72 md:w-80 min-h-full">
               <TestimonialsCard
                 id={id}
                 profile={profile}

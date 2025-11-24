@@ -21,7 +21,6 @@ function ShowListCard({
   feedback,
   vertical,
   video,
-  setUpdate,
 }: {
   sectionName: string;
   id: string;

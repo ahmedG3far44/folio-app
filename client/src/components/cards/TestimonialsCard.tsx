@@ -13,7 +13,7 @@ function TestimonialsCard({
   const { activeTheme } = useTheme();
   return (
     <Card
-      className="p-4 flex flex-col items-start justify-start gap-2"
+      className="p-4 flex flex-col h-full items-start justify-start gap-2"
       style={{
         backgroundColor: activeTheme.cardColor,
         border: `1px solid ${activeTheme.borderColor}`,

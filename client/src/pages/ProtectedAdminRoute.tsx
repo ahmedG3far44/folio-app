@@ -1,5 +1,4 @@
 import { Button } from "@/components/ui/button";
-import Image from "@/components/ui/image";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 import {
@@ -10,11 +9,13 @@ import {
   SunMoon,
   Users,
   Menu,
-  X,
 } from "lucide-react";
 
 import { useState } from "react";
 import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
+
+import Image from "@/components/ui/image";
+
 
 function ProtectedAdminRoute() {
   const [isOpen, setIsOpen] = useState<boolean>(false);

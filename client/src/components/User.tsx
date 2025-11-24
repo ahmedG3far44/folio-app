@@ -7,12 +7,7 @@ import { useTheme } from "@/contexts/ThemeProvider";
 import { useState, useRef, useEffect } from "react";
 import { easeInOut, motion, AnimatePresence } from "motion/react";
 
-import {
-  User as UserIcon,
-  Settings,
-  LogOut,
-  LayoutDashboard,
-} from "lucide-react";
+import { User as UserIcon, LogOut, LayoutDashboard } from "lucide-react";
 
 import Image from "./ui/image";
 
@@ -129,7 +124,7 @@ function UserMenu({
       icon: isAdmin ? <LayoutDashboard size={18} /> : <UserIcon size={18} />,
       label: isAdmin ? "Dashboard" : "Profile",
       href: isAdmin ? "/dashboard/insights" : "/profile/bio",
-    }
+    },
   ];
 
   const handleLogout = () => {
