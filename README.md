@@ -2,7 +2,9 @@
 
 A web app for tech professionals to **build customized portfolios** showcasing projects, skills, and experiences with full CRUD functionality, theme and layout sections customization.
 
-**Live Demo**: https://presento.cloud
+## **Screenshots** 📸 (Preview App):
+
+<img src="https://github.com/ahmedG3far44/Folio-App/blob/development/showcase(1).gif"  alt="show case gif image" />
 
 ---
 
@@ -221,8 +223,3 @@ http://{localhost:4000}/api/
 - **PUT** `/layouts/:id` - Update layout (requires ID parameter)
 
 ---
-
-
-## **Screenshots** 📸 (Preview App):
-
-<img src="https://github.com/ahmedG3far44/Folio-App/blob/development/showcase(1).gif"  alt="show case gif image" />
