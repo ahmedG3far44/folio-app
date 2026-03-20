@@ -3,8 +3,9 @@
 A web app for tech professionals to **build customized portfolios** showcasing projects, skills, and experiences with full CRUD functionality, theme and layout sections customization.
 
 ## **Screenshots** 📸 (Preview App):
-
-<img src="https://github.com/ahmedG3far44/Folio-App/blob/development/showcase(1).gif"  alt="show case gif image" />
+<div align="center">
+  <img src="https://github.com/ahmedG3far44/Folio-App/blob/development/showcase(1).gif"  alt="show case gif image" />
+</div>
 
 ---
 
