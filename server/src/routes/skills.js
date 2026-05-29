@@ -1,26 +1,20 @@
 import crypto from "crypto";
-import multer from "multer";
 import express from "express";
-import prisma from "../database/db.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
-import s3Client from "../s3/s3Client.js";
 
 import getImageKey from "../utils/getImageKey.js";
 import resizedImage from "../utils/resizeImage.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
-import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
+import authenticated from "../middlewares/authenticated.js";
+import verifyUploading from "../middlewares/verifyUploading.js";
 
+import { upload } from "../configs/multer.js";
+import { uploadImage, deleteImage } from "../utils/upload.js";
 import { skillsSchema } from "../utils/schemas.js";
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
-
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
-const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
-
-export const upload = multer({ storage: multer.memoryStorage() });
 
 const router = express.Router();
 
-router.get("/skills", verifyAccessToken, async (req, res) => {
+router.get("/skills", authenticated, async (req, res) => {
   try {
     const { id } = req.user;
     const user = await prisma.users.findUnique({
@@ -42,7 +36,7 @@ router.get("/skills", verifyAccessToken, async (req, res) => {
     return res.status(500).json({ data: "error", message: err.message });
   }
 });
-router.get("/skills/:userId", verifyAccessToken, async (req, res) => {
+router.get("/skills/:userId", authenticated, async (req, res) => {
   try {
     const { userId } = req.params;
     const user = await prisma.users.findUnique({
@@ -67,9 +61,9 @@ router.get("/skills/:userId", verifyAccessToken, async (req, res) => {
 
 router.post(
   "/skills",
-  verifyAccessToken,
+  authenticated,
   upload.single("file"),
-  checkUploadImageFormat,
+  verifyUploading,
   async (req, res) => {
     try {
       const user = req.user;
@@ -83,25 +77,17 @@ router.post(
         );
       }
 
-      const nameKey = `${crypto.randomUUID()}.${image.mimetype.split("/")[1]}`;
-
       const resizedSkillImage = await resizedImage(image.buffer, 50, 50, 10);
 
-      const command = new PutObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: nameKey,
-        Body: resizedSkillImage,
-        ContentType: image.mimetype,
+      const result = await uploadImage(resizedSkillImage, {
+        folder: "folio/skills",
+        publicId: crypto.randomUUID(),
       });
-
-      const uploadImageResult = await s3Client.send(command);
-      if (uploadImageResult.$metadata.httpStatusCode !== 200)
-        throw new Error("upload skill image error !!");
 
       await prisma.skills.create({
         data: {
           skillName: payload.skillName,
-          skillLogo: `${BUCKET_DOMAIN}/${nameKey}`,
+          skillLogo: result.url,
           usersId: user.id,
         },
       });
@@ -119,17 +105,16 @@ router.post(
 
 router.put(
   "/skills/:skillId",
-  verifyAccessToken,
-  upload.single("file"), // Multer middleware (handles file upload)
-  checkUploadImageFormat, // Middleware to check image format
+  authenticated,
+  upload.single("file"),
+  verifyUploading,
   async (req, res) => {
     try {
       const { skillId } = req.params;
       const user = req.user;
       const payload = req.body;
-      const image = req.file; // Will be `undefined` if no file is uploaded
+      const image = req.file;
 
-      // Check if the skill exists and belongs to the user
       const skill = await prisma.skills.findUnique({
         where: {
           id: skillId,
@@ -152,24 +137,16 @@ router.put(
       }
 
       const { skillName } = validSkillsPayload.data;
-      let skillLogoKey;
+      let skillLogoUrl = skill.skillLogo;
       if (image) {
-        skillLogoKey = getImageKey(skill.skillLogo); // Reuse the same S3 key
-
+        const publicId = getImageKey(skill.skillLogo);
         const resizedSkillImage = await resizedImage(image.buffer, 50, 50, 80);
 
-        const command = new PutObjectCommand({
-          Bucket: BUCKET_NAME,
-          Key: skillLogoKey,
-          Body: resizedSkillImage,
-          ContentType: image.mimetype,
+        const result = await uploadImage(resizedSkillImage, {
+          folder: "folio/skills",
+          publicId,
         });
-
-        const updateUploadResult = await s3Client.send(command);
-
-        if (updateUploadResult.$metadata.httpStatusCode !== 200) {
-          throw new Error("Failed to update skill image in S3");
-        }
+        skillLogoUrl = result.url;
       }
 
       await prisma.skills.update({
@@ -179,7 +156,7 @@ router.put(
         },
         data: {
           skillName,
-          skillLogo: `${BUCKET_DOMAIN}/${skillLogoKey}`,
+          skillLogo: skillLogoUrl,
         },
       });
 
@@ -197,7 +174,7 @@ router.put(
   }
 );
 
-router.delete("/skills/:skillId", verifyAccessToken, async (req, res) => {
+router.delete("/skills/:skillId", authenticated, async (req, res) => {
   try {
     const { skillId } = req.params;
     const user = req.user;
@@ -212,17 +189,11 @@ router.delete("/skills/:skillId", verifyAccessToken, async (req, res) => {
     if (!skill) throw new Error("this skill not exist !!");
 
     if (skill.skillLogo) {
-      const skillLogoKey = getImageKey(skill.skillLogo);
-
-      const command = new DeleteObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: skillLogoKey,
-      });
-
+      const publicId = getImageKey(skill.skillLogo);
       try {
-        await s3Client.send(command);
-      } catch (s3Error) {
-        throw new Error("Failed to delete image from S3:", s3Error);
+        await deleteImage(publicId);
+      } catch (err) {
+        throw new Error("Failed to delete image from Cloudinary");
       }
     }
 

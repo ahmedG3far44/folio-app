@@ -23,7 +23,7 @@ import ShowListCard from "../cards/ShowListCard";
 
 import checkUploadedImages from "@/lib/checkUploadedImages";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 export type ProjectFormData = {
   title: string;
@@ -74,35 +74,31 @@ function ProjectForm() {
     const formData = new FormData();
     const { title, sourceUrl, description, tags, thumbnail, images } = data;
     formData.append("title", title);
-    formData.append("sourceUrl", sourceUrl);
+    if (sourceUrl) formData.append("sourceUrl", sourceUrl);
     formData.append("description", description);
     formData.append("thumbnail", thumbnail);
-    tags.map((tag) => {
-      formData.append("tags", tag as string);
+    tags.forEach((tag) => {
+      formData.append("tags", tag);
     });
-    images.map((img) => {
+    images.forEach((img) => {
       formData.append("image", img as File);
     });
 
-    try {
-      const response = await fetch(`${URL_SERVER}/project`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
+    const response = await fetch(`${URL_SERVER}/project`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    });
 
-      if (!response.ok) {
-        throw new Error("Failed to add new project");
-      }
-      const data = await response.json();
-      setProjects(data.data);
-      return data.data;
-    } catch (error) {
-      setError((error as Error).message as string);
-      return error;
+    if (!response.ok) {
+      const err = await response.json().catch(() => null);
+      throw new Error(err?.message || "Failed to add new project");
     }
+    const result = await response.json();
+    setProjects(result.data);
+    return result.data;
   };
   return (
     <>

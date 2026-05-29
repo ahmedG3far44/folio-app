@@ -1,35 +1,29 @@
 import sharp from "sharp";
 import crypto from "crypto";
 import express from "express";
-import prisma from "../database/db.js";
-import s3Client from "../s3/s3Client.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
 import getImageKey from "../utils/getImageKey.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
-import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
+import authenticated from "../middlewares/authenticated.js";
+import verifyUploading from "../middlewares/verifyUploading.js";
 
-import { upload } from "./skills.js";
+import { upload } from "../configs/multer.js";
+import { uploadImage, deleteImage } from "../utils/upload.js";
 import { projectSchema } from "../utils/schemas.js";
-import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
-
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
-const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
 const router = express.Router();
 
 router.post(
   "/project",
-  verifyAccessToken,
+  authenticated,
   upload.any(),
-  checkUploadImageFormat,
+  verifyUploading,
   async (req, res) => {
     try {
       const user = req.user;
       const payload = req.body;
       const images = req.files;
-      let keysArray = [];
-
-    
+      const keysArray = [];
 
       const projectNumbers = await prisma.projects.count({
         where: {
@@ -44,61 +38,52 @@ router.post(
       const validProjectData = projectSchema.safeParse(payload);
 
       if (!validProjectData?.success) {
-     
+      
         return res
           .status(400)
           .json(new Exceptions(400, "not valid project data."));
       }
 
-   
-
-    
-
       const { title, description, sourceUrl, tags } = validProjectData?.data;
-  
-      let thumbnailKey;
-      let imageKey;
-      for (const image of images) {
-        if (image.fieldname === "image") {
-          imageKey = `${crypto.randomUUID()}`;
-          keysArray.push(imageKey);
-        } else {
-          thumbnailKey = `${crypto.randomUUID()}`;
-        }
 
-        try {
-          await s3Client.send(
-            new PutObjectCommand({
-              Bucket: BUCKET_NAME,
-              Key: image.fieldname === "image" ? imageKey : thumbnailKey,
-              Body: image.buffer,
-              ContentType: image.mimetype,
-            })
-          );
-        } catch (err) {
-          res
-            .status(500)
-            .json({ erro: "uploadin error", message: err.message });
+      const source = sourceUrl && sourceUrl.trim() ? sourceUrl : null;
+
+      let thumbnailUrl;
+      for (const image of images) {
+        const imageKey = crypto.randomUUID();
+        if (image.fieldname === "image") {
+          const result = await uploadImage(image.buffer, {
+            folder: "folio/projects",
+            publicId: imageKey,
+          });
+          keysArray.push(result.url);
+        } else {
+          const result = await uploadImage(image.buffer, {
+            folder: "folio/projects",
+            publicId: imageKey,
+          });
+          thumbnailUrl = result.url;
         }
       }
+
       await prisma.projects.create({
         data: {
           title,
           description,
-          thumbnail: `${BUCKET_DOMAIN}/${thumbnailKey}`,
-          source: sourceUrl,
+          thumbnail: thumbnailUrl,
+          source,
           ImagesList: {
             createMany: {
               data: keysArray.map((url) => {
                 return {
-                  url: `${BUCKET_DOMAIN}/${url}`,
+                  url,
                 };
               }),
             },
           },
           tags: {
             createMany: {
-              data: tags.map((tagName) => {
+              data: (tags || []).map((tagName) => {
                 return {
                   tagName,
                 };
@@ -124,7 +109,7 @@ router.post(
   }
 );
 
-router.get("/project", verifyAccessToken, async (req, res) => {
+router.get("/project", authenticated, async (req, res) => {
   try {
     const user = req.user;
 
@@ -249,7 +234,7 @@ router.get("/:userId/project/:projectId", async (req, res) => {
 
 router.put(
   "/project/:projectId",
-  verifyAccessToken,
+  authenticated,
   upload.none(),
   async (req, res) => {
     try {
@@ -291,11 +276,10 @@ router.put(
   }
 );
 
-router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
+router.delete("/project/:projectId", authenticated, async (req, res) => {
   const user = req.user;
   const { projectId } = req.params;
 
-  let deletedProjectImageUrls = [];
   try {
     const project = await prisma.projects.findUnique({
       where: {
@@ -314,27 +298,13 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
       throw new Error("This project doesn't exsit!!");
     }
 
-    deletedProjectImageUrls.push(getImageKey(project.thumbnail));
-
-    project.ImagesList.map((image) => {
-      let key = getImageKey(image?.url);
-      deletedProjectImageUrls.push(key);
+    const publicIds = [getImageKey(project.thumbnail)];
+    project.ImagesList.forEach((image) => {
+      const key = getImageKey(image?.url);
+      if (key) publicIds.push(key);
     });
 
-   
-
-    deletedProjectImageUrls.map(async (keyUrl) => {
-      const command = new DeleteObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: keyUrl,
-      });
-
-      try {
-        await s3Client.send(command);
-      } catch (err) {
-        res.status(500).json(new Exceptions(500, err.message));
-      }
-    });
+    await Promise.allSettled(publicIds.map((id) => deleteImage(id)));
 
     await prisma.tags.deleteMany({
       where: {
@@ -347,7 +317,6 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
         projectsId: projectId,
       },
     });
-    
 
     await prisma.projects.delete({
       where: {
@@ -355,7 +324,6 @@ router.delete("/project/:projectId", verifyAccessToken, async (req, res) => {
         usersId: user.id,
       },
     });
-  
 
     const newProject = await prisma.projects.findMany({
       where: {
@@ -389,26 +357,9 @@ export async function uploadToS3(image, path) {
     })
     .toBuffer();
 
-  const params = {
-    Bucket: BUCKET_NAME,
-    Key: path,
-    Body: result,
-    ContentType: image.mimetype,
-  };
-
-  try {
-    const command = new PutObjectCommand(params);
-
-    const uploadProjectImages = await s3Client.send(command);
-
-    if (uploadProjectImages.$metadata.httpStatusCode !== 200) {
-      throw new Error("failed to upload img");
-    }
-
-    const imgURL = `${BUCKET_DOMAIN}/${path}`;
-    return imgURL;
-  } catch (error) {
-  
-    return error;
-  }
+  const uploadResult = await uploadImage(result, {
+    folder: "folio/projects",
+    publicId: path,
+  });
+  return uploadResult.url;
 }

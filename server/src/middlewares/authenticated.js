@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import Exceptions from "../utils/Exceptions.js";
+import { env } from "../configs/env.js";
 
-async function verifyAdminAccessToken(req, res, next) {
+async function authenticated(req, res, next) {
   try {
     const token = req.headers.authorization.split(" ")[1];
 
@@ -10,19 +11,16 @@ async function verifyAdminAccessToken(req, res, next) {
         .status(401)
         .json(new Exceptions(401, "You are not authorized to do this action"));
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const { role } = decoded;
-
-    if (role !== "ADMIN")
-      throw new Error("your not Authorized to do this action");
+    const decoded = jwt.verify(token, env.JWT_SECRET);
 
     req.user = decoded;
 
     next();
   } catch (error) {
-    return res.status(401).json(new Exceptions(401, error.message));
+    return res
+      .status(401)
+      .json(new Exceptions(401, "You are not authorized to do this action"));
   }
 }
 
-export default verifyAdminAccessToken;
+export default authenticated;

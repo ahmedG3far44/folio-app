@@ -1,12 +1,6 @@
 import sharp from "sharp";
 import crypto from "crypto";
-import prisma from "../database/db.js";
-import s3Client from "../s3/s3Client.js";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
-
-
-
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
+import prisma from "../configs/db.js";
 
 export async function getBioWithImage(userId, bioId) {
   return await prisma.bio.findFirst({
@@ -26,16 +20,6 @@ export async function processImage(image) {
 
 export function generateFileKey() {
   return `hero-img-${crypto.randomUUID()}`;
-}
-
-export async function uploadToS3(key, imageBuffer, contentType) {
-  const command = new PutObjectCommand({
-    Bucket: BUCKET_NAME,
-    Key: key,
-    Body: imageBuffer,
-    ContentType: contentType,
-  });
-  await s3Client.send(command);
 }
 
 export async function updateBioImage(userId, bioId, imageUrl) {

@@ -1,5 +1,5 @@
 import express from "express";
-import prisma from "../database/db.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
 
 const projectDetailsRoute = express.Router();

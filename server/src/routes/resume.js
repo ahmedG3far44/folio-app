@@ -1,19 +1,15 @@
 import crypto from "crypto";
 import express from "express";
-import prisma from "../database/db.js";
-import s3Client from "../s3/s3Client.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import authenticated from "../middlewares/authenticated.js";
 
-import { upload } from "./skills.js";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { upload } from "../configs/multer.js";
+import { uploadResume } from "../utils/upload.js";
 
 const router = express.Router();
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
-const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
-
-router.get("/resume", verifyAccessToken, async (req, res) => {
+router.get("/resume", authenticated, async (req, res) => {
   try {
     const user = req.user;
     const resumeUrl = await prisma.users.findUnique({
@@ -28,7 +24,7 @@ router.get("/resume", verifyAccessToken, async (req, res) => {
       return res.status(404).json(new Exceptions(404, "not found item"));
     }
     return res.status(200).json({
-      resume: `${BUCKET_DOMAIN}/${resumeUrl.resume}`,
+      resume: resumeUrl.resume,
     });
   } catch (error) {
     return res.status(200).json(new Exceptions(500, error.message));
@@ -50,7 +46,7 @@ router.get("/:userId/resume", async (req, res) => {
       return res.status(404).json(new Exceptions(404, "not found item"));
     }
     return res.status(200).json({
-      resume: `${process.env.AWS_S3_BUCKET_DOMAIN}/${resumeUrl.resume}`,
+      resume: resumeUrl.resume,
     });
   } catch (error) {
     return res.status(200).json(new Exceptions(500, error.message));
@@ -59,49 +55,36 @@ router.get("/:userId/resume", async (req, res) => {
 
 router.post(
   "/resume",
-  verifyAccessToken,
+  authenticated,
   upload.single("resume"),
   async (req, res) => {
     const user = req.user;
     const resumeFile = req.file;
-    let resumeKeyName;
-
-    (resumeFile);
 
     if (!validResumeFile(resumeFile)) {
       throw new Error("resume format not accepted!!");
     }
-    resumeKeyName = `resume-${crypto.randomUUID()}`;
 
-    const command = new PutObjectCommand({
-      Bucket: BUCKET_NAME,
-      Key: resumeKeyName,
-      Body: resumeFile.buffer,
-      ContentType: resumeFile.mimetype,
-    });
     try {
-      await s3Client.send(command);
-    
+      const result = await uploadResume(resumeFile.buffer, resumeFile.mimetype, "folio/resumes");
 
       const resume = await prisma.users.update({
         where: {
           id: user.id,
         },
         data: {
-          resume: resumeKeyName,
+          resume: result.url,
         },
         select: {
           id: true,
           resume: true,
         },
       });
-      const url = `${BUCKET_DOMAIN}/${resumeKeyName}`;
-      ("updated cv key in db");
-      (url);
+
       res.status(201).json({
         success: "a cv file uploaded successfully",
         ...resume,
-        url,
+        url: result.url,
       });
     } catch (error) {
       res.status(500).json(new Exceptions(500, error.message));
@@ -111,21 +94,15 @@ router.post(
 
 router.put(
   "/resume",
-  verifyAccessToken,
+  authenticated,
   upload.single("resume"),
   async (req, res) => {
     const user = req.user;
     const newCvFile = req.file;
 
-    let newKey;
-
-    (newCvFile);
-
     if (!validResumeFile(newCvFile)) {
       throw new Error("resume format not accepted!!");
     }
-
-    
 
     const userCvKeyName = await prisma.users.findUnique({
       where: {
@@ -135,31 +112,15 @@ router.put(
         resume: true,
       },
     });
-    newKey = userCvKeyName.resume;
 
     if (!userCvKeyName.resume) {
       throw new Error("user cv not found");
     }
 
     try {
-      const command = new PutObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: newKey,
-        Body: newCvFile.buffer,
-        ContentType: newCvFile.mimetype,
-      });
-      await s3Client
-        .send(command)
-        .then(() => {
-          (`updated cv ${newKey} success`);
-        })
-        .catch((error) => {
-          return res
-            .status(200)
-            .send({ error: "not upload", message: error.message });
-        });
+      const result = await uploadResume(newCvFile.buffer, newCvFile.mimetype, "folio/resumes");
 
-      const url = `${BUCKET_DOMAIN}/${newKey}`;
+      const url = result.url;
 
       return res.status(201).json({
         success: "a cv file updated",

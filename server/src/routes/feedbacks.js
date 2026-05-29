@@ -1,19 +1,14 @@
 import crypto from "crypto";
 import express from "express";
-import prisma from "../database/db.js";
-import s3Client from "../s3/s3Client.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import authenticated from "../middlewares/authenticated.js";
 
-import { upload } from "./skills.js";
-import { uploadToS3 } from "./projects.js";
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { upload } from "../configs/multer.js";
+import { uploadImage, deleteImage, getPublicIdFromUrl } from "../utils/upload.js";
 import { feedbackSchema } from "../utils/schemas.js";
 
 const router = express.Router();
-
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
-const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
 router.post(
   "/feedback/:userId",
@@ -32,8 +27,8 @@ router.post(
     const payload = req.body;
     const files = req.files;
     const { profile, video } = req.files;
-    let clientVideoKey;
-    let clientProfileKey;
+    let videoUrl;
+    let profileUrl;
     try {
       if (!userId) {
         throw new Error("userId isn't defined ");
@@ -43,25 +38,24 @@ router.post(
       }
 
       if (video) {
-        clientVideoKey = `${crypto.randomUUID()}`;
-       
         const videoFile = video[0];
         try {
-          await s3Client.send(
-            new PutObjectCommand({
-              Bucket: BUCKET_NAME,
-              Key: clientVideoKey,
-              Body: videoFile.buffer,
-              ContentType: videoFile.mimetyep,
-            })
-          );
+          const result = await uploadImage(videoFile.buffer, {
+            folder: "folio/feedbacks",
+            publicId: crypto.randomUUID(),
+            resource_type: "video",
+          });
+          videoUrl = result.url;
         } catch (err) {
           res.status(500).json(new Exceptions(500, err.message));
         }
       }
 
-      clientProfileKey = `${crypto.randomUUID()}`;
-      await uploadToS3(profile[0], clientProfileKey);
+      const profileResult = await uploadImage(profile[0].buffer, {
+        folder: "folio/feedbacks",
+        publicId: crypto.randomUUID(),
+      });
+      profileUrl = profileResult.url;
 
       const validFeedbackData = feedbackSchema.safeParse(payload);
 
@@ -73,10 +67,8 @@ router.post(
         data: {
           ...validFeedbackData.data,
           feedback: payload.feedback ? payload?.feedback : null,
-          profile: clientProfileKey
-            ? `${BUCKET_DOMAIN}/${clientProfileKey}`
-            : null,
-          video: clientVideoKey ? `${BUCKET_DOMAIN}/${clientVideoKey}` : null,
+          profile: profileUrl || null,
+          video: videoUrl || null,
           usersId: userId,
         },
       });
@@ -109,10 +101,9 @@ router.get("/feedback/:userId", async (req, res) => {
     return res.status(500).json(new Exceptions(500, error.message));
   }
 });
-router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
+router.delete("/feedback/:feedbackId", authenticated, async (req, res) => {
   const user = req.user;
   const { feedbackId } = req.params;
-  
 
   try {
     const feedback = await prisma.testimonials.findUnique({
@@ -126,21 +117,14 @@ router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
       throw new Error("this items doesn't exist");
     }
 
-    const deleteProfileParams = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME,
-      Key: feedback.profile,
-    };
-
-    await s3Client.send(new DeleteObjectCommand(deleteProfileParams));
-  
+    if (feedback.profile) {
+      const publicId = getPublicIdFromUrl(feedback.profile);
+      if (publicId) await deleteImage(publicId);
+    }
 
     if (feedback.video) {
-      const deleteVideoFeedbackParams = {
-        Bucket: BUCKET_NAME,
-        Key: feedback.video,
-      };
-      await s3Client.send(new DeleteObjectCommand(deleteVideoFeedbackParams));
-    
+      const publicId = getPublicIdFromUrl(feedback.video);
+      if (publicId) await deleteImage(publicId);
     }
 
     await prisma.testimonials.delete({
@@ -149,7 +133,7 @@ router.delete("/feedback/:feedbackId", verifyAccessToken, async (req, res) => {
         usersId: user.id,
       },
     });
-  
+
     const newFeedback = await prisma.testimonials.findMany({
       where: {
         usersId: user.id,

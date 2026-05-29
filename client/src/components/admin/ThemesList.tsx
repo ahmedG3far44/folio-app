@@ -9,7 +9,7 @@ import Loader from "../loader";
 import { Palette, Plus, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "../ui/button";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function getContrastRatio(color1: string, color2: string): number {
   const getLuminance = (color: string) => {

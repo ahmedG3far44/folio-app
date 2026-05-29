@@ -19,7 +19,7 @@ import {
 import ErrorMessage from "@/components/ErrorMessage";
 import toast from "react-hot-toast";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 interface FileUploadProps {
   id: string;

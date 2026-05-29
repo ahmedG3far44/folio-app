@@ -2,16 +2,13 @@ import crypto from "crypto";
 import bcrypt from "bcrypt";
 import express from "express";
 import jwt from "jsonwebtoken";
-import prisma from "../../database/db.js";
-import s3Client from "../../s3/s3Client.js";
+import prisma from "../../configs/db.js";
+import { env } from "../../configs/env.js";
 
-import { upload } from "../skills.js";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { upload } from "../../configs/multer.js";
+import { uploadImage } from "../../utils/upload.js";
 
 const router = express.Router();
-
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
-const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
 
 router.post("/auth/login", async (req, res) => {
   try {
@@ -51,7 +48,7 @@ router.post("/auth/login", async (req, res) => {
       role: user.role,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET);
+    const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRE_IN });
 
     return res
       .status(200)
@@ -89,16 +86,14 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const pictureKey = `${crypto.randomUUID()}`;
+    let pictureUrl;
 
     try {
-      const command = new PutObjectCommand({
-        Bucket: BUCKET_NAME,
-        Body: file.buffer,
-        Key: pictureKey,
-        ContentType: file.mimetype,
+      const result = await uploadImage(file.buffer, {
+        folder: "folio/profiles",
+        publicId: pictureKey,
       });
-
-      await s3Client.send(command);
+      pictureUrl = result.url;
     } catch (err) {
       res.status(500).json({ data: "error", message: err.message });
     }
@@ -129,7 +124,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         name,
         email,
         password: hashedPassword,
-        picture: `${BUCKET_DOMAIN}/${pictureKey}`,
+        picture: pictureUrl,
         activeTheme: defaultTheme ? defaultTheme.id : themes[0].id,
       },
       select: {
@@ -146,19 +141,19 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
     const payload = {
       id: newUser.id,
       name: newUser.name,
-      picture: `${BUCKET_DOMAIN}/${pictureKey}`,
+      picture: pictureUrl,
       role: newUser.role,
       email,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET);
+    const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRE_IN });
 
     await prisma.bio.create({
       data: {
         bio: "update your bio info...",
         bioName: newUser.name,
         jobTitle: "update your job title...",
-        heroImage: `${BUCKET_DOMAIN}/${pictureKey}`,
+        heroImage: pictureUrl,
         usersId: newUser.id,
       },
     });

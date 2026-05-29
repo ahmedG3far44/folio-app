@@ -1,7 +1,7 @@
 import express from "express";
-import prisma from "../database/db.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import authenticated from "../middlewares/authenticated.js";
 
 import { contactsSchema } from "../utils/schemas.js";
 
@@ -27,7 +27,7 @@ router.get("/:userId/contacts", async (req, res) => {
   }
 });
 
-router.put("/contacts/:contactsId", verifyAccessToken, async (req, res) => {
+router.put("/contacts/:contactsId", authenticated, async (req, res) => {
   try {
     const user = req.user;
     const payload = req.body;

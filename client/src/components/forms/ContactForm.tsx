@@ -12,7 +12,7 @@ import SubmitButton from "../submit-button";
 import { useTheme } from "@/contexts/ThemeProvider";
 import { Card } from "../ui/card";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function ContactForm() {
   const { token } = useAuth();

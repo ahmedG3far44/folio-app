@@ -16,7 +16,7 @@ import { createContext } from "react";
 import { useAuth } from "./AuthProvider";
 import { useParams } from "react-router-dom";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 export const UserContext = createContext<UserInfoContextType>({
   bio: {

@@ -1,11 +1,11 @@
 import express from "express";
-import prisma from "../database/db.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
-import verifyAdminAccessToken from "../middlewares/verifyAdminAccessToken.js";
+import requiredAdmin from "../middlewares/requiredAdmin.js";
 
 const router = express.Router();
 
-router.get("/admin", verifyAdminAccessToken, async (req, res) => {
+router.get("/admin", requiredAdmin, async (req, res) => {
   try {
     const totalNumberProjects = await prisma.projects.count();
     const totalFeedbacks = await prisma.testimonials.count();

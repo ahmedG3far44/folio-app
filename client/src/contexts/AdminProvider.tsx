@@ -9,7 +9,7 @@ import {
 import { useAuth } from "./AuthProvider";
 import { AdminContextType, AdminUsersList } from "@/lib/types";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 export const AdminContext = createContext<AdminContextType>({
   insights: {

@@ -20,7 +20,7 @@ import Logo from "@/components/Logo";
 import SubmitButton from "@/components/submit-button";
 import ErrorMessage from "@/components/ErrorMessage";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function SignUpPage() {
   const { login } = useAuth();

@@ -1,24 +1,19 @@
-
 import crypto from "crypto";
 import express from "express";
-import prisma from "../database/db.js";
-import s3Client from "../s3/s3Client.js";
+import prisma from "../configs/db.js";
 import resizedImage from "../utils/resizeImage.js";
 import getImageKey from "../utils/getImageKey.js";
 import Exceptions from "../utils/Exceptions.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
-import checkUploadImageFormat from "../middlewares/checkUploadImageFormat.js";
+import authenticated from "../middlewares/authenticated.js";
+import verifyUploading from "../middlewares/verifyUploading.js";
 
-import { upload } from "./skills.js";
+import { upload } from "../configs/multer.js";
+import { uploadImage, deleteImage } from "../utils/upload.js";
 import { experienceSchema } from "../utils/schemas.js";
-import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 const router = express.Router();
 
-const BUCKET_NAME = process.env.AWS_S3_BUCKET_NAME;
-const BUCKET_DOMAIN = process.env.AWS_S3_BUCKET_DOMAIN;
-
-router.get("/experiences", verifyAccessToken, async (req, res) => {
+router.get("/experiences", authenticated, async (req, res) => {
   try {
     const user = req.user;
     const experiencesList = await prisma.experiences.findMany({
@@ -57,8 +52,8 @@ router.get("/experiences/:userId", async (req, res) => {
 router.post(
   "/experiences",
   upload.single("file"),
-  verifyAccessToken,
-  checkUploadImageFormat,
+  authenticated,
+  verifyUploading,
   async (req, res) => {
     try {
       const user = req.user;
@@ -73,10 +68,6 @@ router.post(
         return res.status(400).json(new Exceptions(400, error));
       }
 
-      const uploadImgPath = `${crypto.randomUUID()}.${
-        image.mimetype.split("/")[1]
-      }`;
-
       const resizedCompanyLogoImage = await resizedImage(
         image.buffer,
         50,
@@ -84,22 +75,15 @@ router.post(
         80
       );
 
-      const command = new PutObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: uploadImgPath,
-        Body: resizedCompanyLogoImage,
-        ContentType: image.mimetype,
+      const result = await uploadImage(resizedCompanyLogoImage, {
+        folder: "folio/experiences",
+        publicId: crypto.randomUUID(),
       });
-
-      const uploadCompanyLogoResult = await s3Client.send(command);
-
-      if (uploadCompanyLogoResult.$metadata.httpStatusCode !== 200)
-        throw new Error("upload company logo error!!");
 
       await prisma.experiences.create({
         data: {
           ...validExperiencePayload.data,
-          cLogo: `${BUCKET_DOMAIN}/${uploadImgPath}`,
+          cLogo: result.url,
           usersId: user.id,
         },
       });
@@ -125,7 +109,7 @@ router.post(
 router.put(
   "/experiences/:experience_id",
   upload.single("file"),
-  verifyAccessToken,
+  authenticated,
   async (req, res) => {
     try {
       const { experience_id } = req.params;
@@ -143,7 +127,7 @@ router.put(
       if (!experience) throw new Error("This experience not exist");
 
       if (image) {
-        const experienceImageKey = getImageKey(experience.cLogo);
+        const publicId = getImageKey(experience.cLogo);
         const resizedExperienceImage = await resizedImage(
           image.buffer,
           50,
@@ -151,17 +135,10 @@ router.put(
           80
         );
 
-        const command = new PutObjectCommand({
-          Bucket: BUCKET_NAME,
-          Key: experienceImageKey,
-          Body: resizedExperienceImage,
-          ContentType: image.mimetype,
+        await uploadImage(resizedExperienceImage, {
+          folder: "folio/experiences",
+          publicId,
         });
-
-        const uploadResult = await s3Client.send(command);
-
-        if (uploadResult.$metadata.httpStatusCode !== 200)
-          throw new Error("upload new company image failed!!");
       }
 
       const validExperiencePayload = experienceSchema.safeParse(payload);
@@ -197,7 +174,7 @@ router.put(
 
 router.delete(
   "/experiences/:experience_id",
-  verifyAccessToken,
+  authenticated,
   async (req, res) => {
     try {
       const user = req.user;
@@ -210,14 +187,9 @@ router.delete(
       if (!experience) throw new Error("This experience doesn't exist!!");
 
       if (experience.cLogo) {
-        const companyImageKey = getImageKey(experience.cLogo);
-
-        const command = new DeleteObjectCommand({
-          Bucket: BUCKET_NAME,
-          Key: companyImageKey,
-        });
+        const publicId = getImageKey(experience.cLogo);
         try {
-          await s3Client.send(command);
+          await deleteImage(publicId);
         } catch (err) {
           throw new Error(err.message);
         }

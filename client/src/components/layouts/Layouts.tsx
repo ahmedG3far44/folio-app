@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 import SubmitButton from "../submit-button";
 import layoutJson from "@/lib/layouts.json";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 export const ApplyLayout = ({
   sectionName,

@@ -7,7 +7,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
-import { CirclePlus, XIcon } from "lucide-react";
+import { Briefcase, CirclePlus, XIcon } from "lucide-react";
 
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
@@ -23,7 +23,7 @@ import ShowListCard from "../cards/ShowListCard";
 import Tiptap from "../Tiptap";
 
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function ExperienceForm() {
   
@@ -55,7 +55,7 @@ function ExperienceForm() {
     <>
       <div className="w-full flex flex-col gap-4 my-4">
         <div className="w-full flex justify-between items-center">
-          <h1>Experience Form</h1>
+          <h1 style={{ color: activeTheme.primaryText }}>Experiences</h1>
           <Button onClick={() => setIsOpen(!isOpen)}>
             {!isOpen ? (
               <>
@@ -96,13 +96,13 @@ function ExperienceForm() {
                   }
                 );
                 if (!response.ok) {
-                  throw new Error(`${"create a new"} experience failed!!`);
+                  throw new Error("Failed to save experience");
                 }
                 const data = await response.json();
                 setExperiences(data.data);
                 setContent("");
                 reset();
-                toast.success(`a new experience was success!!`);
+                toast.success("Experience saved successfully");
                 return data;
               } catch (err) {
                 toast.error((err as Error).message);
@@ -113,7 +113,7 @@ function ExperienceForm() {
                 setIsUpdating(false);
               }
             })}
-            className="w-full p-2 flex flex-col justify-start items-center gap-2"
+            className="w-full p-2 flex flex-col justify-start items-center gap-6"
           >
             <Card
               style={{
@@ -178,7 +178,7 @@ function ExperienceForm() {
                 border: `1px solid ${activeTheme.borderColor}`,
                 color: activeTheme.secondaryText,
               }}
-              className="p-4 w-full"
+              className="p-4 w-full gap-4"
             >
               <input
                 style={{
@@ -243,7 +243,7 @@ function ExperienceForm() {
                   message={errors.duration.message?.toString() as string}
                 />
               )}
-              <Card
+              <div
                 style={{
                   backgroundColor: activeTheme.backgroundColor,
                   color: activeTheme.primaryText,
@@ -252,7 +252,7 @@ function ExperienceForm() {
                 className="w-full my-4 p-4 border rounded-md"
               >
                 <Tiptap content={content} setContent={setContent} />
-              </Card>
+              </div>
               <input
                 style={{
                   backgroundColor: activeTheme.backgroundColor,
@@ -280,7 +280,7 @@ function ExperienceForm() {
               loading={isSubmitting}
               type="submit"
             >
-              create experience
+              {isUpdating ? "update experience" : "add experience"}
             </SubmitButton>
           </form>
         )}
@@ -320,8 +320,9 @@ function ExperienceForm() {
                 })}
               </>
             ) : (
-              <div className="w-full min-h-[400px] flex items-center justify-center">
-                <p>No experiences found</p>
+              <div className="w-full min-h-[400px] flex flex-col items-center justify-center gap-3">
+                <Briefcase size={32} className="opacity-30" />
+                <p className="text-sm opacity-50">No experiences yet</p>
               </div>
             )}
           </Card>

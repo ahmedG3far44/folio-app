@@ -1,17 +1,13 @@
-import fs from "fs";
-import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
-import https from "https";
-import prisma from "./database/db.js";
-import rootRouter from "./routes/index.js";
+import express from "express";
+import prisma from "./configs/db.js";
 import cookieParser from "cookie-parser";
+import rootRouter from "./routes/index.js";
 
-dotenv.config();
+import { env } from "./configs/env.js";
 
-const ENV = process.env.ENV;
-const PORT = process.env.PORT;
-const allowedOrigins = process.env.ALLOWED_ORIGINS;
+const PORT = env.PORT;
+const allowedOrigins = env.ALLOWED_ORIGINS;
 
 const app = express();
 
@@ -50,18 +46,6 @@ app.get("/healthz", async (req, res) => {
 
 app.use("/api", rootRouter);
 
-if (ENV === "production") {
-  const options = {
-    cert: fs.readFileSync(process.env.SSL_CERT, "utf-8"),
-    key: fs.readFileSync(process.env.SSL_KEY, "utf-8"),
-    minVersion: "TLSv1.2",
-  };
-
-  https.createServer(options, app).listen(PORT, () => {
-    console.log(`HTTPS server running on port 443 ==> ${ENV} environment `);
-  });
-} else {
-  app.listen(PORT, () => {
-    console.log(`HTTP Server running on port ${PORT} ==> ${ENV} environment`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`HTTP Server running on port ${PORT} ==> ${env.NODE_ENV} environment`);
+});

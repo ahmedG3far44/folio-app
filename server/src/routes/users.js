@@ -1,11 +1,11 @@
 import express from "express";
-import prisma from "../database/db.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import authenticated from "../middlewares/authenticated.js";
 
 const router = express.Router();
 
-router.post("/user", verifyAccessToken, async (req, res) => {
+router.post("/user", authenticated, async (req, res) => {
   try {
     const user = req.user;
     const userInfo = await prisma.users.findFirst({

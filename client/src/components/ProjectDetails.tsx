@@ -11,7 +11,7 @@ import { ExternalLink, Undo2 } from "lucide-react";
 import Loader from "./loader";
 import Image from "./ui/image";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function ProjectDetails() {
   const navigate = useNavigate();

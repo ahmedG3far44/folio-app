@@ -1,13 +1,13 @@
 import express from "express";
-import prisma from "../database/db.js";
+import prisma from "../configs/db.js";
 import Exceptions from "../utils/Exceptions.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
+import authenticated from "../middlewares/authenticated.js";
 
 import { layoutsSchema } from "../utils/schemas.js";
 
 const router = express.Router();
 
-router.get("/layouts", verifyAccessToken, async (req, res) => {
+router.get("/layouts", authenticated, async (req, res) => {
   try {
     const user = req.user;
 
@@ -35,7 +35,7 @@ router.get("/layouts", verifyAccessToken, async (req, res) => {
   }
 });
 
-router.put("/layouts/:id", verifyAccessToken, async (req, res) => {
+router.put("/layouts/:id", authenticated, async (req, res) => {
   try {
     const { id } = req.params;
     const user = req.user;

@@ -79,7 +79,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 - Create `.env` in `/frontend`:
   
   ```env
-  VITE_URL_SERVER=http://localhost:5000 # or your production backend URL
+  VITE_API_URL=http://localhost:5000 # or your production backend URL
   VITE_BUCKET_DOMAIN=your_s3_bucket_domain (e.g., https://{bucket-name}.s3.amazonaws.com)
   VITE_LOCAL_DOMAIN=http://localhost:3000
   VITE_PRODUCTION_DOMAIN=https://{your-deployed-frontend-url}.com

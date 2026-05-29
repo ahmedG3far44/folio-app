@@ -1,7 +1,7 @@
 import express from "express";
-import prisma from "../database/db.js";
-import verifyAccessToken from "../middlewares/verifyAccessToken.js";
-import verifyAdminAccessToken from "../middlewares/verifyAdminAccessToken.js";
+import prisma from "../configs/db.js";
+import authenticated from "../middlewares/authenticated.js";
+import requiredAdmin from "../middlewares/requiredAdmin.js";
 
 import { themeSchema } from "../utils/schemas.js";
 
@@ -482,12 +482,12 @@ const addDefaultThemes = async (req, res) => {
 
 router.post("/admin/default/themes", addDefaultThemes);
 
-router.post("/admin/themes", verifyAdminAccessToken, addNewTheme);
+router.post("/admin/themes", requiredAdmin, addNewTheme);
 
-router.get("/themes", verifyAccessToken, showAvailableThemes);
+router.get("/themes", authenticated, showAvailableThemes);
 
 router.get("/theme/:userId", getUserActiveTheme);
 
-router.put("/theme", verifyAccessToken, updateUserActiveTheme);
+router.put("/theme", authenticated, updateUserActiveTheme);
 
 export default router;

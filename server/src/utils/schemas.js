@@ -75,18 +75,6 @@ export const skillsSchema = z.object({
     .min(3, { message: "short input value!!" })
     .max(100, { message: "too long input value!!" }),
 });
-export const userSchema = z.object({
-  id: z.string(),
-  given_name: z.string(),
-  family_name: z.string(),
-  picture: z
-    .string()
-    .min(10, { message: "too short url " })
-    .max(300, { message: "too long url text" }),
-  email: z.string(),
-  role: z.string(),
-});
-
 export const contactsSchema = z.object({
   linkedin: z.string().min(0).optional(),
   github: z.string().min(0).optional(),

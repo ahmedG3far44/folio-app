@@ -18,7 +18,7 @@ import ShowListCard from "../cards/ShowListCard";
 import Loader from "../loader";
 import { ISkillType } from "@/lib/types";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function SkillForm() {
   const { token } = useAuth();

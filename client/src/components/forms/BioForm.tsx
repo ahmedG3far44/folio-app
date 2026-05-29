@@ -17,7 +17,7 @@ import { UserPen } from "lucide-react";
 import UploadResume from "./UploadResume";
 import { useTheme } from "@/contexts/ThemeProvider";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function BioForm() {
   const [isBioOpen, setIsBioOpen] = useState<boolean>(false);

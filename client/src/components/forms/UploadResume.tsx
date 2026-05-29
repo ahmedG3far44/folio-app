@@ -10,7 +10,7 @@ import SubmitButton from "../submit-button";
 import UploadHere from "../cards/UploadHere";
 import toast from "react-hot-toast";
 
-const URL_SERVER = import.meta.env.VITE_URL_SERVER as string;
+const URL_SERVER = import.meta.env.VITE_API_URL as string;
 const BUCKET_DOMAIN = import.meta.env.VITE_BUCKET_DOMAIN as string;
 
 function UploadResume() {
