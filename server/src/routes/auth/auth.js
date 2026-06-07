@@ -27,6 +27,7 @@ router.post("/auth/login", async (req, res) => {
         name: true,
         email: true,
         picture: true,
+        password: true,
         role: true,
         resume: true,
         activeTheme: true,
@@ -35,9 +36,7 @@ router.post("/auth/login", async (req, res) => {
 
     if (!user) throw new Error("this user not found!!");
 
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
     if (!isPasswordCorrect) throw new Error("wrong email or password !!");
 
@@ -95,29 +94,25 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
       });
       pictureUrl = result.url;
     } catch (err) {
-      res.status(500).json({ data: "error", message: err.message });
+      return res.status(500).json({ data: "error", message: err.message });
     }
 
     const themes = await prisma.theme.findMany();
 
-    const defaultTheme = await prisma.theme.findUnique({
-      where: {
-        id: "cmhg47i6g0000v520hqstcx5i",
-      },
-    });
-
-    if (!themes) {
+    if (themes.length === 0) {
       await prisma.theme.create({
         data: {
-          themeName: "Zinc Dark",
-          backgroundColor: "#09090b",
-          cardColor: "#18181b",
-          primaryText: "#fafafa",
-          secondaryText: "#a1a1aa",
-          borderColor: "#27272a",
+          themeName: "Midnight",
+          backgroundColor: "#0c0a0e",
+          cardColor: "#17131a",
+          primaryText: "#f5f3f7",
+          secondaryText: "#9a94a3",
+          borderColor: "#2a2530",
         },
       });
     }
+
+    const allThemes = await prisma.theme.findMany();
 
     const newUser = await prisma.users.create({
       data: {
@@ -125,7 +120,7 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
         email,
         password: hashedPassword,
         picture: pictureUrl,
-        activeTheme: defaultTheme ? defaultTheme.id : themes[0].id,
+        activeTheme: allThemes[0].id,
       },
       select: {
         id: true,

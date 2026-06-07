@@ -83,9 +83,9 @@ function SignUpPage() {
       setError(null);
       navigate(`/${user.id}`);
       return;
-    } catch (err: any) {
-      console.error(err?.message);
-      setError(err?.message);
+    } catch (err: unknown) {
+      console.error((err as Error)?.message);
+      setError((err as Error)?.message);
       return;
     } finally {
       setPending(false);

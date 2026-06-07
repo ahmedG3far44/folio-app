@@ -27,7 +27,7 @@ router.get("/resume", authenticated, async (req, res) => {
       resume: resumeUrl.resume,
     });
   } catch (error) {
-    return res.status(200).json(new Exceptions(500, error.message));
+    return res.status(500).json(new Exceptions(500, error.message));
   }
 });
 
@@ -49,7 +49,7 @@ router.get("/:userId/resume", async (req, res) => {
       resume: resumeUrl.resume,
     });
   } catch (error) {
-    return res.status(200).json(new Exceptions(500, error.message));
+    return res.status(500).json(new Exceptions(500, error.message));
   }
 });
 

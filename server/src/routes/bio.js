@@ -29,7 +29,7 @@ router.get("/:userId/bio", async (req, res) => {
       },
     });
     if (!bio) {
-      return res.status(404).json(Exceptions(404, "bio not found"));
+      return res.status(404).json(new Exceptions(404, "bio not found"));
     }
 
     return res.status(200).json(bio);
@@ -75,9 +75,9 @@ router.put("/bio/:bioId", authenticated, async (req, res) => {
         usersId: user.id,
       },
     });
-    res.status(200).json({ data: bio, message: "bio info was updated" });
+    return res.status(200).json({ data: bio, message: "bio info was updated" });
   } catch (error) {
-    res.status(500).json(new Exceptions(500, error.message));
+    return res.status(500).json(new Exceptions(500, error.message));
   }
 });
 

@@ -47,7 +47,7 @@ router.post(
           });
           videoUrl = result.url;
         } catch (err) {
-          res.status(500).json(new Exceptions(500, err.message));
+          return res.status(500).json(new Exceptions(500, err.message));
         }
       }
 

@@ -144,7 +144,7 @@ export function PortfolioSEO({
     : `Portfolio of ${name}. View projects, skills, and professional experience.`;
 
   // Generate Person structured data
-  const personSchema: Record<string, any> = {
+  const personSchema: Record<string, unknown> = {
     "@context": "https://schema.org",
     "@type": "Person",
     name,

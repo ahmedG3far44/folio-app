@@ -26,12 +26,12 @@ router.get("/layouts", authenticated, async (req, res) => {
           usersId: user.id,
         },
       });
-      res.status(200).json(layouts);
+      return res.status(200).json(layouts);
     }
-   
-    res.status(200).json(userLayouts);
+    
+    return res.status(200).json(userLayouts);
   } catch (error) {
-    res.status(500).json(new Exceptions(500, error.message));
+    return res.status(500).json(new Exceptions(500, error.message));
   }
 });
 
@@ -44,7 +44,7 @@ router.put("/layouts/:id", authenticated, async (req, res) => {
     const validLayoutsPayload = layoutsSchema.safeParse(payload);
 
     if (!validLayoutsPayload.success) {
-          res.status(400).json(new Exceptions(400, "Bad request not valid data"));
+          return res.status(400).json(new Exceptions(400, "Bad request not valid data"));
     }
 
     const newLayout = await prisma.layouts.update({
@@ -55,12 +55,12 @@ router.put("/layouts/:id", authenticated, async (req, res) => {
       data: { ...validLayoutsPayload.data },
     });
 
-    res.status(200).json({
+    return res.status(200).json({
       data: newLayout,
       message: "layout info was updated successfully",
     });
   } catch (error) {
-    res.status(500).json(new Exceptions(500, error.message));
+    return res.status(500).json(new Exceptions(500, error.message));
   }
 });
 

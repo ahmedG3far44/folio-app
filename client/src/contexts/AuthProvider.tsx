@@ -60,15 +60,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       picture: "",
       resume: "",
       role: "USER",
-      activeTheme: {
-        id: "cmd2t3dit0001uzhkshrx838w",
-        themeName: "Midnight Eclipse",
-        backgroundColor: "#0a0a0a",
-        borderColor: "#262626",
-        cardColor: "#171717",
-        primaryText: "#fafafa",
-        secondaryText: "#a3a3a3",
-      },
+        activeTheme: {
+          id: "1",
+          themeName: "Midnight",
+          backgroundColor: "#0c0a0e",
+          borderColor: "#2a2530",
+          cardColor: "#17131a",
+          primaryText: "#f5f3f7",
+          secondaryText: "#9a94a3",
+        },
     });
   };
   return (

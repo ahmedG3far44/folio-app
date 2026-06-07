@@ -98,7 +98,7 @@ router.post(
       });
       res.status(201).json({ data: newSkill, message: "a new skill added" });
     } catch (err) {
-      res.status(200).json({ data: "failed not upload", message: err.message });
+      res.status(500).json({ data: "failed not upload", message: err.message });
     }
   }
 );

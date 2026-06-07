@@ -5,14 +5,10 @@ import {
   useState,
   useEffect,
   useCallback,
-  Suspense,
 } from "react";
-import { easeIn, easeInOut, motion } from "motion/react";
-import { Link } from "react-router-dom";
+import { motion } from "motion/react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { Helmet } from "react-helmet-async";
-
-import Container from "@/components/Container";
 
 import {
   Atom,
@@ -29,261 +25,341 @@ import PrimaryBtn from "@/components/buttons/PrimaryBtn";
 import Logo from "@/components/Logo";
 import User from "@/components/User";
 import Image from "@/components/ui/image";
+import DemoCredentialsPopup from "@/components/DemoCredentialsPopup";
 
-const ProfileImage = memo(() => (
-  <motion.div
-    initial={{ scale: 0.8 }}
-    whileHover={{ scale: 1 }}
-    whileTap={{ scale: 1 }}
-    className="cursor-pointer w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border border-purple-500"
-  >
-    <Image
-      width={40}
-      height={40}
-      className="w-full h-full object-cover"
-      src="OIP.webp"
-      alt="Ahmed Gaafar - Full Stack Developer Profile"
+const FEATURE_IMAGES = [
+  "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=80",
+  "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+];
+
+const FeatureImage = memo(({ src, index }: { src: string; index: number }) => (
+  <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
+    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/40 via-purple-500/15 to-purple-900/60 z-10" />
+    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-transparent to-transparent z-10" />
+    <img
+      className="w-full h-full object-cover aspect-video"
+      src={src}
+      alt=""
+      loading={index < 2 ? "eager" : "lazy"}
     />
-  </motion.div>
+  </div>
 ));
-ProfileImage.displayName = "ProfileImage";
-
-const FeatureCard = memo(({ feature }: { feature: IFeatureType }) => (
-  <motion.article
-    whileHover={{ translateY: -5 }}
-    transition={{ duration: 0.2, ease: easeInOut }}
-    className="w-full h-full cursor-pointer"
-  >
-    <div className="w-full h-full border flex justify-start items-start flex-col gap-4 p-4 bg-zinc-950 rounded-xl shadow-md border-zinc-800 text-white">
-      <div className="w-full flex justify-start items-center gap-4">
-        <div
-          className="border border-zinc-500 text-zinc-500 rounded-lg p-2"
-          aria-hidden="true"
-        >
-          {feature.icon}
-        </div>
-        <h3 className="text-xl text-zinc-300 font-bold">{feature.title}</h3>
-      </div>
-      <p className="text-sm text-zinc-300">{feature.text}</p>
-    </div>
-  </motion.article>
-));
-FeatureCard.displayName = "FeatureCard";
+FeatureImage.displayName = "FeatureImage";
 
 const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
-  <section
-    className="lg:h-screen p-4 flex flex-col items-center justify-center lg:gap-4 relative"
-    aria-label="Hero section"
-  >
-    <motion.div
-      className="hidden lg:block opacity-25 blur-3xl absolute left-20 top-10 bg-gradient-to-br from-purple-500 to-blue-500 w-96 h-96 rounded-full animate-around z-1"
-      initial={false}
-      aria-hidden="true"
-    />
-    <motion.div
-      className="hidden lg:block opacity-25 blur-3xl absolute right-20 bottom-10 bg-gradient-to-br from-purple-500 to-blue-500 w-96 h-96 rounded-full animate-around-back z-1"
-      initial={false}
-      aria-hidden="true"
-    />
-
-    <div className="flex flex-col items-center justify-center space-y-4 z-5">
-      <motion.h1
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6, ease: easeInOut }}
-        className="lg:text-6xl text-3xl flex flex-col items-center justify-center font-black"
-      >
-        <motion.span
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.6 }}
-          className="text-purple-500"
-        >
-          Build a Portfolio,
-        </motion.span>{" "}
-        <motion.span
-          className="text-white"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-        >
-          Share What You Do Best
-        </motion.span>
-      </motion.h1>
-      <p className="text-sm lg:w-1/2 w-3/4 text-center text-zinc-400">
-        Easily create a digital profile that reflects your talents and
-        experience. Share your skills, feedback, and success stories with a
-        style that's totally you
-      </p>
-      <nav
-        className="w-[30%] flex items-center gap-2"
-        aria-label="Primary navigation"
-      >
-        {!isLogged && (
-          <SecondaryBtn path="signup">Get Started Now</SecondaryBtn>
-        )}
-        <PrimaryBtn
-          className="flex-1 text-nowrap flex justify-center items-center gap-2"
-          path="https://github.com/ahmedG3far44/Presento-Online-Platform"
-          target="_blank"
-        >
-          <Github size={20} aria-hidden="true" />
-          Github Repo
-        </PrimaryBtn>
-      </nav>
-      <div>
-        <p className="lg:text-sm text-[12px] mt-2 text-zinc-400">
-          Designed & created by{" "}
-          <Link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline hover:text-purple-500"
-            to="https://www.linkedin.com/in/ahmed-gaafar-5a3478201/"
+  <section className="min-h-screen flex items-center px-6 lg:px-12" aria-label="Hero section">
+    <div className="w-full max-w-7xl mx-auto gap-12 lg:gap-20 items-center">
+      <div className="space-y-8 z-10 flex flex-col items-center justify-center gap-8">
+        <div className="space-y-4 text-center">
+          <motion.span
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-purple-400"
           >
-            @ahmedG3far44
-          </Link>
-        </p>
-        <div className="flex items-center justify-center gap-2 p-4">
-          <Link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:underline hover:text-purple-500"
-            to="https://www.linkedin.com/in/ahmed-gaafar-5a3478201/"
-            aria-label="Visit Ahmed Gaafar's LinkedIn profile"
+            Portfolio builder
+          </motion.span>
+          <motion.h1
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+            className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight"
           >
-            <ProfileImage />
-          </Link>
+            <span className="text-white">Build a portfolio,</span>
+            <br />
+            <span className="text-purple-400">share what you do best</span>
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+            className="text-base sm:text-lg text-zinc-400 max-w-lg leading-relaxed text-center mx-auto"
+          >
+            Create a digital profile that reflects your talents and experience.
+            Share your skills, feedback, and success stories with a style that's
+            totally you.
+          </motion.p>
         </div>
+        <motion.nav
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+          className="flex flex-wrap items-center gap-4"
+          aria-label="Primary navigation"
+        >
+          {!isLogged && (
+            <SecondaryBtn path="signup">Get Started Now</SecondaryBtn>
+          )}
+          <a
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-zinc-700 text-zinc-300 text-sm hover:bg-zinc-800 transition-colors duration-150"
+            href="https://github.com/ahmedG3far44/Presento-Online-Platform"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <Github size={18} />
+            GitHub Repo
+          </a>
+        </motion.nav>
       </div>
+
     </div>
   </section>
 ));
 HeroSection.displayName = "HeroSection";
 
-const VideoSection = memo(({ activeState }: { activeState?: boolean }) => (
-  <section
-    className="w-full p-4 flex flex-col items-center justify-center lg:gap-4 gap-2 relative"
-    aria-label="Features showcase"
-  >
-    <motion.h2
-      initial={{ scaleY: 0, opacity: 0 }}
-      whileInView={{ scaleY: 1, opacity: 1 }}
-      viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.3, ease: easeIn }}
-      className="lg:text-6xl text-4xl font-black text-purple-500 text-center lg:my-4"
-    >
-      Showcasing Our Features {activeState}
-    </motion.h2>
+const ShowcaseSection = memo(() => (
+  <section className="px-6 lg:px-12 py-24 lg:py-32" aria-label="Platform showcase">
+    <div className="w-full max-w-7xl mx-auto space-y-12">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+        className="max-w-xl"
+      >
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+          See it in action
+        </h2>
+        <p className="mt-4 text-base text-zinc-400 leading-relaxed">
+          From blank canvas to live portfolio in minutes. Customize every section,
+          choose your layout, and publish.
+        </p>
+      </motion.div>
 
-    <div
-      className="hidden w-[400px] h-[400px] lg:block opacity-25 blur-3xl absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full z-1"
-      aria-hidden="true"
-    />
-    <motion.div
-      initial={{ opacity: 0, scaleY: 0.5, scaleX: 0.5, translateY: 20 }}
-      whileInView={{ opacity: 1, scaleY: 1, scaleX: 1, translateY: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, ease: easeInOut }}
-      className="p-4 w-[700px]  flex items-center justify-center  rounded-2xl overflow-hidden shadow-xl lg:my-20 z-5 relative"
-    >
-      <Image
-        property="true"
-        className="rounded-2xl object-cover z-4 shadow-2xl border border-zinc-950"
-        src={"./showcase.gif"}
-        alt="Animated demonstration of portfolio builder features and customization options"
-        width={700}
-      />
-    </motion.div>
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+        className="rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl"
+      >
+        <Image
+          className="w-full object-cover"
+          src="./showcase.gif"
+          alt="Folio platform walkthrough showing portfolio creation flow"
+          width={1200}
+        />
+      </motion.div>
+    </div>
   </section>
 ));
-VideoSection.displayName = "VideoSection";
+ShowcaseSection.displayName = "ShowcaseSection";
+
+const FeatureBlock = memo(
+  ({
+    feature,
+    index,
+  }: {
+    feature: IFeatureType;
+    index: number;
+  }) => {
+    const isReversed = index % 2 === 1;
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
+        className={`grid lg:grid-cols-2 gap-8 lg:gap-16 items-center ${
+          isReversed ? "lg:direction-rtl" : ""
+        }`}
+      >
+        <div className={isReversed ? "lg:order-2" : ""}>
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 mb-5">
+            {feature.icon}
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-3">
+            {feature.title}
+          </h3>
+          <p className="text-base text-zinc-400 leading-relaxed max-w-md">
+            {feature.text}
+          </p>
+        </div>
+        <div
+          className={isReversed ? "lg:order-1" : ""}
+        >
+          <FeatureImage src={FEATURE_IMAGES[index]} index={index} />
+        </div>
+      </motion.div>
+    );
+  }
+);
+FeatureBlock.displayName = "FeatureBlock";
+
+const FeaturesSection = memo(
+  ({ featuresCard }: { featuresCard: IFeatureType[] }) => (
+    <section className="px-6 lg:px-12 py-24 lg:py-32" aria-label="Features">
+      <div className="w-full max-w-7xl mx-auto space-y-20 lg:space-y-28">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+          className="max-w-xl"
+        >
+          <span className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-purple-400 mb-3">
+            Everything you need
+          </span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+            Main Features
+          </h2>
+          <p className="mt-4 text-base text-zinc-400 leading-relaxed">
+            Six core capabilities that make building your portfolio feel natural.
+          </p>
+        </motion.div>
+
+        <div className="space-y-20 lg:space-y-28">
+          {featuresCard.map((feature, index) => (
+            <FeatureBlock
+              key={`feature-${index}`}
+              feature={feature}
+              index={index}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+);
+FeaturesSection.displayName = "FeaturesSection";
 
 const VideoGalleryComponent = memo(() => (
   <section
-    className="w-full lg:h-[700px] h-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 lg:grid-rows-2 gap-4 p-4"
+    className="px-6 lg:px-12 py-24 lg:py-32"
     aria-label="Portfolio template gallery"
   >
-    <div className="border rounded-2xl lg:col-start-1 lg:col-end-3 border-zinc-900">
-      <video
-        preload="none"
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="w-full h-full rounded-2xl object-cover"
-        aria-label="Portfolio template example 1"
+    <div className="w-full max-w-7xl mx-auto space-y-12">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+        className="max-w-xl"
       >
-        <source src={"./video-2.mp4"} type="video/mp4" />
-      </video>
-    </div>
+        <span className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-purple-400 mb-3">
+          Templates
+        </span>
+        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
+          Variant customized portfolio pages
+        </h2>
+        <p className="mt-4 text-base text-zinc-400 leading-relaxed">
+          Each layout option gives your portfolio a distinct visual identity.
+          Choose the one that fits your style.
+        </p>
+      </motion.div>
 
-    <div className="border rounded-2xl border-zinc-900">
-      <video
-        preload="none"
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="w-full h-full rounded-2xl object-cover"
-        src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4"
-        aria-label="Portfolio template example 2"
-      />
-    </div>
-    <div className="border rounded-2xl lg:col-start-1 lg:col-end-2 border-zinc-900">
-      <video
-        preload="none"
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="w-full h-full rounded-2xl object-cover"
-        src="https://cdn.dribbble.com/userupload/15153126/file/original-e020287a0dc270092df19c2738aff2c0.mp4"
-        aria-label="Portfolio template example 3"
-      />
-    </div>
-    <div className="border rounded-2xl lg:col-start-2 lg:col-end-4 border-zinc-900">
-      <video
-        preload="none"
-        autoPlay
-        muted
-        loop
-        playsInline
-        className="w-full h-full rounded-2xl object-cover"
-        src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4"
-        aria-label="Portfolio template example 4"
-      />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 rounded-2xl overflow-hidden border border-zinc-800">
+          <video
+            preload="none"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            aria-label="Portfolio template layout example 1"
+          >
+            <source src="./video-2.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div className="rounded-2xl overflow-hidden border border-zinc-800">
+          <video
+            preload="none"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            aria-label="Portfolio template layout example 2"
+          >
+            <source src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div className="rounded-2xl overflow-hidden border border-zinc-800">
+          <video
+            preload="none"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            aria-label="Portfolio template layout example 3"
+          >
+            <source src="https://cdn.dribbble.com/userupload/15153126/file/original-e020287a0dc270092df19c2738aff2c0.mp4" type="video/mp4" />
+          </video>
+        </div>
+        <div className="lg:col-span-2 rounded-2xl overflow-hidden border border-zinc-800">
+          <video
+            preload="none"
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="w-full h-full object-cover"
+            aria-label="Portfolio template layout example 4"
+          >
+            <source src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4" type="video/mp4" />
+          </video>
+        </div>
+      </div>
     </div>
   </section>
 ));
 
 VideoGalleryComponent.displayName = "VideoGalleryComponent";
 
-const FeaturesSection = memo(
-  ({ featuresCard }: { featuresCard: IFeatureType[] }) => (
-    <>
-      <div className="p-4 w-full flex items-center justify-center">
-        <motion.h2
-          initial={{ scaleY: 0, opacity: 0 }}
-          whileInView={{ scaleY: 1, opacity: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.3, ease: easeIn }}
-          className="lg:text-6xl text-4xl font-black text-purple-500"
-        >
-          Main Features
-        </motion.h2>
+function Footer() {
+  const { isLogged, user } = useAuth();
+  return (
+    <footer className="w-full border-t border-zinc-800 mt-24">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-12">
+          <div className="max-w-sm">
+            <Logo />
+            <p className="text-sm text-zinc-500 mt-4 leading-relaxed">
+              Showcase your creative work with a professional portfolio. Build,
+              share, and grow your online presence.
+            </p>
+          </div>
+
+          <div className="flex flex-col items-start gap-4">
+            {isLogged ? (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full overflow-hidden">
+                  <Image
+                    className="object-cover w-full h-full"
+                    width={40}
+                    height={40}
+                    src={user?.picture as string}
+                    alt={`${user.name} profile picture`}
+                  />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-zinc-300">{user.name}</p>
+                  <p className="text-sm text-zinc-500">{user.email}</p>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <SecondaryBtn path="signup">Create Account</SecondaryBtn>
+                <PrimaryBtn path="login">Sign In</PrimaryBtn>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="mt-12 pt-8 border-t border-zinc-800/50">
+          <p className="text-sm text-zinc-600">
+            &copy; {new Date().getFullYear()} Folio. All rights reserved.
+          </p>
+        </div>
       </div>
-      <section
-        className="w-full p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 grid-flow-row gap-4"
-        aria-label="Key features"
-      >
-        {featuresCard.map((feature, index) => (
-          <FeatureCard key={`feature-${index}`} feature={feature} />
-        ))}
-      </section>
-    </>
-  )
-);
-FeaturesSection.displayName = "FeaturesSection";
+    </footer>
+  );
+}
 
 function LandingPage() {
   const { isLogged } = useAuth();
@@ -292,32 +368,32 @@ function LandingPage() {
   const featuresCard = useMemo(
     () => [
       {
-        icon: <LucideUser size={25} />,
+        icon: <LucideUser size={22} />,
         title: "Personalized Tech Portfolio",
         text: "Create a fully customizable portfolio showcasing personal details and expertise for professional presentation.",
       },
       {
-        icon: <BookAIcon size={25} />,
+        icon: <BookAIcon size={22} />,
         title: "Work Experience Highlights",
         text: "Add and highlight key work experiences and career progress in the tech industry.",
       },
       {
-        icon: <LucideBox size={25} />,
+        icon: <LucideBox size={22} />,
         title: "Project Showcases",
         text: "Display projects with descriptions, links, and visuals to demonstrate impactful work.",
       },
       {
-        icon: <Atom size={25} />,
+        icon: <Atom size={22} />,
         title: "Skills Breakdown",
         text: "List and categorize technical skills, tools, and programming languages for easy understanding",
       },
       {
-        icon: <Crop size={25} />,
+        icon: <Crop size={22} />,
         title: "Dynamic Layout Customization",
         text: "Choose from multiple layouts to tailor portfolio design to personal preferences.",
       },
       {
-        icon: <FilePen size={25} />,
+        icon: <FilePen size={22} />,
         title: "Interactive Section Management",
         text: "Easily customize and reorder sections like About Me, Work Experience, and Projects.",
       },
@@ -335,14 +411,12 @@ function LandingPage() {
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
-
     const throttledHandleScroll = () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
       }
       timeoutId = setTimeout(handleScroll, 16);
     };
-
     window.addEventListener("scroll", throttledHandleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", throttledHandleScroll);
@@ -352,7 +426,6 @@ function LandingPage() {
     };
   }, [handleScroll]);
 
-  // Structured Data for SEO
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -383,7 +456,6 @@ function LandingPage() {
   return (
     <>
       <Helmet>
-        {/* Primary Meta Tags */}
         <title>
           Folio - Build Your Professional Tech Portfolio | Portfolio Builder
         </title>
@@ -401,7 +473,6 @@ function LandingPage() {
         />
         <link rel="canonical" href="https://yourwebsite.com/" />
 
-        {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://yourwebsite.com/" />
         <meta
@@ -418,9 +489,7 @@ function LandingPage() {
         />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:site_name" content="Folio" />
 
-        {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://yourwebsite.com/" />
         <meta
@@ -436,117 +505,49 @@ function LandingPage() {
           content="https://yourwebsite.com/twitter-image.jpg"
         />
 
-        {/* Additional SEO Tags */}
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
         <meta name="author" content="Ahmed Gaafar" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-        {/* Structured Data */}
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
       </Helmet>
 
-      <div className="w-full flex flex-col justify-between gap-20 items-center m-auto min-h-screen overflow-hidden bg-zinc-950 text-white">
-        <Container>
-          <header className="w-full flex justify-between items-center p-4 lg:p-8">
-            <Logo />
-            <nav aria-label="User navigation">
-              {isLogged ? (
-                <div className="flex items-center space-x-4">
+      <div className="min-h-screen bg-zinc-950 text-white overflow-hidden">
+        <header className="fixed top-0 left-0 right-0 z-40 bg-zinc-950/80 backdrop-blur-sm border-b border-zinc-800/50">
+          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+            <div className="flex justify-between items-center h-16">
+              <Logo />
+              <nav aria-label="User navigation">
+                {isLogged ? (
                   <User dashboard={false} />
-                </div>
-              ) : (
-                <div className="space-x-4">
-                  <PrimaryBtn path="login">Login</PrimaryBtn>
-                  <SecondaryBtn path="signup">Sign Up</SecondaryBtn>
-                </div>
-              )}
-            </nav>
-          </header>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <PrimaryBtn path="login">Sign In</PrimaryBtn>
+                    <SecondaryBtn path="signup">Get Started</SecondaryBtn>
+                  </div>
+                )}
+              </nav>
+            </div>
+          </div>
+        </header>
 
-          <main>
+        <main>
+          <div className="pt-16">
             <HeroSection isLogged={isLogged} />
-            <VideoSection activeState={activeState} />
-            <motion.h2
-              initial={{ scaleY: 0, opacity: 0 }}
-              whileInView={{ scaleY: 1, opacity: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.3, ease: easeIn }}
-              className="lg:text-5xl text-4xl font-black text-purple-500 text-center lg:my-8"
-            >
-              Variant Customized Portfolio Page
-            </motion.h2>
-            <Suspense
-              fallback={
-                <div className="w-full h-[700px] bg-zinc-900 rounded-2xl animate-pulse" />
-              }
-            >
-              <VideoGalleryComponent />
-            </Suspense>
+            <ShowcaseSection />
+            <VideoGalleryComponent />
             <FeaturesSection featuresCard={featuresCard} />
-          </main>
-        </Container>
+          </div>
+        </main>
+
         <Footer />
       </div>
+      <DemoCredentialsPopup />
     </>
   );
 }
 
 export default LandingPage;
-
-function Footer() {
-  const { isLogged, user } = useAuth();
-  return (
-    <footer className="w-full flex items-center justify-center mt-auto bg-zinc-900">
-      <div className="lg:w-3/4 w-[90%] mx-auto py-12">
-        <div className="flex justify-between items-start lg:items-center flex-col md:flex-row lg:flex-row">
-          <div className="md:col-span-1 w-full lg:w-1/2">
-            <Logo />
-            <p className="text-sm mb-6 mt-4 w-full lg:w-1/2">
-              Showcase your creative work with a professional portfolio. Build,
-              share, and grow your online presence with our easy-to-use
-              platform.
-            </p>
-          </div>
-
-          <div className="flex items-end flex-col justify-center gap-2">
-            {isLogged ? (
-              <div className="flex items-center gap-2 py-4">
-                <div className="w-10 h-10 rounded-full overflow-hidden">
-                  <Image
-                    className="object-cover w-full h-full"
-                    width={40}
-                    height={40}
-                    src={user?.picture as string}
-                    alt={`${user.name} profile picture`}
-                  />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold">{user.name}</h3>
-                  <h4 className="text-sm">{user.email}</h4>
-                </div>
-              </div>
-            ) : (
-              <nav
-                className="flex flex-col items-start justify-start gap-4"
-                aria-label="Footer navigation"
-              >
-                <PrimaryBtn className="w-full text-center" path={"login"}>
-                  Login
-                </PrimaryBtn>
-                <SecondaryBtn path={"signup"}>Create Account</SecondaryBtn>
-              </nav>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col md:flex-row justify-between items-start lg:items-center">
-          <div className="text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} Folio. All rights reserved.
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}

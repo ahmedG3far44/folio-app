@@ -29,21 +29,21 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType>({
   activeTheme: {
     id: "1",
-    themeName: "Zinc",
-    backgroundColor: "#ffffff",
-    cardColor: "#fafafa",
-    primaryText: "#18181b",
-    secondaryText: "#71717a",
-    borderColor: "#e4e4e7",
+    themeName: "Midnight",
+    backgroundColor: "#0c0a0e",
+    cardColor: "#17131a",
+    primaryText: "#f5f3f7",
+    secondaryText: "#9a94a3",
+    borderColor: "#2a2530",
   },
   defaultTheme: {
     id: "2",
-    themeName: "Zinc Dark",
-    backgroundColor: "#09090b",
-    cardColor: "#18181b",
-    primaryText: "#fafafa",
-    secondaryText: "#a1a1aa",
-    borderColor: "#27272a",
+    themeName: "Midnight",
+    backgroundColor: "#0c0a0e",
+    cardColor: "#17131a",
+    primaryText: "#f5f3f7",
+    secondaryText: "#9a94a3",
+    borderColor: "#2a2530",
   },
   themesList: [],
   switchTheme: () => {},
@@ -55,22 +55,21 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
   const [userTheme, setActiveTheme] = useState<IThemeType>({
     id: "1",
-    themeName: "Zinc Light",
-    backgroundColor: "#ffffff",
-    cardColor: "#fafafa",
-    primaryText: "#18181b",
-    secondaryText: "#71717a",
-    borderColor: "#e4e4e7",
+    themeName: "Midnight",
+    backgroundColor: "#0c0a0e",
+    cardColor: "#17131a",
+    primaryText: "#f5f3f7",
+    secondaryText: "#9a94a3",
+    borderColor: "#2a2530",
   });
-  console.log(userTheme);
   const defaultTheme: IThemeType = {
     id: "2",
-    themeName: "Zinc Dark",
-    backgroundColor: "#09090b",
-    cardColor: "#18181b",
-    primaryText: "#fafafa",
-    secondaryText: "#a1a1aa",
-    borderColor: "#27272a",
+    themeName: "Midnight",
+    backgroundColor: "#0c0a0e",
+    cardColor: "#17131a",
+    primaryText: "#f5f3f7",
+    secondaryText: "#9a94a3",
+    borderColor: "#2a2530",
   };
 
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);

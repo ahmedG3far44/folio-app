@@ -121,7 +121,7 @@ function UserPage() {
   const generateStructuredData = () => {
     if (!bio) return null;
 
-    const structuredData: Record<string, any> = {
+    const structuredData: Record<string, unknown> = {
       "@context": "https://schema.org",
       "@type": "Person",
       name: bio.bioName || "Tech Professional",

@@ -56,7 +56,7 @@ function LoginPage() {
       setError(null);
       navigate(`/${user.id}`);
       return;
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError((err as Error).message);
       return;
     } finally {

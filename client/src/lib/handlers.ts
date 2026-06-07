@@ -199,7 +199,7 @@ export const updateById = async ({
     Object.entries(newUdatedInfo).forEach(([key, value]) => {
       formData.append(key, value);
     });
-    const response = await fetch(`${URL_SERVER}/${newUdatedInfo}/${id}`, {
+    const response = await fetch(`${URL_SERVER}/${updatedRoute}/${id}`, {
       method: "PUT",
       headers: {
         Authorization: `Bearer ${token}`,
