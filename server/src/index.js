@@ -59,7 +59,7 @@ app.get("/", async (req, res) => {
     `);
 });
 
-app.get("/healthz", async (req, res) => {
+app.get("/health", async (req, res) => {
   return res.send({ status: "ok", message: "Server is running" });
 });
 
