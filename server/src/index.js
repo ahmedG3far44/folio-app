@@ -55,7 +55,7 @@ app.get("/", async (req, res) => {
   return res.send(`
     <h1>Folio Server</h1> 
     <p>Welcome to the Folio server. This server provides the backend API for the Folio portfolio application.</p>
-    <p>For more information, visit the <a href="
+    <p>For more information, visit the <a href="https://github.com/ahmedG3far44/folio-app" target="_blank" rel="noopener noreferrer">Folio GitHub repository</a>.</p>
     `);
 });
 
