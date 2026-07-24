@@ -6,8 +6,7 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "@/contexts/AuthProvider";
 
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
-import { Briefcase, CirclePlus, XIcon } from "lucide-react";
+import { Briefcase, CirclePlus, X } from "lucide-react";
 
 import { useTheme } from "@/contexts/ThemeProvider";
 import { useUser } from "@/contexts/UserProvider";
@@ -21,12 +20,11 @@ import SubmitButton from "../submit-button";
 import UploadHere from "../cards/UploadHere";
 import ShowListCard from "../cards/ShowListCard";
 import Tiptap from "../Tiptap";
-
+import { Label } from "../ui/label";
 
 const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function ExperienceForm() {
-  
   const { token } = useAuth();
   const { activeTheme } = useTheme();
   const { experiences, setExperiences, pending } = useUser();
@@ -40,7 +38,6 @@ function ExperienceForm() {
   );
   const [content, setContent] = useState<string>("");
 
-
   const {
     register,
     reset,
@@ -51,110 +48,110 @@ function ExperienceForm() {
     resolver: zodResolver(experienceSchema),
   });
 
+  const inputStyle = {
+    backgroundColor: activeTheme.backgroundColor,
+    color: activeTheme.primaryText,
+    borderColor: activeTheme.borderColor,
+  };
+
   return (
-    <>
-      <div className="w-full flex flex-col gap-4 my-4">
-        <div className="w-full flex justify-between items-center">
-          <h1 style={{ color: activeTheme.primaryText }}>Experiences</h1>
-          <Button onClick={() => setIsOpen(!isOpen)}>
-            {!isOpen ? (
-              <>
-                <CirclePlus size={20} /> {"add experience"}
-              </>
-            ) : (
-              "cancel"
-            )}
-          </Button>
-        </div>
-        {isOpen && (
-          <form
-            onSubmit={handleSubmit(async () => {
-              const values = getValues();
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Experiences</h2>
+        <Button
+          variant="outline"
+          size="sm"
+          className="cursor-pointer"
+          onClick={() => {
+            setIsOpen(!isOpen);
+            if (isOpen) {
+              setIsUpdating(false);
+              setUpdateThisExperience(null);
+              setContent("");
+              setFile(null);
+            }
+          }}
+        >
+          {!isOpen ? (
+            <><CirclePlus size={16} /> Add</>
+          ) : (
+            <><X size={16} /> Close</>
+          )}
+        </Button>
+      </div>
 
-              const formData = new FormData();
+      {isOpen && (
+        <form
+          onSubmit={handleSubmit(async () => {
+            const values = getValues();
+            const formData = new FormData();
+            if (file) formData.append("file", file!);
+            Object.entries(values).forEach(([key, value]) => {
+              formData.append(key, value);
+            });
+            formData.append("role", content);
 
-              if (file) {
-                formData.append("file", file!);
-              }
-
-              Object.entries(values).forEach(([key, value]) => {
-                formData.append(key, value);
-              });
-              formData.append("role", content);
-        
-              try {
-                const response = await fetch(
-                  `${URL_SERVER}/experiences/${
-                    isUpdating ? updateThisExperience?.id : ""
-                  }`,
-                  {
-                    method: isUpdating ? "PUT" : "POST",
-                    headers: {
-                      Authorization: `Bearer ${token}`,
-                    },
-                    body: formData,
-                  }
-                );
-                if (!response.ok) {
-                  throw new Error("Failed to save experience");
+            try {
+              const response = await fetch(
+                `${URL_SERVER}/experiences/${isUpdating ? updateThisExperience?.id : ""}`,
+                {
+                  method: isUpdating ? "PUT" : "POST",
+                  headers: { Authorization: `Bearer ${token}` },
+                  body: formData,
                 }
-                const data = await response.json();
-                setExperiences(data.data);
-                setContent("");
-                reset();
-                toast.success("Experience saved successfully");
-                return data;
-              } catch (err) {
-                toast.error((err as Error).message);
-                return;
-              } finally {
-                setFile(null);
-                setIsOpen(false);
-                setIsUpdating(false);
-              }
-            })}
-            className="w-full p-2 flex flex-col justify-start items-center gap-6"
+              );
+              if (!response.ok) throw new Error("Failed to save experience");
+              const data = await response.json();
+              setExperiences(data.data);
+              setContent("");
+              reset();
+              toast.success("Experience saved successfully");
+            } catch (err) {
+              toast.error((err as Error).message);
+            } finally {
+              setFile(null);
+              setIsOpen(false);
+              setIsUpdating(false);
+            }
+          })}
+          className="space-y-4"
+        >
+          <div
+            className="rounded-xl border p-5 space-y-5"
+            style={{
+              backgroundColor: activeTheme.cardColor,
+              borderColor: activeTheme.borderColor,
+              color: activeTheme.primaryText,
+            }}
           >
-            <Card
-              style={{
-                backgroundColor: activeTheme.cardColor,
-                border: `1px solid ${activeTheme.borderColor}`,
-                color: activeTheme.primaryText,
-              }}
-              className="w-full"
-            >
-              <div className="w-full flex items-center justify-center gap-4 flex-col">
+            <div className="flex justify-center">
+              <div className="w-40">
                 {file ? (
                   <div
+                    className="relative border rounded-lg p-2 flex items-center justify-center"
                     style={{ borderColor: activeTheme.borderColor }}
-                    className="relative w-40 h-40 rounded-2xl border p-2 flex items-center justify-center"
                   >
                     <img
-                      style={{ borderColor: activeTheme.borderColor }}
-                      className="w-30 h-30 object-cover rounded-2xl"
+                      className="w-32 h-32 object-cover rounded-lg"
                       src={
                         typeof file === "string"
                           ? file
-                          : typeof file === "object"
-                          ? URL.createObjectURL(file!)
-                          : ""
+                          : URL.createObjectURL(file!)
                       }
-                      alt="company logo image"
+                      alt="company logo"
                     />
                     {!isSubmitting && (
                       <button
                         type="button"
-                        className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
+                        className="cursor-pointer bg-red-600 p-1.5 hover:bg-red-700 duration-150 absolute -top-2.5 -right-2.5 rounded-full text-white"
                         onClick={() => {
                           setFile(null);
                           if (updateThisExperience) {
-                            setUpdateThisExperience({
-                              ...updateThisExperience,
-                            });
+                            setUpdateThisExperience({ ...updateThisExperience });
                           }
                         }}
                       >
-                        <XIcon size={20} />
+                        <X size={14} />
                       </button>
                     )}
                   </div>
@@ -171,164 +168,139 @@ function ExperienceForm() {
                   }
                 />
               </div>
-            </Card>
-            <Card
-              style={{
-                backgroundColor: activeTheme.cardColor,
-                border: `1px solid ${activeTheme.borderColor}`,
-                color: activeTheme.secondaryText,
-              }}
-              className="p-4 w-full gap-4"
-            >
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="cName" style={{ color: activeTheme.primaryText }}>
+                Company Name
+              </Label>
               <input
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
+                style={inputStyle}
                 readOnly={isSubmitting}
-                className="p-2 border w-full rounded-md"
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
                 type="text"
                 id="cName"
                 placeholder="Company Name"
-                defaultValue={
-                  updateThisExperience ? updateThisExperience.cName : ""
-                }
+                defaultValue={updateThisExperience ? updateThisExperience.cName : ""}
                 {...register("cName")}
               />
               {errors.cName && (
-                <ErrorMessage
-                  message={errors.cName.message?.toString() as string}
-                />
+                <ErrorMessage message={errors.cName.message?.toString() || ""} />
               )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="position" style={{ color: activeTheme.primaryText }}>
+                Job Position
+              </Label>
               <input
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
+                style={inputStyle}
                 readOnly={isSubmitting}
-                defaultValue={
-                  updateThisExperience ? updateThisExperience.position : ""
-                }
-                className="w-full p-2 border rounded-md"
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
                 type="text"
                 id="position"
                 placeholder="Job Position"
+                defaultValue={updateThisExperience ? updateThisExperience.position : ""}
                 {...register("position")}
               />
               {errors.position && (
-                <ErrorMessage
-                  message={errors.position.message?.toString() as string}
-                />
+                <ErrorMessage message={errors.position.message?.toString() || ""} />
               )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="duration" style={{ color: activeTheme.primaryText }}>
+                Duration
+              </Label>
               <input
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
+                style={inputStyle}
                 readOnly={isSubmitting}
-                className="w-full p-2 border rounded-md"
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
                 type="text"
                 id="duration"
-                defaultValue={
-                  updateThisExperience ? updateThisExperience.duration : ""
-                }
-                placeholder="Job Duration"
+                placeholder="e.g. Jan 2020 - Present"
+                defaultValue={updateThisExperience ? updateThisExperience.duration : ""}
                 {...register("duration")}
               />
               {errors.duration && (
-                <ErrorMessage
-                  message={errors.duration.message?.toString() as string}
-                />
+                <ErrorMessage message={errors.duration.message?.toString() || ""} />
               )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label style={{ color: activeTheme.primaryText }}>Role Description</Label>
               <div
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                className="w-full my-4 p-4 border rounded-md"
+                className="rounded-lg border p-3"
+                style={inputStyle}
               >
                 <Tiptap content={content} setContent={setContent} />
               </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="location" style={{ color: activeTheme.primaryText }}>
+                Location
+              </Label>
               <input
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
+                style={inputStyle}
                 readOnly={isSubmitting}
-                className="w-full p-2 border rounded-md"
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
                 type="text"
                 id="location"
-                placeholder="Job Location"
-                defaultValue={
-                  updateThisExperience ? updateThisExperience.location : ""
-                }
+                placeholder="e.g. San Francisco, CA"
+                defaultValue={updateThisExperience ? updateThisExperience.location : ""}
                 {...register("location")}
               />
               {errors.location && (
-                <ErrorMessage
-                  message={errors.location.message?.toString() as string}
-                />
+                <ErrorMessage message={errors.location.message?.toString() || ""} />
               )}
-            </Card>
-            <SubmitButton
-              className="w-full mt-4"
-              loading={isSubmitting}
-              type="submit"
-            >
-              {isUpdating ? "update experience" : "add experience"}
-            </SubmitButton>
-          </form>
-        )}
-      </div>
-
-      <>
-        {pending ? (
-          <div className="w-full min-h-[400px] flex items-center justify-center">
-            <Loader size="md" />
+            </div>
           </div>
-        ) : (
-          <Card
-            style={{
-              color: activeTheme.primaryText,
-              backgroundColor: activeTheme.backgroundColor,
-              borderColor: activeTheme.borderColor,
-            }}
-            className="w-full  border flex flex-col justify-start items-start "
-          >
-            {experiences.length > 0 ? (
-              <>
-                {experiences.map((exp) => {
-                  return (
-                    <ShowListCard
-                      id={exp.id}
-                      key={exp.id}
-                      title={exp.cName}
-                      image={exp.cLogo}
-                      sectionName={"experiences"}
-                      setUpdate={() => {
-                        setIsUpdating(true);
-                        setIsOpen(true);
-                        setUpdateThisExperience(exp);
-                      }}
-                    />
-                  );
-                })}
-              </>
-            ) : (
-              <div className="w-full min-h-[400px] flex flex-col items-center justify-center gap-3">
-                <Briefcase size={32} className="opacity-30" />
-                <p className="text-sm opacity-50">No experiences yet</p>
-              </div>
-            )}
-          </Card>
-        )}
-      </>
-    </>
+
+          <SubmitButton className="w-full" loading={isSubmitting} type="submit">
+            {isUpdating ? "Update Experience" : "Add Experience"}
+          </SubmitButton>
+        </form>
+      )}
+
+      {pending ? (
+        <div className="w-full min-h-[300px] flex items-center justify-center">
+          <Loader size="md" />
+        </div>
+      ) : (
+        <div
+          className="space-y-2"
+          style={{ color: activeTheme.primaryText }}
+        >
+          {experiences.length > 0 ? (
+            experiences.map((exp) => (
+              <ShowListCard
+                id={exp.id}
+                key={exp.id}
+                title={exp.cName}
+                image={exp.cLogo}
+                sectionName={"experiences"}
+                setUpdate={() => {
+                  setIsUpdating(true);
+                  setIsOpen(true);
+                  setUpdateThisExperience(exp);
+                }}
+              />
+            ))
+          ) : (
+            <div className="w-full min-h-[300px] flex flex-col items-center justify-center gap-3 rounded-xl border"
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                borderColor: activeTheme.borderColor,
+              }}
+            >
+              <Briefcase size={32} className="opacity-30" />
+              <p className="text-sm opacity-50">No experiences yet</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

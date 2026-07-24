@@ -6,11 +6,11 @@ function ErrorMessage({
   message: string;
 }) {
   return (
-    <div
-      className={`${className} "p-1  text-sm text-rose-500 bg-transparent w-full rounded-md"`}
+    <p
+      className={`${className} text-xs text-rose-400 w-full`}
     >
       {message}
-    </div>
+    </p>
   );
 }
 

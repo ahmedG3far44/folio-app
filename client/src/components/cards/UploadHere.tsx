@@ -5,47 +5,34 @@ import { CloudUpload } from "lucide-react";
 function UploadHere({ inputId }: { inputId: string }) {
   const { activeTheme, defaultTheme } = useTheme();
   const { isLogged } = useAuth();
+  const theme = isLogged ? activeTheme : defaultTheme;
   return (
     <div
-      className={`px-4 py-8 min-h-[150px]  w-full  border border-dashed rounded-2xl flex items-center justify-center gap-2 cursor-pointer `}
-      style={
-        isLogged
-          ? {
-              color: activeTheme.primaryText,
-              border: `1px dashed ${activeTheme.borderColor}`,
-              backgroundColor: activeTheme.backgroundColor,
-            }
-          : {
-              color: defaultTheme.primaryText,
-              border: `1px dashed ${defaultTheme.borderColor}`,
-              backgroundColor: defaultTheme.backgroundColor,
-            }
-      }
+      className="relative w-full rounded-xl border-2 border-dashed transition-colors duration-150 hover:opacity-80 cursor-pointer"
+      style={{
+        color: theme.primaryText,
+        borderColor: theme.borderColor,
+        backgroundColor: theme.backgroundColor,
+      }}
     >
       <label
-        className=" cursor-pointer text-md flex flex-col items-center justify-center gap-1 hover:opacity-50 "
+        className="flex flex-col items-center justify-center gap-2 py-10 cursor-pointer"
         htmlFor={inputId}
       >
-        <div>
-          <CloudUpload size={25} />
-        </div>
-        <div className="flex justify-center items-center gap-2 text-sm">
-          <span className="underline cursor-pointer text-nowrap">
-            click to upload{" "}
-          </span>
-        </div>
-        <div
-          style={
-            isLogged
-              ? { color: activeTheme.secondaryText }
-              : { color: defaultTheme.secondaryText }
-          }
-          className="text-[10px] text-center mt-2"
+        <CloudUpload size={28} strokeWidth={1.5} />
+        <span className="text-sm underline underline-offset-2">
+          click to upload
+        </span>
+        <span
+          className="text-[11px] text-center max-w-[220px]"
+          style={{ color: theme.secondaryText }}
         >
           {inputId === "resume"
-            ? "PDF, DOCX, Word, Txt max size (2MB)"
-            : "JPEG, PNG, WEBP & GIF max(800px X 400px)"}
-        </div>
+            ? "PDF, DOCX, Word, Txt — max 2MB"
+            : inputId === "thumbnail"
+            ? "Image or Video — max 10MB"
+            : "JPEG, PNG, WEBP & GIF — max 4MB"}
+        </span>
       </label>
     </div>
   );

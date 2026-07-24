@@ -7,8 +7,7 @@ import Image from "../ui/image";
 
 function SkillCard({
   skill,
-}: // className,
-{
+}: {
   skill: ISkillType;
   className?: string;
 }) {
@@ -17,39 +16,38 @@ function SkillCard({
   const { layouts } = useUser();
   const { skillsLayout } = LayoutJson;
   const { child } = skillsLayout;
+
   return (
     <div
       style={{
         backgroundColor: activeTheme.cardColor,
         borderColor: activeTheme.borderColor,
       }}
-      className={`
-        p-4 border 
-      ${
-        layouts.skillsLayout === "1"
-          ? child?.default
-          : layouts.skillsLayout === "2"
-          ? child?.medium
-          : layouts.skillsLayout === "3"
-          ? child.minimal
-          : layouts.skillsLayout === "4"
-          ? child?.wizard
-          : layouts.skillsLayout === "5"
-          ? child?.accent
-          : "1"
-      }`}
+      className={`p-4 md:p-5 flex items-center gap-3 md:gap-4
+        ${
+          layouts.skillsLayout === "1"
+            ? child?.default
+            : layouts.skillsLayout === "2"
+            ? child?.medium
+            : layouts.skillsLayout === "3"
+            ? child.minimal
+            : layouts.skillsLayout === "4"
+            ? child?.wizard
+            : layouts.skillsLayout === "5"
+            ? child?.accent
+            : ""
+        }`}
     >
       <div
-        className={`
-          w-12 h-12 overflow-hidden rounded-2xl
-        
-        ${layouts.skillsLayout === "2" ? "hidden" : "block "}`}
+        className={`w-10 h-10 md:w-12 md:h-12 shrink-0 overflow-hidden rounded-xl ${
+          layouts.skillsLayout === "2" ? "hidden" : "block"
+        }`}
       >
-        <Image src={skillLogo} alt={skillName} />
+        <Image className="w-full h-full object-cover" src={skillLogo} alt={skillName} />
       </div>
-      <div style={{ color: activeTheme.primaryText }}>
-        <h1 className="text-2xl font-black">{skillName}</h1>
-      </div>
+      <p className="text-lg md:text-xl font-bold truncate" style={{ color: activeTheme.primaryText }}>
+        {skillName}
+      </p>
     </div>
   );
 }

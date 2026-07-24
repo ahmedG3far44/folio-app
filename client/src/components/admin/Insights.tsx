@@ -83,54 +83,42 @@ function Insights() {
     );
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div
-            style={{
-              backgroundColor: activeTheme.cardColor,
-              borderColor: activeTheme.borderColor,
-            }}
-            className="p-3 rounded-lg border"
-          >
-            <Activity size={24} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">Dashboard Insights</h1>
-            <p style={{ color: activeTheme.secondaryText }} className="text-sm">
-              Overview of your platform statistics
-            </p>
-          </div>
+    <div className="space-y-5">
+      <div className="flex items-center gap-3">
+        <div>
+          <h1 className="text-xl font-bold">Insights</h1>
+          <p style={{ color: activeTheme.secondaryText }} className="text-sm">
+            Overview of platform statistics
+          </p>
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card
           style={{
-            background: `linear-gradient(135deg, ${activeTheme.cardColor} 0%, ${activeTheme.backgroundColor} 100%)`,
+            backgroundColor: activeTheme.cardColor,
             borderColor: activeTheme.borderColor,
+            color: activeTheme.primaryText,
           }}
-          className="p-6 border col-span-1 sm:col-span-2 lg:col-span-1"
+          className="p-5 border"
         >
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between mb-3">
             <div>
               <p
                 style={{ color: activeTheme.secondaryText }}
-                className="text-sm font-medium"
+                className="text-xs font-medium uppercase tracking-wide"
               >
-                Total Overview
+                Total
               </p>
-              <h2
-                style={{ color: activeTheme.primaryText }}
-                className="text-3xl font-bold mt-2"
-              >
+              <p className="text-2xl font-bold mt-1">
                 {totalCount.toLocaleString()}
-              </h2>
+              </p>
             </div>
             <div
               style={{ backgroundColor: activeTheme.backgroundColor }}
-              className="p-3 rounded-lg"
+              className="p-2.5 rounded-lg"
             >
-              <BarChart3 size={24} style={{ color: "#3b82f6" }} />
+              <BarChart3 size={20} style={{ color: statConfig.projects.color }} />
             </div>
           </div>
           <p style={{ color: activeTheme.secondaryText }} className="text-xs">
@@ -144,72 +132,66 @@ function Insights() {
             borderColor: activeTheme.borderColor,
             color: activeTheme.primaryText,
           }}
-          className="p-6 border"
+          className="p-5 border"
         >
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between mb-3">
             <div>
               <p
                 style={{ color: activeTheme.secondaryText }}
-                className="text-sm font-medium"
+                className="text-xs font-medium uppercase tracking-wide"
               >
-                Highest Category
+                Highest
               </p>
-              <h3
-                style={{ color: activeTheme.primaryText }}
-                className="text-xl font-bold mt-2 capitalize"
-              >
+              <p className="text-lg font-bold mt-1 capitalize">
                 {highestStat[0].split(/(?=[A-Z])/).join(" ")}
-              </h3>
+              </p>
             </div>
             <div
               style={{ backgroundColor: activeTheme.backgroundColor }}
-              className="p-3 rounded-lg"
+              className="p-2.5 rounded-lg"
             >
-              <TrendingUp size={20} style={{ color: "#10b981" }} />
+              <TrendingUp size={18} style={{ color: "#10b981" }} />
             </div>
           </div>
-          <p className="text-2xl font-bold" style={{ color: "#10b981" }}>
+          <p className="text-xl font-bold" style={{ color: "#10b981" }}>
             {highestStat[1].toLocaleString()}
           </p>
         </Card>
-          
+
         <Card
           style={{
             backgroundColor: activeTheme.cardColor,
             borderColor: activeTheme.borderColor,
             color: activeTheme.primaryText,
           }}
-          className="p-6 border"
+          className="p-5 border"
         >
-          <div className="flex items-start justify-between mb-4">
+          <div className="flex items-start justify-between mb-3">
             <div>
               <p
                 style={{ color: activeTheme.secondaryText }}
-                className="text-sm font-medium"
+                className="text-xs font-medium uppercase tracking-wide"
               >
-                Lowest Category
+                Lowest
               </p>
-              <h3
-                style={{ color: activeTheme.primaryText }}
-                className="text-xl font-bold mt-2 capitalize"
-              >
+              <p className="text-lg font-bold mt-1 capitalize">
                 {lowestStat[0].split(/(?=[A-Z])/).join(" ")}
-              </h3>
+              </p>
             </div>
             <div
               style={{ backgroundColor: activeTheme.backgroundColor }}
-              className="p-3 rounded-lg"
+              className="p-2.5 rounded-lg"
             >
-              <Activity size={20} style={{ color: "#f59e0b" }} />
+              <Activity size={18} style={{ color: "#f59e0b" }} />
             </div>
           </div>
-          <p className="text-2xl font-bold" style={{ color: "#f59e0b" }}>
+          <p className="text-xl font-bold" style={{ color: "#f59e0b" }}>
             {lowestStat[1].toLocaleString()}
           </p>
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {Object.entries(insights).map(([key, value]) => {
           const config = statConfig[key as keyof typeof statConfig];
           const Icon = config?.icon || Box;
@@ -224,42 +206,37 @@ function Insights() {
                 borderColor: activeTheme.borderColor,
                 color: activeTheme.primaryText,
               }}
-              className="p-5 border hover:shadow-lg transition-all duration-200 group"
+              className="p-4 border"
             >
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
+              <div className="flex items-start justify-between mb-3">
+                <div className="flex-1 min-w-0">
                   <p
                     style={{ color: activeTheme.secondaryText }}
-                    className="text-sm font-medium uppercase tracking-wide"
+                    className="text-xs font-medium uppercase tracking-wide"
                   >
                     {config?.label || key}
                   </p>
-                  <h2 className="text-3xl font-bold mt-2 group-hover:scale-105 transition-transform">
+                  <p className="text-2xl font-bold mt-1">
                     {value.toLocaleString()}
-                  </h2>
+                  </p>
                 </div>
                 <div
-                  style={{
-                    backgroundColor: config?.color + "20",
-                  }}
-                  className="p-3 rounded-xl"
+                  style={{ backgroundColor: activeTheme.backgroundColor }}
+                  className="p-2 rounded-lg shrink-0"
                 >
-                  <Icon size={24} style={{ color: config?.color }} />
+                  <Icon size={18} style={{ color: config?.color }} />
                 </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <div className="flex items-center justify-between text-xs">
                   <span style={{ color: activeTheme.secondaryText }}>
-                    {config?.description}
-                  </span>
-                  <span className="font-bold" style={{ color: config?.color }}>
-                    {percentage}%
+                    {percentage}% of total
                   </span>
                 </div>
                 <div
                   style={{ backgroundColor: activeTheme.backgroundColor }}
-                  className="h-2 rounded-full overflow-hidden"
+                  className="h-1.5 rounded-full overflow-hidden"
                 >
                   <div
                     className="h-full rounded-full transition-all duration-500"
@@ -274,152 +251,142 @@ function Insights() {
           );
         })}
       </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Card
+        <div
           style={{
             backgroundColor: activeTheme.cardColor,
             borderColor: activeTheme.borderColor,
-            color: activeTheme.primaryText,
           }}
-          className="p-6 border"
+          className="p-5 rounded-lg border"
         >
-          <div className="mb-6">
-            <h3 style={{ color: activeTheme.primaryText }} className="text-lg font-semibold flex items-center gap-2">
-              <TrendingUp size={20} />
-              Data Comparison
-            </h3>
-            <p
-              style={{ color: activeTheme.secondaryText }}
-              className="text-sm mt-1"
-            >
-              Comparative view of platform metrics
-            </p>
-          </div>
-          <div className="w-full mx-auto max-w-full  ">
+          <h3
+            style={{ color: activeTheme.primaryText }}
+            className="text-sm font-semibold flex items-center gap-2 mb-4"
+          >
+            <TrendingUp size={16} />
+            Data Comparison
+          </h3>
+          <div className="w-full">
             <BarChartComponent data={listInsights} />
           </div>
-        </Card>
-      </div>
-      <Card
-        style={{
-          backgroundColor: activeTheme.cardColor,
-          borderColor: activeTheme.borderColor,
-        }}
-        className="p-6 border"
-      >
-        <h3
-          style={{ color: activeTheme.primaryText }}
-          className="text-lg font-semibold mb-4"
-        >
-          Detailed Breakdown
-        </h3>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  borderColor: activeTheme.borderColor,
-                  color: activeTheme.secondaryText,
-                }}
-                className="border-b"
-              >
-                <th className="text-left p-3 font-semibold text-sm">
-                  Category
-                </th>
-                <th className="text-right p-3 font-semibold text-sm">Count</th>
-                <th className="text-right p-3 font-semibold text-sm">
-                  Percentage
-                </th>
-                <th className="text-right p-3 font-semibold text-sm">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {Object.entries(insights)
-                .sort((a, b) => b[1] - a[1])
-                .map(([key, value], index) => {
-                  const config = statConfig[key as keyof typeof statConfig];
-                  const Icon = config?.icon || Box;
-                  const percentage =
-                    totalCount > 0
-                      ? ((value / totalCount) * 100).toFixed(1)
-                      : 0;
-
-                  return (
-                    <tr
-                      key={key}
-                      style={{
-                        borderColor: activeTheme.borderColor,
-                        color: activeTheme.primaryText,
-                      }}
-                      className="border-b last:border-b-0 hover:bg-opacity-50 transition-colors"
-                    >
-                      <td className="p-3">
-                        <div className="flex items-center gap-3">
-                          <div
-                            style={{ backgroundColor: config?.color + "20" }}
-                            className="p-2 rounded-lg"
-                          >
-                            <Icon size={18} style={{ color: config?.color }} />
-                          </div>
-                          <span
-                            style={{ color: activeTheme.primaryText }}
-                            className="font-medium"
-                          >
-                            {config?.label || key}
-                          </span>
-                        </div>
-                      </td>
-                      <td
-                        style={{ color: activeTheme.primaryText }}
-                        className="p-3 text-right font-bold text-lg"
-                      >
-                        {value.toLocaleString()}
-                      </td>
-                      <td
-                        style={{ color: activeTheme.primaryText }}
-                        className="p-3 text-right"
-                      >
-                        <span
-                          className="inline-block px-3 py-1 rounded-full text-sm font-medium"
-                          style={{
-                            backgroundColor: config?.color + "20",
-                            color: activeTheme.primaryText,
-                          }}
-                        >
-                          {percentage}%
-                        </span>
-                      </td>
-                      <td
-                        style={{ color: activeTheme.primaryText }}
-                        className="p-3 text-right"
-                      >
-                        {index === 0 && (
-                          <span
-                            style={{ color: "#10b981" }}
-                            className="inline-flex items-center gap-1 text-sm font-medium"
-                          >
-                            <TrendingUp size={14} />
-                            Highest
-                          </span>
-                        )}
-                        {index === Object.entries(insights).length - 1 && (
-                          <span
-                            className="inline-flex items-center gap-1 text-sm font-medium"
-                            style={{ color: "#f59e0b" }}
-                          >
-                            <Activity size={14} />
-                            Lowest
-                          </span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
         </div>
-      </Card>
+
+        <div
+          style={{
+            backgroundColor: activeTheme.cardColor,
+            borderColor: activeTheme.borderColor,
+          }}
+          className="p-5 rounded-lg border"
+        >
+          <h3
+            style={{ color: activeTheme.primaryText }}
+            className="text-sm font-semibold mb-4"
+          >
+            Detailed Breakdown
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr
+                  style={{ borderColor: activeTheme.borderColor }}
+                  className="border-b"
+                >
+                  <th
+                    className="text-left pb-2 font-medium text-xs uppercase tracking-wide"
+                    style={{ color: activeTheme.secondaryText }}
+                  >
+                    Category
+                  </th>
+                  <th
+                    className="text-right pb-2 font-medium text-xs uppercase tracking-wide"
+                    style={{ color: activeTheme.secondaryText }}
+                  >
+                    Count
+                  </th>
+                  <th
+                    className="text-right pb-2 font-medium text-xs uppercase tracking-wide"
+                    style={{ color: activeTheme.secondaryText }}
+                  >
+                    %
+                  </th>
+                  <th
+                    className="text-right pb-2 font-medium text-xs uppercase tracking-wide"
+                    style={{ color: activeTheme.secondaryText }}
+                  >
+                    Rank
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(insights)
+                  .sort((a, b) => b[1] - a[1])
+                  .map(([key, value], index) => {
+                    const config = statConfig[key as keyof typeof statConfig];
+                    const Icon = config?.icon || Box;
+                    const percentage =
+                      totalCount > 0
+                        ? ((value / totalCount) * 100).toFixed(1)
+                        : 0;
+
+                    return (
+                      <tr
+                        key={key}
+                        style={{ borderColor: activeTheme.borderColor, color: activeTheme.primaryText }}
+                        className="border-b last:border-b-0"
+                      >
+                        <td className="py-3 pr-3">
+                          <div className="flex items-center gap-2.5">
+                            <div
+                              style={{ backgroundColor: activeTheme.backgroundColor }}
+                              className="p-1.5 rounded-md"
+                            >
+                              <Icon size={14} style={{ color: config?.color }} />
+                            </div>
+                            <span className="font-medium text-sm">
+                              {config?.label || key}
+                            </span>
+                          </div>
+                        </td>
+                        <td className="py-3 px-3 text-right font-semibold">
+                          {value.toLocaleString()}
+                        </td>
+                        <td className="py-3 px-3 text-right">
+                          <span
+                            className="text-xs font-medium"
+                            style={{ color: config?.color }}
+                          >
+                            {percentage}%
+                          </span>
+                        </td>
+                        <td className="py-3 pl-3 text-right">
+                          {index === 0 && (
+                            <span
+                              style={{ color: "#10b981" }}
+                              className="inline-flex items-center gap-1 text-xs font-medium"
+                            >
+                              <TrendingUp size={12} />
+                              Highest
+                            </span>
+                          )}
+                          {index === Object.entries(insights).length - 1 && (
+                            <span
+                              className="inline-flex items-center gap-1 text-xs font-medium"
+                              style={{ color: "#f59e0b" }}
+                            >
+                              <Activity size={12} />
+                              Lowest
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

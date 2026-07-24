@@ -1,58 +1,60 @@
 import { useTheme } from "@/contexts/ThemeProvider";
 import { IContactType } from "@/lib/types";
 import { Github, Linkedin, Twitter, Youtube } from "lucide-react";
-import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 function ShowUserContacts({ contacts }: { contacts?: IContactType }) {
-  const { activeTheme } = useTheme();
   return (
-    <div className="flex justify-start items-start gap-2">
-   
+    <div className="flex items-center gap-2">
       {contacts?.github && (
         <ContactIcon
           path={contacts.github}
-          icons={<Github color={activeTheme.primaryText} size={20} />}
-        />
+          label="GitHub"
+        >
+          <Github size={18} />
+        </ContactIcon>
       )}
       {contacts?.youtube && (
         <ContactIcon
           path={contacts.youtube}
-          icons={<Youtube color={activeTheme.primaryText} size={20} />}
-        />
+          label="YouTube"
+        >
+          <Youtube size={18} />
+        </ContactIcon>
       )}
       {contacts?.twitter && (
         <ContactIcon
           path={contacts.twitter}
-          icons={<Twitter color={activeTheme.primaryText} size={20} />}
-        />
+          label="Twitter"
+        >
+          <Twitter size={18} />
+        </ContactIcon>
       )}
       {contacts?.linkedin && (
         <ContactIcon
           path={contacts.linkedin}
-          icons={<Linkedin color={activeTheme.primaryText} size={20} />}
-        />
+          label="LinkedIn"
+        >
+          <Linkedin size={18} />
+        </ContactIcon>
       )}
     </div>
   );
 }
 
-function ContactIcon({ path, icons }: { path: string; icons: ReactNode }) {
+function ContactIcon({ path, label, children }: { path: string; label: string; children: React.ReactNode }) {
   const { activeTheme } = useTheme();
   return (
     <Link
       style={{
-        backgroundColor: activeTheme.cardColor,
-        border: `1px solid ${activeTheme.borderColor}`,
+        color: activeTheme.secondaryText,
       }}
-      className="p-2 border rounded-lg hover:opacity-70 duration-150   cursor-pointer"
+      className="p-2 rounded-lg hover:opacity-70 hover:scale-110 transition-all duration-200 cursor-pointer"
       target="_blank"
       to={path}
+      aria-label={label}
     >
-      <span>
-        <label className="hidden">Linkedin Profile Link</label>
-        {icons}
-      </span>
+      {children}
     </Link>
   );
 }

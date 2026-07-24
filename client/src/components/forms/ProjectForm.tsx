@@ -9,9 +9,8 @@ import { useTheme } from "@/contexts/ThemeProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 import { useUser } from "@/contexts/UserProvider";
 
-import { CirclePlus, XIcon } from "lucide-react";
+import { CirclePlus, X, FolderKanban } from "lucide-react";
 import { Button } from "../ui/button";
-import { Card } from "../ui/card";
 
 import Tiptap from "../Tiptap";
 import Loader from "../loader";
@@ -22,8 +21,12 @@ import UploadHere from "../cards/UploadHere";
 import ShowListCard from "../cards/ShowListCard";
 
 import checkUploadedImages from "@/lib/checkUploadedImages";
+import { Label } from "../ui/label";
 
 const URL_SERVER = import.meta.env.VITE_API_URL as string;
+
+const THUMBNAIL_MAX = 10 * 1024 * 1024;
+const IMAGE_MAX = 4 * 1024 * 1024;
 
 export type ProjectFormData = {
   title: string;
@@ -31,16 +34,15 @@ export type ProjectFormData = {
   description: string;
   tags: string[];
   thumbnail: File;
-  images: File[];
+  images: (File | IProjectImagesType)[];
 };
+
 function ProjectForm() {
   const { token } = useAuth();
   const { activeTheme } = useTheme();
   const { projects, setProjects, pending } = useUser();
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [updatedProject, setUpdatedProject] = useState<IProjectType | null>(
-    null
-  );
+  const [updatedProject, setUpdatedProject] = useState<IProjectType | null>(null);
 
   const [description, setDescription] = useState<string>("");
 
@@ -49,11 +51,18 @@ function ProjectForm() {
     updatedProject ? updatedProject.thumbnail : null
   );
   const [error, setError] = useState<string | null>(null);
-  const [images, setImages] = useState<File[] | IProjectImagesType[] | null>(
+  const [images, setImages] = useState<(File | IProjectImagesType)[] | null>(
     updatedProject ? updatedProject.ImagesList : null
   );
-  const [tags, setTags] = useState<string[] | []>([]);
+  const [tags, setTags] = useState<string[]>([]);
   const [oneTag, setOneTag] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const inputStyle = {
+    backgroundColor: activeTheme.backgroundColor,
+    color: activeTheme.primaryText,
+    borderColor: activeTheme.borderColor,
+  };
 
   const {
     register,
@@ -64,12 +73,14 @@ function ProjectForm() {
   } = useForm<z.infer<typeof projectSchema>>({
     resolver: zodResolver(projectSchema),
   });
+
   const handleAddingTags = () => {
     if (oneTag) {
       setTags([...tags, oneTag]);
       setOneTag(null);
     }
   };
+
   const addNewProject = async (data: ProjectFormData) => {
     const formData = new FormData();
     const { title, sourceUrl, description, tags, thumbnail, images } = data;
@@ -77,124 +88,167 @@ function ProjectForm() {
     if (sourceUrl) formData.append("sourceUrl", sourceUrl);
     formData.append("description", description);
     formData.append("thumbnail", thumbnail);
-    tags.forEach((tag) => {
-      formData.append("tags", tag);
-    });
-    images.forEach((img) => {
-      formData.append("image", img as File);
-    });
+    tags.forEach((tag) => formData.append("tags", tag));
+    images.forEach((img) => formData.append("image", img as File));
 
-    const response = await fetch(`${URL_SERVER}/project`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      body: formData,
-    });
+    setIsUploading(true);
+    try {
+      const response = await fetch(`${URL_SERVER}/project`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
 
-    if (!response.ok) {
-      const err = await response.json().catch(() => null);
-      throw new Error(err?.message || "Failed to add new project");
+      if (!response.ok) {
+        const err = await response.json().catch(() => null);
+        throw new Error(err?.message || "Failed to add new project");
+      }
+      const result = await response.json();
+      setProjects(result.data);
+      return result.data;
+    } finally {
+      setIsUploading(false);
     }
-    const result = await response.json();
-    setProjects(result.data);
-    return result.data;
   };
+
+  const handleThumbnailChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > THUMBNAIL_MAX) {
+      setError("Thumbnail must be less than 10MB");
+      e.target.value = "";
+      return;
+    }
+
+    setThumbnail(file);
+    setError(null);
+  };
+
+  const handleImagesChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    for (const f of Array.from(files)) {
+      if (f.size > IMAGE_MAX) {
+        setError(`"${f.name}" exceeds the 4MB limit`);
+        e.target.value = "";
+        return;
+      }
+    }
+
+    setImages([...files]);
+    setError(null);
+  };
+
+  const thumbnailSrc =
+    thumbnail instanceof File
+      ? URL.createObjectURL(thumbnail)
+      : thumbnail || "";
+
+  const isVideoFile = thumbnail instanceof File && thumbnail.type.startsWith("video/");
+
   return (
-    <>
-      <div className="w-full flex flex-col gap-4 my-4">
-        <div className="w-full flex justify-between items-center">
-          <h1>Project Form</h1>
-          <Button onClick={() => setIsOpen(!isOpen)}>
-            {!isOpen ? (
-              <>
-                <CirclePlus size={20} /> {"add project"}
-              </>
-            ) : (
-              "cancel"
-            )}
-          </Button>
-        </div>
-        {isOpen && !isUpdating && (
-          <form
-            onSubmit={handleSubmit(async () => {
-              const { title, sourceUrl } = getValues();
-              const projectData = {
-                title,
-                sourceUrl,
-                description: description.trim(),
-                tags,
-                thumbnail,
-                images,
-              };
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg font-semibold">Projects</h2>
+        <Button
+          variant="outline"
+          size="sm"
+          className="cursor-pointer"
+          onClick={() => {
+            setIsOpen(!isOpen);
+            if (isOpen) {
+              setIsUpdating(false);
+              setUpdatedProject(null);
+              setTags([]);
+              setImages(null);
+              setDescription("");
+              setThumbnail(null);
+              setError(null);
+            }
+          }}
+        >
+          {!isOpen ? (
+            <><CirclePlus size={16} /> Add</>
+          ) : (
+            <><X size={16} /> Close</>
+          )}
+        </Button>
+      </div>
 
-              if (!thumbnail) {
-                throw new Error("You must upload a thumbnail");
-              }
+      {isOpen && !isUpdating && (
+        <form
+          onSubmit={handleSubmit(async () => {
+            const { title, sourceUrl } = getValues();
+            const projectData = { title, sourceUrl, description: description.trim(), tags, thumbnail, images };
 
-              if (!checkUploadedImages(images as File[])) {
-                throw new Error("You uploaded more than 5 images");
-              }
-              try {
-                const newProject = await addNewProject(
-                  projectData as ProjectFormData
-                );
-                if (!newProject) {
-                  throw new Error("Failed to add new project");
-                }
-                setProjects(newProject);
-                reset();
-                setIsOpen(false);
-                setTags([]);
-                setImages(null);
-                setDescription("");
-                setThumbnail(null);
-                setError(null);
-                toast.success("Project added successfully");
-                return;
-              } catch (error) {
-                toast.error((error as Error).message as string);
-                setError((error as Error).message as string);
-                return;
-              }
-            })}
-            className="w-full p-2 flex flex-col justify-start items-center gap-2"
+            if (!thumbnail) {
+              throw new Error("You must upload a thumbnail");
+            }
+            if (images && images.length > 0 && !checkUploadedImages(images as File[])) {
+              throw new Error("You uploaded more than 5 images");
+            }
+
+            try {
+              const newProject = await addNewProject(projectData as ProjectFormData);
+              if (!newProject) throw new Error("Failed to add new project");
+              setProjects(newProject);
+              reset();
+              setIsOpen(false);
+              setTags([]);
+              setImages(null);
+              setDescription("");
+              setThumbnail(null);
+              setError(null);
+              toast.success("Project added successfully");
+            } catch (error) {
+              toast.error((error as Error).message);
+              setError((error as Error).message);
+            }
+          })}
+          className="space-y-4"
+        >
+          {error && <ErrorMessage message={error} />}
+
+          <div
+            className="rounded-xl border p-5 space-y-5"
+            style={{
+              backgroundColor: activeTheme.cardColor,
+              borderColor: activeTheme.borderColor,
+            }}
           >
-            <Card className="w-full">
-              {error && <ErrorMessage message={error} />}
-              <div className="w-full flex items-center justify-center gap-4 flex-col">
+            <div className="flex justify-center">
+              <div className="w-40">
                 {thumbnail ? (
                   <div
+                    className="relative border rounded-lg p-2 flex items-center justify-center"
                     style={{ borderColor: activeTheme.borderColor }}
-                    className="relative w-40 h-40 rounded-md border p-2 flex items-center justify-center"
                   >
-                    <img
-                      className="w-30 h-30 object-cover rounded-md"
-                      width={30}
-                      height={30}
-                      src={
-                        typeof thumbnail === "string"
-                          ? thumbnail
-                          : typeof thumbnail === "object"
-                          ? URL.createObjectURL(thumbnail!)
-                          : ""
-                      }
-                      alt="company logo image"
-                    />
-                    {!isSubmitting && (
+                    {isVideoFile ? (
+                      <video
+                        className="w-32 h-32 object-cover rounded-lg"
+                        src={thumbnailSrc}
+                        controls
+                      />
+                    ) : (
+                      <img
+                        className="w-32 h-32 object-cover rounded-lg"
+                        src={thumbnailSrc}
+                        alt="project thumbnail"
+                      />
+                    )}
+                    {!isUploading && (
                       <button
                         type="button"
-                        className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
+                        className="cursor-pointer bg-red-600 p-1.5 hover:bg-red-700 duration-150 absolute -top-2.5 -right-2.5 rounded-full text-white"
                         onClick={() => {
                           if (updatedProject)
-                            setUpdatedProject({
-                              ...updatedProject,
-                              thumbnail: "",
-                            });
+                            setUpdatedProject({ ...updatedProject, thumbnail: "" });
                           setThumbnail(null);
                         }}
                       >
-                        <XIcon size={20} />
+                        <X size={14} />
                       </button>
                     )}
                   </div>
@@ -202,110 +256,92 @@ function ProjectForm() {
                   <UploadHere inputId="thumbnail" />
                 )}
                 <input
-                  readOnly={isSubmitting}
                   id="thumbnail"
                   type="file"
-                  accept="image/*"
+                  accept="image/*, video/*"
                   className="hidden"
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    setThumbnail(e.target.files ? e.target.files[0] : null)
-                  }
+                  disabled={isUploading}
+                  onChange={handleThumbnailChange}
                 />
               </div>
-            </Card>
-            <Card className="w-full">
-              <div className="w-full flex items-center justify-center gap-4 flex-col">
+            </div>
+
+            <div className="flex justify-center">
+              <div className="w-full">
                 {images !== null ? (
-                  <div className="flex flex-wrap items-start justify-center gap-4 p-4">
-                    <>
-                      {images?.map((img: IProjectImagesType | File, index) => {
-                        return (
-                          <div
-                            key={index}
-                            style={{ borderColor: activeTheme.borderColor }}
-                            className="relative w-30 h-30 rounded-2xl border p-2 flex items-center justify-center"
-                          >
-                            <img
-                              className="w-25  h-25  lg:w-full lg:h-full object-cover rounded-2xl"
-                              src={
-                                img instanceof File
-                                  ? URL.createObjectURL(img as File)
-                                  : ((img as IProjectImagesType).url as string)
+                  <div className="flex flex-wrap items-start justify-center gap-3">
+                    {images?.map((img, index) => (
+                      <div
+                        key={index}
+                        className="relative border rounded-lg p-2"
+                        style={{ borderColor: activeTheme.borderColor }}
+                      >
+                        <img
+                          className="w-24 h-24 object-cover rounded-md"
+                          src={
+                            img instanceof File
+                              ? URL.createObjectURL(img)
+                              : (img as IProjectImagesType).url
+                          }
+                          alt="project image"
+                        />
+                        {!isUploading && (
+                          <button
+                            type="button"
+                            className="cursor-pointer bg-red-600 p-1.5 hover:bg-red-700 duration-150 absolute -top-2.5 -right-2.5 rounded-full text-white"
+                            onClick={() => {
+                              if (updatedProject) {
+                                setUpdatedProject({
+                                  ...updatedProject,
+                                  ImagesList: updatedProject.ImagesList.filter(
+                                    (fi) => fi.id !== (img as IProjectImagesType).id
+                                  ),
+                                });
+                              } else {
+                                const filtered = images.filter(
+                                  (_, innerIndex) => index !== innerIndex
+                                );
+                                setImages(filtered.length > 0 ? filtered : null);
                               }
-                              alt="company logo image"
-                            />
-                            {!isSubmitting && (
-                              <button
-                                type="button"
-                                className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
-                                onClick={() => {
-                                  if (updatedProject) {
-                                    setUpdatedProject({
-                                      ...updatedProject,
-                                      ImagesList:
-                                        updatedProject.ImagesList.filter(
-                                          (filteredImg) =>
-                                            filteredImg.id !==
-                                            (img as IProjectImagesType).id
-                                        ),
-                                    });
-                                  } else {
-                                    const filteredImages = images.filter(
-                                      (filteredImg, innerIndex) => {
-                                        if (img instanceof File) {
-                                          return index !== innerIndex;
-                                        }
-                                        return (
-                                          (img as IProjectImagesType).id !==
-                                          (filteredImg as IProjectImagesType).id
-                                        );
-                                      }
-                                    );
-                                    setImages(
-                                      filteredImages.length > 0
-                                        ? (filteredImages as
-                                            | File[]
-                                            | IProjectImagesType[])
-                                        : null
-                                    );
-                                  }
-                                }}
-                              >
-                                <XIcon size={20} />
-                              </button>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </>
+                            }}
+                          >
+                            <X size={14} />
+                          </button>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 ) : (
                   <UploadHere inputId="images" />
                 )}
                 <input
-                  readOnly={isSubmitting}
                   id="images"
                   type="file"
                   accept="image/*"
                   className="hidden"
                   multiple
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    if (e.target.files) {
-                      setImages([...e.target.files]);
-                    }
-                  }}
+                  disabled={isUploading}
+                  onChange={handleImagesChange}
                 />
               </div>
-            </Card>
-            <Card className="p-4 w-full">
+            </div>
+          </div>
+
+          <div
+            className="rounded-xl border p-5 space-y-5"
+            style={{
+              backgroundColor: activeTheme.cardColor,
+              borderColor: activeTheme.borderColor,
+            }}
+          >
+            <div className="space-y-1.5">
+              <Label htmlFor="title" style={{ color: activeTheme.primaryText }}>
+                Project Title
+              </Label>
               <input
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                readOnly={isSubmitting}
-                className="p-2 border w-full rounded-md"
+                style={inputStyle}
+                readOnly={isSubmitting || isUploading}
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
                 type="text"
                 id="title"
                 placeholder="Project Title"
@@ -313,186 +349,140 @@ function ProjectForm() {
                 {...register("title")}
               />
               {errors.title && (
-                <ErrorMessage
-                  message={errors.title.message?.toString() as string}
-                />
+                <ErrorMessage message={errors.title.message?.toString() || ""} />
               )}
-              <div className="w-full flex items-center gap-2">
+            </div>
+
+            <div className="space-y-1.5">
+              <Label style={{ color: activeTheme.primaryText }}>Tags</Label>
+              <div className="flex items-center gap-2">
                 <input
-                  style={{
-                    backgroundColor: activeTheme.backgroundColor,
-                    color: activeTheme.primaryText,
-                    borderColor: activeTheme.borderColor,
-                  }}
-                  readOnly={isSubmitting}
-                  className="p-2 border rounded-md w-[80%]"
+                  style={inputStyle}
+                  readOnly={isSubmitting || isUploading}
+                  className="flex-1 rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
                   type="text"
-                  id="tags"
-                  placeholder="Project Tags"
-                  value={oneTag ? oneTag : ""}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    setOneTag(e.target.value);
-                  }}
+                  placeholder="Add a tag"
+                  value={oneTag || ""}
+                  onChange={(e) => setOneTag(e.target.value)}
                 />
                 <Button
-                  disabled={isSubmitting}
-                  onClick={handleAddingTags}
-                  className="w-[20%] cursor-pointer disabled:bg-zinc-400 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || isUploading}
                   type="button"
+                  size="sm"
+                  className="cursor-pointer shrink-0"
+                  onClick={handleAddingTags}
                 >
                   Add Tag
                 </Button>
               </div>
-              <div className="flex items-center justify-start gap-4">
-                {updatedProject ? (
-                  <>
-                    {updatedProject.tags?.map((tag, index) => {
-                      return (
-                        <div
-                          style={{
-                            backgroundColor: activeTheme.backgroundColor,
-                            color: activeTheme.primaryText,
-                            borderColor: activeTheme.borderColor,
-                          }}
-                          key={tag.id}
-                          className="relative p-1 px-4 w-fit rounded-2xl border "
+              {(tags.length > 0 || (updatedProject?.tags?.length ?? 0) > 0) && (
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  {(updatedProject?.tags ? updatedProject.tags.map((t) => t.tagName) : tags).map(
+                    (tag, index) => (
+                      <span
+                        key={index}
+                        className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs border"
+                        style={{
+                          backgroundColor: activeTheme.backgroundColor,
+                          color: activeTheme.primaryText,
+                          borderColor: activeTheme.borderColor,
+                        }}
+                      >
+                        {tag}
+                        <button
+                          type="button"
+                          className="hover:opacity-60 cursor-pointer"
+                          onClick={() =>
+                            setTags(tags.filter((_, i) => index !== i))
+                          }
                         >
-                          {!isSubmitting && (
-                            <Button
-                              type="button"
-                              variant={"destructive"}
-                              className="cursor-pointer duration-150 absolute -top-4  -right-4  rounded-xl flex items-center justify-center"
-                              onClick={() =>
-                                setTags([
-                                  ...tags.filter(
-                                    (_, filterIndex) => index !== filterIndex
-                                  ),
-                                ])
-                              }
-                            >
-                              <XIcon size={12} />
-                            </Button>
-                          )}
-                          <span>{tag.tagName}</span>
-                        </div>
-                      );
-                    })}
-                  </>
-                ) : (
-                  <>
-                    {tags.map((tag, index) => {
-                      return (
-                        <div
-                          style={{
-                            backgroundColor: activeTheme.backgroundColor,
-                            color: activeTheme.primaryText,
-                            borderColor: activeTheme.borderColor,
-                          }}
-                          key={index}
-                          className="relative p-1 px-4 w-fit rounded-2xl border my-4"
-                        >
-                          {!isSubmitting && (
-                            <button
-                              type="button"
-                              className="cursor-pointer bg-red-600 p-2 hover:bg-red-700 duration-150 absolute -top-3 -right-3 rounded-full flex items-center justify-center text-white"
-                              onClick={() =>
-                                setTags([
-                                  ...tags.filter(
-                                    (_, filterIndex) => index !== filterIndex
-                                  ),
-                                ])
-                              }
-                            >
-                              <XIcon size={12} />
-                            </button>
-                          )}
-                          <span>{tag}</span>
-                        </div>
-                      );
-                    })}
-                  </>
-                )}
-              </div>
+                          <X size={12} />
+                        </button>
+                      </span>
+                    )
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="sourceUrl" style={{ color: activeTheme.primaryText }}>
+                Source URL
+              </Label>
               <input
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                readOnly={isSubmitting}
-                className="w-full p-2 border rounded-md"
-                type="text"
+                style={inputStyle}
+                readOnly={isSubmitting || isUploading}
+                className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
+                type="url"
                 id="sourceUrl"
-                placeholder="Project external source link"
+                placeholder="https://github.com/username/project"
                 defaultValue={updatedProject ? updatedProject.source : ""}
                 {...register("sourceUrl")}
               />
               {errors.sourceUrl && (
-                <ErrorMessage
-                  message={errors.sourceUrl.message?.toString() as string}
-                />
+                <ErrorMessage message={errors.sourceUrl.message?.toString() || ""} />
               )}
-            </Card>
-            <Card className="w-full">
-              <Tiptap content={description} setContent={setDescription} />
+            </div>
 
-            </Card>
-
-            <SubmitButton
-              className="w-full"
-              loading={isSubmitting}
-              type="submit"
-            >
-              create project
-            </SubmitButton>
-          </form>
-        )}
-      </div>
-
-      <>
-        {pending ? (
-          <div className="w-full min-h-[400px] flex items-center justify-center">
-            <Loader size="md" />
-          </div>
-        ) : (
-          <>
-            {projects?.length > 0 ? (
-              <Card
-                className="p-4 border"
-                style={{
-                  color: activeTheme.primaryText,
-                  backgroundColor: activeTheme.backgroundColor,
-                  borderColor: activeTheme.borderColor,
-                }}
+            <div className="space-y-1.5">
+              <Label style={{ color: activeTheme.primaryText }}>
+                Description
+              </Label>
+              <div
+                className="rounded-lg border p-3"
+                style={inputStyle}
               >
-                <div className="flex flex-col justify-start items-start gap-1">
-                  {projects.map((project) => {
-                    return (
-                      <ShowListCard
-                        id={project.id}
-                        key={project.id}
-                        title={project.title}
-                        image={project.thumbnail}
-                        sectionName={"project"}
-                        setUpdate={() => {
-                          setIsOpen(true);
-                          setUpdatedProject(project);
-                          setIsUpdating(true);
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </Card>
-            ) : (
-              <div className="w-full min-h-[400px] flex items-center justify-center">
-                <p>No projects found</p>
+                <Tiptap content={description} setContent={setDescription} />
               </div>
-            )}
-          </>
-        )}
-      </>
-    </>
+            </div>
+          </div>
+
+          <SubmitButton
+            className="w-full"
+            loading={isSubmitting || isUploading}
+            type="submit"
+          >
+            {isUploading ? "Uploading..." : "Create Project"}
+          </SubmitButton>
+        </form>
+      )}
+
+      {pending ? (
+        <div className="w-full min-h-[300px] flex items-center justify-center">
+          <Loader size="md" />
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {projects.length > 0 ? (
+            projects.map((project) => (
+              <ShowListCard
+                id={project.id}
+                key={project.id}
+                title={project.title}
+                image={project.thumbnail}
+                sectionName={"project"}
+                setUpdate={() => {
+                  setIsOpen(true);
+                  setUpdatedProject(project);
+                  setIsUpdating(true);
+                }}
+              />
+            ))
+          ) : (
+            <div
+              className="w-full min-h-[300px] flex flex-col items-center justify-center gap-3 rounded-xl border"
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                borderColor: activeTheme.borderColor,
+              }}
+            >
+              <FolderKanban size={32} className="opacity-30" />
+              <p className="text-sm opacity-50">No projects yet</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 

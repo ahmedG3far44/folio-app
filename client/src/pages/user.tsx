@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { IThemeType } from "@/lib/types";
 import { useEffect, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
@@ -117,7 +116,6 @@ function UserPage() {
     }
   };
 
-  // Generate structured data for the portfolio
   const generateStructuredData = () => {
     if (!bio) return null;
 
@@ -133,7 +131,6 @@ function UserPage() {
       ...(contacts?.linkedin && { linkedin: contacts.linkedin }),
     };
 
-    // Add CreativeWork for projects
     if (projects.length > 0) {
       structuredData["workExample"] = projects.map((project) => ({
         "@type": "CreativeWork",
@@ -151,7 +148,6 @@ function UserPage() {
     return structuredData;
   };
 
-  // Generate meta description
   const generateMetaDescription = () => {
     if (!bio)
       return "Professional tech portfolio showcasing projects, skills, and experience.";
@@ -169,7 +165,6 @@ function UserPage() {
     );
   };
 
-  // Generate page title
   const generatePageTitle = () => {
     if (!bio) return "Portfolio | Folio";
 
@@ -182,14 +177,12 @@ function UserPage() {
     return `${name} | Portfolio`;
   };
 
-  // Generate keywords
   const generateKeywords = () => {
     const keywords = ["portfolio", "tech professional"];
 
     if (bio?.jobTitle) keywords.push(bio.jobTitle);
 
     skills.forEach((skill) => {
-      if (skill.skillName) keywords.push(skill.skillName);
       if (skill.skillName) keywords.push(skill.skillName);
     });
 
@@ -201,7 +194,10 @@ function UserPage() {
 
   if (pending)
     return (
-      <div className="min-h-screen w-full flex items-center justify-center">
+      <div
+        className="min-h-screen w-full flex items-center justify-center"
+        style={{ backgroundColor: activeTheme?.backgroundColor, color: activeTheme?.primaryText }}
+      >
         <Loader size="lg" />
       </div>
     );
@@ -211,7 +207,6 @@ function UserPage() {
   return (
     <>
       <Helmet>
-        {/* Primary Meta Tags */}
         <title>{generatePageTitle()}</title>
         <meta name="title" content={generatePageTitle()} />
         <meta name="description" content={generateMetaDescription()} />
@@ -221,7 +216,6 @@ function UserPage() {
           href={`${window.location.origin}/user/${userId}`}
         />
 
-        {/* Open Graph / Facebook */}
         <meta property="og:type" content="profile" />
         <meta
           property="og:url"
@@ -243,27 +237,21 @@ function UserPage() {
           />
         )}
 
-        {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta
           property="twitter:url"
           content={`${window.location.origin}/user/${userId}`}
         />
         <meta property="twitter:title" content={generatePageTitle()} />
-        <meta
-          property="twitter:description"
-          content={generateMetaDescription()}
-        />
+        <meta property="twitter:description" content={generateMetaDescription()} />
         {bio?.heroImage && (
           <meta property="twitter:image" content={bio.heroImage} />
         )}
 
-        {/* Additional SEO Tags */}
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
         {bio?.bioName && <meta name="author" content={bio.bioName} />}
 
-        {/* Structured Data */}
         {structuredData && (
           <script type="application/ld+json">
             {JSON.stringify(structuredData)}
@@ -276,30 +264,66 @@ function UserPage() {
           backgroundColor: activeTheme?.backgroundColor,
           color: activeTheme?.primaryText,
         }}
-        className="w-full min-h-screen flex flex-col justify-between items-center"
+        className="w-full min-h-screen flex flex-col"
       >
-        <div className="max-w-full w-full lg:w-3/4 m-auto min-h-screen flex flex-col gap-4">
-          {!userId ? (
-            <main className="min-h-full w-3/4 m-auto flex flex-col items-center justify-start text-2xl font-bold">
-              <h1 className="text-4xl font-black">404 Not Found</h1>
-              <h2>There is no user profile found.</h2>
-            </main>
-          ) : (
-            <main className="w-full flex flex-col items-center justify-around gap-20 p-4 lg:p-8">
+        {!userId ? (
+          <main className="flex-1 flex items-center justify-center px-4">
+            <div className="text-center space-y-4">
+              <h1 className="text-5xl lg:text-7xl font-black tracking-tight">404</h1>
+              <p className="text-lg opacity-60">No profile found for this user.</p>
+            </div>
+          </main>
+        ) : (
+          <>
+            <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <Header />
-              <Hero bioInfo={bio} contacts={contacts} />
-              {experiences.length > 0 && (
-                <ExperienceSection experiences={experiences} />
-              )}
-              {projects.length > 0 && <ProjectSection projects={projects} />}
-              {skills.length > 0 && <SkillSection skills={skills} />}
-              {testimonials.length > 0 && (
-                <TestimonialSection testimonials={testimonials} />
-              )}
+            </div>
+
+            <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="space-y-24 md:space-y-32 lg:space-y-40 py-8 md:py-12">
+                <section id="hero"><Hero bioInfo={bio} contacts={contacts} /></section>
+
+                {experiences.length > 0 && (
+                  <section id="experience">
+                    <h2 className="text-sm font-semibold tracking-widest uppercase mb-6" style={{ color: activeTheme?.secondaryText }}>
+                      Experience
+                    </h2>
+                    <ExperienceSection experiences={experiences} />
+                  </section>
+                )}
+
+                {projects.length > 0 && (
+                  <section id="projects">
+                    <h2 className="text-sm font-semibold tracking-widest uppercase mb-6" style={{ color: activeTheme?.secondaryText }}>
+                      Projects
+                    </h2>
+                    <ProjectSection projects={projects} />
+                  </section>
+                )}
+
+                {skills.length > 0 && (
+                  <section id="skills">
+                    <h2 className="text-sm font-semibold tracking-widest uppercase mb-6" style={{ color: activeTheme?.secondaryText }}>
+                      Skills
+                    </h2>
+                    <SkillSection skills={skills} />
+                  </section>
+                )}
+
+                {testimonials.length > 0 && (
+                  <section id="testimonials">
+                    <h2 className="text-sm font-semibold tracking-widest uppercase mb-6" style={{ color: activeTheme?.secondaryText }}>
+                      Testimonials
+                    </h2>
+                    <TestimonialSection testimonials={testimonials} />
+                  </section>
+                )}
+              </div>
             </main>
-          )}
-        </div>
-        <Footer />
+
+            <Footer />
+          </>
+        )}
       </div>
     </>
   );

@@ -16,11 +16,11 @@ const DEMO_ADMIN = {
 const DEFAULT_THEMES = [
   {
     themeName: "Midnight",
-    backgroundColor: "#0c0a0e",
-    cardColor: "#17131a",
-    primaryText: "#f5f3f7",
-    secondaryText: "#9a94a3",
-    borderColor: "#2a2530",
+    backgroundColor: "#0a0a0a",
+    cardColor: "#171717",
+    primaryText: "#fafafa",
+    secondaryText: "#a3a3a3",
+    borderColor: "#262626",
   },
   {
     themeName: "Deep Purple",

@@ -6,7 +6,7 @@ export interface IUserType {
   email: string | null;
   picture: string | null;
   role: string | "USER" | "ADMIN";
-  resume: string;
+  resume: string | null;
   activeTheme: IThemeType;
 }
 
@@ -160,8 +160,18 @@ export interface AdminUsersList {
   picture: string;
   role: string;
   resume: string | null;
+  status: "ACTIVE" | "BLOCKED";
+  provider: string;
   createdAt: string;
 }
+
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 export interface AdminContextType {
   insights: {
     totalUsers?: number;
@@ -174,6 +184,10 @@ export interface AdminContextType {
   users: AdminUsersList[];
   loading: boolean;
   error: string | null;
+  pagination: PaginationMeta;
+  refetch: () => Promise<void>;
+  updateUserStatus: (userId: string, status: "ACTIVE" | "BLOCKED") => Promise<void>;
+  deleteUser: (userId: string) => Promise<void>;
 }
 
 export interface Insight {

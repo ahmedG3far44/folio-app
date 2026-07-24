@@ -23,6 +23,8 @@ model Users {
   Bio             Bio[]
   Layouts         Layouts[]
   activeTheme     String
+  status          UserStatus     @default(ACTIVE)
+  provider        String         @default("email")
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 }
@@ -30,6 +32,11 @@ model Users {
 enum Role {
   USER
   ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
 }
 
 model Bio {

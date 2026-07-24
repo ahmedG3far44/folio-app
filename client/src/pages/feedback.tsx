@@ -5,31 +5,41 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { feedbackSchema } from "@/lib/schemas";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 
 import {
-  PartyPopper,
-  XIcon,
-  Upload,
-  User,
+  CheckCircle2,
+  Image as ImageIcon,
   Video as VideoIcon,
+  MessageSquareText,
+  User,
+  Briefcase,
+  X,
+  ArrowLeft,
+  Heart,
+  Star,
 } from "lucide-react";
 
 import ErrorMessage from "@/components/ErrorMessage";
 import toast from "react-hot-toast";
+import { motion } from "motion/react";
 
 const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
-interface FileUploadProps {
-  id: string;
-  label: string;
-  accept: string;
-  file: File | null;
-  onFileChange: (file: File | null) => void;
-  disabled?: boolean;
-  preview?: "image" | "video";
-}
+const colors = {
+  bg: "#0a0a0b",
+  surface: "#141416",
+  surfaceHover: "#1c1c1f",
+  border: "#26262b",
+  borderActive: "#3b3b45",
+  text: "#f4f4f5",
+  textSecondary: "#a1a1aa",
+  textMuted: "#6b6b76",
+  accent: "#a78bfa",
+  accentDim: "#7c5cbf",
+  success: "#4ade80",
+  error: "#f87171",
+  overlay: "rgba(0,0,0,0.6)",
+};
 
 function FileUpload({
   id,
@@ -39,59 +49,71 @@ function FileUpload({
   onFileChange,
   disabled = false,
   preview,
-}: FileUploadProps) {
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0] || null;
-    onFileChange(selectedFile);
-  };
+}: {
+  id: string;
+  label: string;
+  accept: string;
+  file: File | null;
+  onFileChange: (file: File | null) => void;
+  disabled?: boolean;
+  preview?: "image" | "video";
+}) {
+  const [dragOver, setDragOver] = useState(false);
+  const isImage = preview === "image";
+  const isVideo = preview === "video";
 
-  const handleRemove = () => {
-    onFileChange(null);
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    const f = e.dataTransfer.files?.[0];
+    if (f) onFileChange(f);
   };
 
   return (
-    <div className="w-full space-y-2 border-dashed-2 rounded-md">
-      <Label htmlFor={id} className="text-sm font-medium">
-        {label}
-      </Label>
-
+    <div className="space-y-2">
+      <Label className="text-sm font-medium" style={{ color: colors.text }}>{label}</Label>
       {file ? (
-        <div className="relative w-full">
-          {preview === "image" && (
-            <div className="relative w-32 h-32 mx-auto">
+        <div
+          className="relative rounded-xl overflow-hidden border"
+          style={{ borderColor: colors.border }}
+        >
+          {isImage && (
+            <div className="relative w-28 h-28 mx-auto my-3">
               <img
-                className="w-full h-full object-cover rounded-full border-2 border-border"
+                className="w-full h-full object-cover rounded-full"
                 src={URL.createObjectURL(file)}
                 alt="Preview"
               />
               {!disabled && (
                 <button
                   type="button"
-                  className="absolute top-0 right-0 h-8 w-8 rounded-full bg-red-500 text-white cursor-pointer hover:opacity-50 flex items-center justify-center duration-300"
-                  onClick={handleRemove}
+                  className="absolute -top-1 -right-1 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80"
+                  style={{ backgroundColor: colors.error, color: "#fff" }}
+                  onClick={() => onFileChange(null)}
                 >
-                  <XIcon className="h-4 w-4" />
+                  <X size={14} />
                 </button>
               )}
             </div>
           )}
-
-          {preview === "video" && (
-            <div className="relative w-full max-w-md mx-auto">
+          {isVideo && (
+            <div className="relative max-w-sm mx-auto p-2">
               <video
                 autoPlay
                 loop
                 muted
-                className="w-full rounded-lg border-2 border-border"
+                className="w-full rounded-lg"
+                style={{ border: `1px solid ${colors.border}` }}
                 src={URL.createObjectURL(file)}
               />
               {!disabled && (
                 <button
                   type="button"
-                  className="absolute -top-1 -right-1 h-8 w-8 rounded-full bg-red-500 text-white cursor-pointer hover:opacity-50 flex items-center justify-center duration-300"
-                  onClick={handleRemove}
+                  className="absolute top-1 right-1 w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80"
+                  style={{ backgroundColor: colors.error, color: "#fff" }}
+                  onClick={() => onFileChange(null)}
                 >
-                  <XIcon className="h-4 w-4" />
+                  <X size={14} />
                 </button>
               )}
             </div>
@@ -100,31 +122,97 @@ function FileUpload({
       ) : (
         <label
           htmlFor={id}
-          className="flex flex-col items-center justify-center w-full h-32 p-8  border border-dashed border-zinc-700 rounded-lg cursor-pointer bg-zinc-950 hover:bg-zinc-800 text-white transition-colors duration-300"
+          onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+          onDragLeave={() => setDragOver(false)}
+          onDrop={handleDrop}
+          className="flex flex-col items-center justify-center w-full py-10 rounded-xl border-2 border-dashed cursor-pointer transition-all duration-200"
+          style={{
+            borderColor: dragOver ? colors.accent : colors.border,
+            backgroundColor: dragOver ? "rgba(167,139,250,0.06)" : colors.surface,
+          }}
         >
-          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-            <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
-            <p className="mb-2 text-sm text-muted-foreground">
-              <span className="font-semibold">Click to upload</span> or drag and
-              drop
+          <div className="flex flex-col items-center gap-2">
+            <div
+              className="w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ backgroundColor: `${colors.accent}15` }}
+            >
+              {isImage ? <ImageIcon size={22} style={{ color: colors.accent }} /> : <VideoIcon size={22} style={{ color: colors.accent }} />}
+            </div>
+            <p className="text-sm font-medium" style={{ color: colors.textSecondary }}>
+              <span className="underline underline-offset-2 decoration-1" style={{ color: colors.accent }}>
+                Click to upload
+              </span>{" "}
+              or drag and drop
             </p>
-            <p className="text-xs text-muted-foreground">
-              {accept.includes("image") && "PNG, JPG, GIF up to 10MB"}
-              {accept.includes("video") && "MP4, WebM up to 50MB"}
+            <p className="text-xs" style={{ color: colors.textMuted }}>
+              {isImage ? "PNG, JPG, GIF — max 10MB" : "MP4, WebM — max 50MB"}
             </p>
           </div>
         </label>
       )}
-
-      <Input
+      <input
         id={id}
         type="file"
         accept={accept}
         className="hidden"
-        onChange={handleChange}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          onFileChange(e.target.files?.[0] || null)
+        }
         disabled={disabled}
       />
     </div>
+  );
+}
+
+function SuccessState({ onReset }: { onReset: () => void }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className="min-h-screen flex items-center justify-center p-4"
+      style={{ backgroundColor: colors.bg }}
+    >
+      <div className="max-w-md w-full text-center space-y-6">
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: 0.15, type: "spring", stiffness: 200, damping: 15 }}
+          className="w-20 h-20 rounded-full flex items-center justify-center mx-auto"
+          style={{ backgroundColor: `${colors.success}18` }}
+        >
+          <CheckCircle2 size={40} style={{ color: colors.success }} />
+        </motion.div>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold tracking-tight" style={{ color: colors.text }}>
+            Feedback Submitted!
+          </h1>
+          <p className="text-sm leading-relaxed" style={{ color: colors.textSecondary }}>
+            Thank you for sharing your thoughts. Your feedback helps make this portfolio better.
+          </p>
+        </div>
+        <div className="flex items-center justify-center gap-1 pt-2">
+          {[1, 2, 3, 4, 5].map((i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + i * 0.08 }}
+            >
+              <Star size={18} fill={colors.accent} color={colors.accent} />
+            </motion.div>
+          ))}
+        </div>
+        <button
+          onClick={onReset}
+          className="inline-flex items-center gap-2 text-sm font-medium cursor-pointer transition-opacity hover:opacity-70"
+          style={{ color: colors.accent }}
+        >
+          <ArrowLeft size={16} />
+          Submit another feedback
+        </button>
+      </div>
+    </motion.div>
   );
 }
 
@@ -162,7 +250,7 @@ function UserFeedBack() {
 
       if (feedbackType === "text") {
         if (!values.feedback) {
-          toast.error("Please provide feedback text");
+          toast.error("Please write your feedback");
           return;
         }
         formData.append("feedback", values.feedback);
@@ -181,134 +269,164 @@ function UserFeedBack() {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.message || "Failed to add feedback");
+        throw new Error(errorData.message || "Failed to submit feedback");
       }
 
-      const data = await response.json();
-
+      await response.json();
       setProfile(null);
       setFeedBackVideo(null);
       reset();
       setSuccess(true);
-      toast.success("Your feedback has been added successfully!");
-
-      return data;
+      toast.success("Feedback submitted!");
     } catch (err) {
       toast.error((err as Error).message);
-      console.error("Feedback submission error:", err);
     }
   };
 
   if (isFeedBackAdded) {
-    return (
-      <div className="w-full flex items-center justify-center min-h-screen p-4 bg-black text-white">
-        <div className="w-full max-w-md">
-          <div className="flex flex-col items-center pt-6">
-            <div className="p-4 rounded-full bg-primary/10 mb-4">
-              <PartyPopper className="w-12 h-12" />
-            </div>
-            <h2 className="text-2xl font-bold text-center mb-2">
-              Feedback Submitted Successfully!
-            </h2>
-            <p className="text-center text-muted-foreground">
-              Thank you for sharing your feedback. We appreciate your input!
-            </p>
-          </div>
-          <div className="justify-center">
-            <button onClick={() => setSuccess(false)}>
-              Submit Another Feedback
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+    return <SuccessState onReset={() => setSuccess(false)} />;
   }
 
   return (
-    <div className="w-full flex items-center justify-center min-h-screen p-4 bg-black text-white lg:p-24">
-      <div className="w-full max-w-2xl rounded-md shadow-md bg-zinc-900 border border-zinc-700">
-        <div className="p-6">
-          <div className="mb-6">
-            <h1 className="text-2xl font-bold mb-2">Share Your Feedback</h1>
-            <p className="text-sm">We'd love to hear about your experience</p>
+    <div
+      className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-10"
+      style={{ backgroundColor: colors.bg }}
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-xl rounded-2xl border overflow-hidden"
+        style={{
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+        }}
+      >
+        <div className="p-6 sm:p-8 space-y-8">
+          <div className="space-y-1.5">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ color: colors.text }}>
+              Share Your Feedback
+            </h1>
+            <p className="text-sm" style={{ color: colors.textSecondary }}>
+              I'd love to hear about your experience working with me
+            </p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
             <FileUpload
               id="profile"
-              label="Profile Image"
+              label="Your Photo"
               accept="image/*"
               file={profile}
               onFileChange={setProfile}
               disabled={isSubmitting}
               preview="image"
             />
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                className={`border border-zinc-700`}
-                id="name"
-                type="text"
-                placeholder="Enter your name"
-                disabled={isSubmitting}
-                {...register("name")}
-              />
-              {errors.name && (
-                <ErrorMessage message={errors.name.message as string} />
-              )}
+
+            <div
+              className="rounded-xl border p-5 space-y-5"
+              style={{ borderColor: colors.border, backgroundColor: colors.bg }}
+            >
+              <div className="space-y-1.5">
+                <Label htmlFor="name" style={{ color: colors.text }}>
+                  <span className="inline-flex items-center gap-1.5">
+                    <User size={14} style={{ color: colors.accent }} />
+                    Your Name
+                  </span>
+                </Label>
+                <input
+                  id="name"
+                  type="text"
+                  placeholder="e.g. Jane Smith"
+                  disabled={isSubmitting}
+                  className="w-full rounded-lg border px-3.5 py-2.5 text-sm outline-none transition-colors focus-visible:ring-[3px] placeholder:opacity-40 focus-visible:border-[color:--border-active]"
+                  style={{
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderColor: errors.name ? colors.error : colors.border,
+                    ["--border-active" as string]: colors.borderActive,
+                  }}
+                  {...register("name")}
+                />
+                {errors.name && (
+                  <ErrorMessage message={errors.name.message as string} />
+                )}
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="position" style={{ color: colors.text }}>
+                  <span className="inline-flex items-center gap-1.5">
+                    <Briefcase size={14} style={{ color: colors.accent }} />
+                    Your Role
+                  </span>
+                </Label>
+                <input
+                  id="position"
+                  type="text"
+                  placeholder="e.g. Product Designer at Acme"
+                  disabled={isSubmitting}
+                  className="w-full rounded-lg border px-3.5 py-2.5 text-sm outline-none transition-colors focus-visible:ring-[3px] placeholder:opacity-40 focus-visible:border-[color:--border-active]"
+                  style={{
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderColor: errors.position ? colors.error : colors.border,
+                    ["--border-active" as string]: colors.borderActive,
+                  }}
+                  {...register("position")}
+                />
+                {errors.position && (
+                  <ErrorMessage message={errors.position.message as string} />
+                )}
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="position">Position</Label>
-              <Input
-                className={`border border-zinc-700`}
-                id="position"
-                type="text"
-                placeholder="Your role or position"
-                disabled={isSubmitting}
-                {...register("position")}
-              />
-              {errors.position && (
-                <ErrorMessage message={errors.position.message as string} />
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label>Feedback Type</Label>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className={`flex-1 bg-zinc-950 text-white border border-zinc-700 flex items-center justify-center gap-2 rounded-md py-2 px-4 cursor-pointer hover:opacity-90 ${
-                    feedbackType === "text" ? "border" : "border-none"
-                  }`}
-                  onClick={() => setFeedBackType("text")}
-                  disabled={isSubmitting}
-                >
-                  <User className="w-4 h-4 mr-2" />
-                  Text
-                </button>
-                <button
-                  type="button"
-                  className={`flex-1 bg-zinc-950 text-white  border-zinc-700 flex items-center justify-center gap-2 rounded-md py-2 px-4 cursor-pointer hover:opacity-90 ${
-                    feedbackType === "video" ? "border" : "border-none"
-                  }`}
-                  onClick={() => setFeedBackType("video")}
-                  disabled={isSubmitting}
-                >
-                  <VideoIcon className="w-4 h-4 mr-2" />
-                  Video
-                </button>
+            <div className="space-y-3">
+              <Label style={{ color: colors.text }}>
+                <span className="inline-flex items-center gap-1.5">
+                  <MessageSquareText size={14} style={{ color: colors.accent }} />
+                  Feedback Type
+                </span>
+              </Label>
+              <div className="grid grid-cols-2 gap-2">
+                {(["text", "video"] as const).map((type) => {
+                  const isActive = feedbackType === type;
+                  const Icon = type === "text" ? MessageSquareText : VideoIcon;
+                  return (
+                    <button
+                      key={type}
+                      type="button"
+                      disabled={isSubmitting}
+                      className="flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium cursor-pointer transition-all duration-150"
+                      style={{
+                        backgroundColor: isActive ? colors.accent : colors.surface,
+                        color: isActive ? "#0a0a0b" : colors.textSecondary,
+                        border: `1px solid ${isActive ? colors.accent : colors.border}`,
+                      }}
+                      onClick={() => setFeedBackType(type)}
+                    >
+                      <Icon size={16} />
+                      {type === "text" ? "Written" : "Video"}
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
             {feedbackType === "text" ? (
-              <div className="space-y-2">
-                <Label htmlFor="feedback">Your Feedback</Label>
-                <Textarea
+              <div className="space-y-1.5">
+                <Label htmlFor="feedback" style={{ color: colors.text }}>Your Message</Label>
+                <textarea
                   id="feedback"
-                  placeholder="Share your thoughts and experience..."
-                  className="min-h-[150px] resize-none border border-zinc-700"
+                  placeholder="Share your thoughts, experience, or a quick testimonial..."
+                  rows={5}
                   disabled={isSubmitting}
+                  className="w-full rounded-lg border px-3.5 py-2.5 text-sm outline-none transition-colors focus-visible:ring-[3px] resize-none placeholder:opacity-40 focus-visible:border-[color:--border-active]"
+                  style={{
+                    backgroundColor: colors.surface,
+                    color: colors.text,
+                    borderColor: errors.feedback ? colors.error : colors.border,
+                    ["--border-active" as string]: colors.borderActive,
+                  }}
                   {...register("feedback")}
                 />
                 {errors.feedback && (
@@ -318,7 +436,7 @@ function UserFeedBack() {
             ) : (
               <FileUpload
                 id="feedbackVideo"
-                label="Feedback Video"
+                label="Video Message"
                 accept="video/mp4,video/webm"
                 file={video}
                 onFileChange={setFeedBackVideo}
@@ -326,16 +444,37 @@ function UserFeedBack() {
                 preview="video"
               />
             )}
+
             <button
-              className="w-full py-2 px-4 rounded-md text-sm text-center border border-zinc-700  cursor-pointer hover:opacity-70 duration-300 "
               type="submit"
               disabled={isSubmitting}
+              className="w-full rounded-lg py-2.5 text-sm font-semibold cursor-pointer transition-all duration-150 disabled:opacity-40 disabled:cursor-not-allowed hover:brightness-110"
+              style={{
+                backgroundColor: colors.accent,
+                color: "#0a0a0b",
+              }}
             >
-              {isSubmitting ? "Submitting..." : "Submit Feedback"}
+              {isSubmitting ? (
+                <span className="inline-flex items-center gap-2">
+                  <span
+                    className="inline-block w-4 h-4 rounded-full border-2 border-transparent animate-spin"
+                    style={{
+                      borderTopColor: "#0a0a0b",
+                      borderRightColor: "#0a0a0b",
+                    }}
+                  />
+                  Submitting...
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-2">
+                  <Heart size={16} />
+                  Submit Feedback
+                </span>
+              )}
             </button>
           </form>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

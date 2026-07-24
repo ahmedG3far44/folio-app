@@ -1,27 +1,49 @@
 /* eslint-disable react-refresh/only-export-components */
 import { IAuthContextType, IUserType } from "@/lib/types";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useRef, useState } from "react";
 
 import { useNavigate } from "react-router-dom";
 
-const AuthContext = createContext<IAuthContextType>({
-  user: {
-    id: "",
-    name: "",
-    email: "",
-    picture: "",
-    role: "USER",
-    resume: "",
-    activeTheme: {
-      id: "",
-      themeName: "",
-      backgroundColor: "",
-      cardColor: "",
-      primaryText: "",
-      secondaryText: "",
-      borderColor: "",
-    },
+const DEFAULT_USER: IUserType = {
+  id: "",
+  name: "",
+  email: "",
+  picture: "",
+  role: "USER",
+  resume: "",
+  activeTheme: {
+    id: "1",
+    themeName: "Midnight",
+    backgroundColor: "#0a0a0a",
+    cardColor: "#171717",
+    primaryText: "#fafafa",
+    secondaryText: "#a3a3a3",
+    borderColor: "#262626",
   },
+};
+
+function getStoredUser(): IUserType {
+  try {
+    const raw = window.localStorage.getItem("user");
+    if (!raw) return DEFAULT_USER;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || !parsed.id) return DEFAULT_USER;
+    return { ...DEFAULT_USER, ...parsed };
+  } catch {
+    return DEFAULT_USER;
+  }
+}
+
+function getStoredToken(): string {
+  try {
+    return window.localStorage.getItem("token") || "";
+  } catch {
+    return "";
+  }
+}
+
+const AuthContext = createContext<IAuthContextType>({
+  user: DEFAULT_USER,
   token: "",
   isAdmin: false,
   isLogged: false,
@@ -29,16 +51,49 @@ const AuthContext = createContext<IAuthContextType>({
   logout: () => {},
 });
 
+const API_URL = import.meta.env.VITE_API_URL as string;
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const navigate = useNavigate();
-  const storedUser = JSON.parse(window.localStorage.getItem("user")!);
-  const [user, setUser] = useState<IUserType>(storedUser);
-  const [token, setToken] = useState<string>(
-    localStorage.getItem("token") as string
-  );
-  const [isLogged, setIsLogged] = useState<boolean>(!token ? false : true);
+  const [user, setUser] = useState<IUserType>(getStoredUser);
+  const [token, setToken] = useState<string>(getStoredToken);
+  const [isLogged, setIsLogged] = useState<boolean>(() => !!getStoredToken());
+  const validatedRef = useRef(false);
 
   const isAdmin: boolean = user?.role === "ADMIN";
+
+  useEffect(() => {
+    if (!token || validatedRef.current) return;
+    validatedRef.current = true;
+
+    const validateToken = async () => {
+      try {
+        const storedUser = getStoredUser();
+        if (!storedUser.id) {
+          clearAuth();
+          return;
+        }
+        const response = await fetch(`${API_URL}/user/${storedUser.id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!response.ok) {
+          clearAuth();
+        }
+      } catch {
+        clearAuth();
+      }
+    };
+    validateToken();
+  }, [token]);
+
+  const clearAuth = useCallback(() => {
+    window.localStorage.removeItem("user");
+    window.localStorage.removeItem("token");
+    window.localStorage.removeItem("theme");
+    setToken("");
+    setUser(DEFAULT_USER);
+    setIsLogged(false);
+  }, []);
 
   const login = async ({ user, token }: { user: IUserType; token: string }) => {
     setUser(user);
@@ -50,27 +105,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => {
-    window.localStorage.clear();
-    setIsLogged(false);
+    clearAuth();
     navigate("/");
-    setUser({
-      id: "",
-      name: "",
-      email: "",
-      picture: "",
-      resume: "",
-      role: "USER",
-        activeTheme: {
-          id: "1",
-          themeName: "Midnight",
-          backgroundColor: "#0c0a0e",
-          borderColor: "#2a2530",
-          cardColor: "#17131a",
-          primaryText: "#f5f3f7",
-          secondaryText: "#9a94a3",
-        },
-    });
   };
+
   return (
     <AuthContext.Provider
       value={{

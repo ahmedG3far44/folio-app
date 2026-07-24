@@ -21,8 +21,12 @@ function Hero({
   const { layouts } = useUser();
   const activeLayout = layouts.heroLayout;
   return (
-    <div className="w-full p-8 my-8 flex flex-col items-center gap-8 justify-center">
-      {isLogged && <ChangeLayoutForm sectionName="heroLayout" />}
+    <section className="w-full relative">
+      {isLogged && (
+        <div className="absolute -top-3 right-0 z-10">
+          <ChangeLayoutForm sectionName="heroLayout" />
+        </div>
+      )}
 
       {activeLayout === "1" ? (
         <HeroOne bioInfo={bioInfo} contacts={contacts} />
@@ -37,7 +41,7 @@ function Hero({
       ) : (
         <HeroOne bioInfo={bioInfo} contacts={contacts} />
       )}
-    </div>
+    </section>
   );
 }
 

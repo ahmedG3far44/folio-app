@@ -3,20 +3,20 @@ import { EditorProvider, useCurrentEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 
 import {
-  LucideBadge,
-  LucideBold,
-  LucideCode,
-  LucideHeading1,
-  LucideHeading2,
-  LucideHeading3,
-  LucideHeading4,
-  LucideItalic,
-  LucideList,
-  LucideListOrdered,
-  LucideRedo,
-  LucideSeparatorHorizontal,
-  LucideStrikethrough,
-  LucideUndo,
+  Pilcrow,
+  Bold,
+  Code,
+  Heading1,
+  Heading2,
+  Heading3,
+  Heading4,
+  Italic,
+  List,
+  ListOrdered,
+  Redo,
+  SeparatorHorizontal,
+  Strikethrough,
+  Undo,
 } from "lucide-react";
 import { Card } from "./ui/card";
 import { useTheme } from "@/contexts/ThemeProvider";
@@ -42,172 +42,171 @@ const MenuBar = () => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("bold")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("bold") ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("bold") ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideBold size={16} />
+          <Bold size={16} />
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("italic")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("italic") ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("italic") ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideItalic size={16} />
+          <Italic size={16} />
         </button>
-
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("strike")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("strike") ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("strike") ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideStrikethrough size={16} />
+          <Strikethrough size={16} />
         </button>
-
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleCode().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("code")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("code") ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("code") ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideCode size={16} />
+          <Code size={16} />
         </button>
-
         <button
           type="button"
           onClick={() => editor.chain().focus().setParagraph().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("paragraph")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("paragraph") ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("paragraph") ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideBadge size={16} />
+          <Pilcrow size={16} />
         </button>
         <button
           type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 1 }).run()
-          }
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("heading", { level: 1 })
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("heading", { level: 1 }) ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("heading", { level: 1 }) ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideHeading1 size={16} />
+          <Heading1 size={16} />
         </button>
         <button
           type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 2 }).run()
-          }
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("heading", { level: 2 })
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("heading", { level: 2 }) ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("heading", { level: 2 }) ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideHeading2 size={16} />
+          <Heading2 size={16} />
         </button>
         <button
           type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 3 }).run()
-          }
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("heading", { level: 3 })
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("heading", { level: 3 }) ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("heading", { level: 3 }) ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideHeading3 size={16} />
+          <Heading3 size={16} />
         </button>
         <button
           type="button"
-          onClick={() =>
-            editor.chain().focus().toggleHeading({ level: 4 }).run()
-          }
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("heading", { level: 4 })
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          onClick={() => editor.chain().focus().toggleHeading({ level: 4 }).run()}
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("heading", { level: 4 }) ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("heading", { level: 4 }) ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideHeading4 size={16} />
+          <Heading4 size={16} />
         </button>
-
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("bulletList")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("bulletList") ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("bulletList") ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideList size={16} />
+          <List size={16} />
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("orderedList")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
+          className={`p-1.5 rounded-md border text-sm ${
+            editor.isActive("orderedList") ? "opacity-100" : "opacity-60 hover:opacity-100"
           }`}
+          style={{
+            backgroundColor: editor.isActive("orderedList") ? activeTheme.cardColor : "transparent",
+            borderColor: activeTheme.borderColor,
+          }}
         >
-          <LucideListOrdered size={16} />
+          <ListOrdered size={16} />
         </button>
-
         <button
           type="button"
           onClick={() => editor.chain().focus().setHorizontalRule().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("horizontalRule")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
-          }`}
+          className={`p-1.5 rounded-md border text-sm opacity-60 hover:opacity-100`}
+          style={{ borderColor: activeTheme.borderColor }}
         >
-          <LucideSeparatorHorizontal size={16} />
+          <SeparatorHorizontal size={16} />
         </button>
-
         <button
           type="button"
           onClick={() => editor.chain().focus().undo().run()}
           disabled={!editor.can().chain().focus().undo().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("undo")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
-          }`}
+          className={`p-1.5 rounded-md border text-sm opacity-60 hover:opacity-100 disabled:opacity-30`}
+          style={{ borderColor: activeTheme.borderColor }}
         >
-          <LucideUndo size={16} />
+          <Undo size={16} />
         </button>
         <button
           type="button"
           onClick={() => editor.chain().focus().redo().run()}
           disabled={!editor.can().chain().focus().redo().run()}
-          className={`p-2 px-4 text-sm rounded-md border ${
-            editor.isActive("redo") || editor.isActive("undo")
-              ? activeTheme.cardColor
-              : activeTheme.backgroundColor
-          }`}
+          className={`p-1.5 rounded-md border text-sm opacity-60 hover:opacity-100 disabled:opacity-30`}
+          style={{ borderColor: activeTheme.borderColor }}
         >
-          <LucideRedo size={16} />
+          <Redo size={16} />
         </button>
       </Card>
     </div>
@@ -224,14 +223,16 @@ function Tiptap({
   setContent: (content: string) => void;
 }) {
   return (
-    <EditorProvider
-      slotBefore={<MenuBar />}
-      extensions={extensions}
-      content={content}
-      onUpdate={({ editor }) => {
-        setContent(editor.getHTML());
-      }}
-    />
+    <div className="tiptap-editor">
+      <EditorProvider
+        slotBefore={<MenuBar />}
+        extensions={extensions}
+        content={content}
+        onUpdate={({ editor }) => {
+          setContent(editor.getHTML());
+        }}
+      />
+    </div>
   );
 }
 

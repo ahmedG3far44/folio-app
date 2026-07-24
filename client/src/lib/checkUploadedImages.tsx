@@ -1,6 +1,6 @@
 
 
-function checkUploadedImages(images:File[]) {
+function checkUploadedImages(images: {size?: number}[]) {
     if(!images || images.length > 5){
         return false;
     }
@@ -10,7 +10,8 @@ function checkUploadedImages(images:File[]) {
     }
 
     for(let i = 0; i < images.length; i++){
-        if(images[i].size > 1024 * 1024 * 5){
+        const img = images[i];
+        if(img && img.size && img.size > 1024 * 1024 * 5){
             return false;
         }
     }

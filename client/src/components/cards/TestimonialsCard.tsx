@@ -1,5 +1,4 @@
 import { ITestimonialType } from "@/lib/types";
-import { Card } from "../ui/card";
 import { useTheme } from "@/contexts/ThemeProvider";
 import Image from "../ui/image";
 
@@ -12,57 +11,51 @@ function TestimonialsCard({
 }: ITestimonialType) {
   const { activeTheme } = useTheme();
   return (
-    <Card
-      className="p-4 flex flex-col h-full items-start justify-start gap-2"
+    <div
+      className="p-4 md:p-5 flex flex-col gap-3 rounded-xl border h-full"
       style={{
         backgroundColor: activeTheme.cardColor,
-        border: `1px solid ${activeTheme.borderColor}`,
+        borderColor: activeTheme.borderColor,
         color: activeTheme.primaryText,
       }}
     >
-      <div className="flex items-center space-x-2">
-        <div className="w-10 h-10 rounded-full overflow-hidden">
+      <div className="flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
           <Image
-            className="w-full h-full object-cover "
+            className="w-full h-full object-cover rounded-full"
             src={profile}
-            alt={`${name} ${position} feedback`}
+            alt={`${name}'s feedback`}
           />
         </div>
-        <div className="flex flex-col items-start justify-start ">
-          <h2 className="font-bold">{name}</h2>
-          <h3
-            style={{ color: activeTheme.secondaryText }}
-            className="text-[12px] "
-          >
+        <div className="min-w-0">
+          <p className="font-semibold text-sm truncate">{name}</p>
+          <p className="text-xs truncate" style={{ color: activeTheme.secondaryText }}>
             {position}
-          </h3>
+          </p>
         </div>
       </div>
-      <div className="w-full mx-auto">
-        {feedback ? (
-          <p
-            className="text-sm line-clamp-4"
-            style={{ color: activeTheme.secondaryText }}
+
+      {feedback ? (
+        <p
+          className="text-sm leading-relaxed line-clamp-5"
+          style={{ color: activeTheme.secondaryText }}
+        >
+          {feedback}
+        </p>
+      ) : video ? (
+        <div className="rounded-lg overflow-hidden">
+          <video
+            className="w-full h-auto max-h-48 object-cover"
+            autoPlay
+            muted
+            loop
+            controls
           >
-            {feedback}
-          </p>
-        ) : (
-          <div>
-            <video
-              width={200}
-              height={200}
-              className="w-full h-full rounded-xl"
-              autoPlay
-              muted
-              loop
-              controls
-            >
-              <source src={video} type="video/mp4" />
-            </video>
-          </div>
-        )}
-      </div>
-    </Card>
+            <source src={video} type="video/mp4" />
+          </video>
+        </div>
+      ) : null}
+    </div>
   );
 }
 

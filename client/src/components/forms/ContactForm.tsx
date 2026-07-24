@@ -10,9 +10,16 @@ import toast from "react-hot-toast";
 import ErrorMessage from "../ErrorMessage";
 import SubmitButton from "../submit-button";
 import { useTheme } from "@/contexts/ThemeProvider";
-import { Card } from "../ui/card";
+import { Label } from "../ui/label";
 
 const URL_SERVER = import.meta.env.VITE_API_URL as string;
+
+const contactFields = [
+  { id: "github", label: "GitHub URL", placeholder: "https://github.com/username" },
+  { id: "linkedin", label: "LinkedIn URL", placeholder: "https://linkedin.com/in/username" },
+  { id: "youtube", label: "YouTube URL", placeholder: "https://youtube.com/@channel" },
+  { id: "twitter", label: "Twitter / X URL", placeholder: "https://x.com/username" },
+] as const;
 
 function ContactForm() {
   const { token } = useAuth();
@@ -27,125 +34,64 @@ function ContactForm() {
   } = useForm<z.infer<typeof contactsSchema>>({
     resolver: zodResolver(contactsSchema),
   });
+
   return (
     <form
-      className="w-full flex flex-col justify-start items-start gap-2"
       onSubmit={handleSubmit(async () => {
         const values = getValues();
-        const { github, linkedin, youtube, twitter } = values;
         try {
-          const response = await fetch(
-            `${URL_SERVER}/contacts/${contacts.id}`,
-            {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`,
-              },
-              body: JSON.stringify({
-                linkedin,
-                github,
-                youtube,
-                twitter,
-              }),
-            }
-          );
-          if (!response.ok) {
-            throw new Error("can't update contacts info!!");
-          }
+          const response = await fetch(`${URL_SERVER}/contacts/${contacts.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(values),
+          });
+          if (!response.ok) throw new Error("Failed to update contacts");
           reset();
-          toast.success("contact inof was updated success");
-          return;
+          toast.success("Contacts updated successfully");
         } catch (err) {
           toast.error((err as Error).message);
-          return;
         }
       })}
+      className="space-y-5"
     >
-      <Card
+      <div
+        className="space-y-4 p-5 rounded-xl border"
         style={{
           backgroundColor: activeTheme.cardColor,
-          border: `1px solid ${activeTheme.borderColor}`,
+          borderColor: activeTheme.borderColor,
         }}
-        className={"w-full p-4"}
       >
-        <input
-          style={{
-            backgroundColor: activeTheme.backgroundColor,
-            color: activeTheme.primaryText,
-            borderColor: activeTheme.borderColor,
-          }}
-          {...register("github")}
-          defaultValue={contacts.github}
-          readOnly={isSubmitting}
-          placeholder="github profile url"
-          type="url"
-          className="p-2 w-full border border-zinc-200 rounded-md"
-        />
-        {errors.github && (
-          <ErrorMessage message={errors.github.message?.toString() as string} />
-        )}
-        <input
-          style={{
-            backgroundColor: activeTheme.backgroundColor,
-            color: activeTheme.primaryText,
-            borderColor: activeTheme.borderColor,
-          }}
-          {...register("linkedin")}
-          defaultValue={contacts.linkedin}
-          readOnly={isSubmitting}
-          placeholder="linkedin profile url"
-          type="url"
-          className="p-2 w-full border border-zinc-200 rounded-md"
-        />
-        {errors.linkedin && (
-          <ErrorMessage
-            message={errors.linkedin.message?.toString() as string}
-          />
-        )}
-        <input
-          style={{
-            backgroundColor: activeTheme.backgroundColor,
-            color: activeTheme.primaryText,
-            borderColor: activeTheme.borderColor,
-          }}
-          {...register("youtube")}
-          defaultValue={contacts.youtube}
-          readOnly={isSubmitting}
-          placeholder="youtube channel url"
-          type="url"
-          className="p-2 w-full border border-zinc-200 rounded-md"
-        />
-        {errors.youtube && (
-          <ErrorMessage
-            message={errors.youtube.message?.toString() as string}
-          />
-        )}
-        <input
-          style={{
-            backgroundColor: activeTheme.backgroundColor,
-            color: activeTheme.primaryText,
-            borderColor: activeTheme.borderColor,
-          }}
-          {...register("twitter")}
-          defaultValue={contacts.twitter}
-          readOnly={isSubmitting}
-          placeholder="twitter profile url"
-          type="url"
-          className="p-2 w-full border border-zinc-200 rounded-md"
-        />
-        {errors.twitter && (
-          <ErrorMessage
-            message={errors.twitter.message?.toString() as string}
-          />
-        )}
-      </Card>
-      <SubmitButton
-        className="w-full mt-4"
-        loading={isSubmitting}
-        type="submit"
-      >
-        save changes
+        {contactFields.map(({ id, label, placeholder }) => (
+          <div key={id} className="space-y-1.5">
+            <Label htmlFor={id} style={{ color: activeTheme.primaryText }}>
+              {label}
+            </Label>
+            <input
+              {...register(id)}
+              defaultValue={contacts[id as keyof typeof contacts]}
+              readOnly={isSubmitting}
+              placeholder={placeholder}
+              type="url"
+              className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
+            />
+            {errors[id as keyof typeof errors] && (
+              <ErrorMessage
+                message={errors[id as keyof typeof errors]?.message?.toString() || ""}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+      <SubmitButton className="w-full" loading={isSubmitting} type="submit">
+        Save Changes
       </SubmitButton>
     </form>
   );

@@ -569,7 +569,10 @@ function ThemesList() {
                     {contrastData.bgCard.text}
                   </div>
                 </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-1.5 rounded-full overflow-hidden"
+                  style={{ backgroundColor: activeTheme.backgroundColor }}
+                >
                   <div
                     className="h-full transition-all duration-300"
                     style={{
@@ -603,7 +606,10 @@ function ThemesList() {
                     {contrastData.primaryTextBg.text}
                   </div>
                 </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-1.5 rounded-full overflow-hidden"
+                  style={{ backgroundColor: activeTheme.backgroundColor }}
+                >
                   <div
                     className="h-full transition-all duration-300"
                     style={{
@@ -637,7 +643,10 @@ function ThemesList() {
                     {contrastData.secondaryTextBg.text}
                   </div>
                 </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-1.5 rounded-full overflow-hidden"
+                  style={{ backgroundColor: activeTheme.backgroundColor }}
+                >
                   <div
                     className="h-full transition-all duration-300"
                     style={{
@@ -672,7 +681,10 @@ function ThemesList() {
                     {contrastData.primaryTextCard.text}
                   </div>
                 </div>
-                <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-1.5 rounded-full overflow-hidden"
+                  style={{ backgroundColor: activeTheme.backgroundColor }}
+                >
                   <div
                     className="h-full transition-all duration-300"
                     style={{

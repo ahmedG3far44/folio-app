@@ -11,6 +11,8 @@ import toast from "react-hot-toast";
 import { deleteById } from "@/lib/handlers";
 import { useUser } from "@/contexts/UserProvider";
 import Image from "../ui/image";
+import { isVideoUrl } from "@/lib/utils";
+import { Pencil, Trash2 } from "lucide-react";
 
 function ShowListCard({
   id,
@@ -21,6 +23,7 @@ function ShowListCard({
   feedback,
   vertical,
   video,
+  setUpdate,
 }: {
   sectionName: string;
   id: string;
@@ -39,11 +42,7 @@ function ShowListCard({
   const handleDelete = async (id: string) => {
     try {
       setPending(true);
-      const deleteResult = await deleteById({
-        id,
-        token,
-        deleteRoute: sectionName,
-      });
+      const deleteResult = await deleteById({ id, token, deleteRoute: sectionName });
       switch (sectionName) {
         case "experiences":
           setExperiences(deleteResult.data);
@@ -56,8 +55,6 @@ function ShowListCard({
           break;
         case "feedback":
           setTestimonials(deleteResult.data);
-          break;
-        default:
           break;
       }
       toast.success(deleteResult.message);
@@ -75,28 +72,41 @@ function ShowListCard({
         backgroundColor: activeTheme.cardColor,
         borderColor: activeTheme.borderColor,
       }}
-      className={`w-full flex p-2 rounded-2xl border  ${
+      className={`w-full flex p-3 rounded-xl border gap-3 ${
         vertical
-          ? "flex-col justify-start items-start gap-1"
-          : "lg:justify-between lg:items-center  lg:flex-row flex-col justify-start items-start  gap-1"
+          ? "flex-col"
+          : "lg:flex-row lg:items-center flex-col"
       }`}
     >
-      <div className="flex justify-center items-center gap-4">
+      <div className="flex items-center gap-3 flex-1 min-w-0">
         <div
-          className={` overflow-hidden flex items-center justify-center ${
-            vertical ? "w-10 h-10 rounded-full" : "w-14 h-14 rounded-2xl "
+          className={`shrink-0 overflow-hidden flex items-center justify-center ${
+            vertical ? "w-10 h-10 rounded-full" : "w-12 h-12 rounded-lg"
           }`}
         >
-          <Image
-            className={` w-full h-full object-cover ${
-              vertical ? "rounded-full" : " rounded-2xl"
-            }`}
-            src={image}
-            alt={title}
-          />
+          {isVideoUrl(image) ? (
+            <video
+              className={`w-full h-full object-cover ${
+                vertical ? "rounded-full" : "rounded-lg"
+              }`}
+              src={image}
+              muted
+              autoPlay
+              loop
+              playsInline
+            />
+          ) : (
+            <Image
+              className={`w-full h-full object-cover ${
+                vertical ? "rounded-full" : "rounded-lg"
+              }`}
+              src={image}
+              alt={title}
+            />
+          )}
         </div>
-        <div className="flex flex-col justify-start items-start gap-0">
-          <h1 className="text-lg font-bold">
+        <div className="min-w-0">
+          <h1 className="text-base font-semibold truncate">
             {sectionName === "project" ? (
               <Link className="hover:underline" to={`/project/${id}`}>
                 {title}
@@ -106,32 +116,40 @@ function ShowListCard({
             )}
           </h1>
           {position && (
-            <h3
-              className="text-sm"
-              style={{ color: activeTheme.secondaryText }}
-            >
+            <p className="text-xs truncate mt-0.5" style={{ color: activeTheme.secondaryText }}>
               {position}
-            </h3>
+            </p>
           )}
         </div>
       </div>
-      {feedback && <p className="line-clamp-3 my-2">{feedback}</p>}
+      {feedback && <p className="text-sm line-clamp-2 leading-relaxed">{feedback}</p>}
       {video && (
-        <div className="w-full  flex justify-center items-center my-2">
-          <video
-            src={video}
-            className="w-full h-full object-cover rounded-2xl"
-          />
+        <div className="w-full rounded-lg overflow-hidden">
+          <video src={video} className="w-full object-cover" muted autoPlay loop playsInline />
         </div>
       )}
-      <div className="space-x-2 lg:space-x-4">
+      <div className="flex items-center gap-2 shrink-0 lg:self-center">
+        {setUpdate && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            disabled={pending}
+            onClick={setUpdate}
+            className="cursor-pointer"
+          >
+            <Pencil size={14} />
+          </Button>
+        )}
         <Button
-          className="disabled:cursor-not-allowed cursor-pointer hover:opacity-75"
           type="button"
+          variant="destructive"
+          size="sm"
           disabled={pending}
           onClick={() => handleDelete(id)}
+          className="cursor-pointer"
         >
-          {pending ? <Loader size="sm" /> : "delete"}
+          {pending ? <Loader size="sm" /> : <Trash2 size={14} />}
         </Button>
       </div>
     </div>

@@ -1,4 +1,3 @@
-import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Link } from "react-router-dom";
 import { IUserType } from "@/lib/types";
@@ -30,12 +29,12 @@ function User({ dashboard = false }: { dashboard?: boolean }) {
 
   if (!isLogged) {
     return (
-      <div className="flex items-center gap-4">
-        <Button variant="outline" asChild>
+      <div className="flex items-center gap-3">
+        <Button variant="outline" asChild size="sm">
           <Link to="/login">Sign In</Link>
         </Button>
-        <Button asChild>
-          <Link to="/register">Get Started</Link>
+        <Button asChild size="sm">
+          <Link to="/signup">Get Started</Link>
         </Button>
       </div>
     );
@@ -45,29 +44,29 @@ function User({ dashboard = false }: { dashboard?: boolean }) {
     <div ref={menuRef} className="relative">
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-3 cursor-pointer group"
+        className="flex items-center gap-2 cursor-pointer group"
       >
         <div
-          className={`flex items-center gap-3 ${
+          className={`flex items-center gap-2 ${
             dashboard ? "flex-row-reverse" : ""
           }`}
         >
           <div className="relative">
-            {user.picture && !imgError && (
+            {user.picture && !imgError ? (
               <Image
-                className="rounded-full w-10 h-10 object-cover border-2 border-transparent group-hover:border-primary transition-all duration-200 cursor-pointer shadow-sm"
+                className="rounded-full w-8 h-8 object-cover border transition-all duration-200 cursor-pointer"
                 src={user.picture}
                 alt={`${user.name ?? "User"}'s profile`}
                 onError={() => setImgError(true)}
               />
+            ) : (
+              <UserProfileFallback name={user.name ?? "User"} />
             )}
           </div>
 
           {dashboard && (
             <div className="flex flex-col items-end">
-              <span className="hidden lg:block md:block text-sm ">
-                {user.email}
-              </span>
+              <span className="hidden lg:block text-xs">{user.email}</span>
             </div>
           )}
         </div>
@@ -93,7 +92,7 @@ function UserProfileFallback({ name }: { name: string }) {
 
   return (
     <div
-      className="w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm"
+      className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs"
       style={{
         backgroundColor: theme.borderColor || "#3B82F6",
       }}
@@ -108,20 +107,18 @@ function UserMenu({
   isAdmin,
   logout,
   onClose,
-  className = "",
 }: {
   user: IUserType;
   isAdmin: boolean;
   logout: () => void;
   onClose: () => void;
-  className?: string;
 }) {
   const { activeTheme, defaultTheme } = useTheme();
   const theme = activeTheme || defaultTheme;
 
   const menuItems = [
     {
-      icon: isAdmin ? <LayoutDashboard size={18} /> : <UserIcon size={18} />,
+      icon: isAdmin ? <LayoutDashboard size={14} /> : <UserIcon size={14} />,
       label: isAdmin ? "Dashboard" : "Profile",
       href: isAdmin ? "/dashboard/insights" : "/profile/bio",
     },
@@ -134,73 +131,50 @@ function UserMenu({
 
   return (
     <motion.div
-      initial={{ scale: 0.8, opacity: 0, y: -10 }}
+      initial={{ scale: 0.9, opacity: 0, y: -6 }}
       animate={{ scale: 1, opacity: 1, y: 0 }}
-      exit={{ scale: 0.8, opacity: 0, y: -10 }}
-      transition={{ duration: 0.2, ease: easeInOut }}
-      className="absolute top-12 right-0 z-50 min-w-64"
+      exit={{ scale: 0.9, opacity: 0, y: -6 }}
+      transition={{ duration: 0.15, ease: easeInOut }}
+      className="absolute top-10 right-0 z-50 min-w-44"
     >
-      <Card
+      <div
+        className="rounded-lg border shadow-md overflow-hidden"
         style={{
           backgroundColor: theme.cardColor,
           borderColor: theme.borderColor,
         }}
-        className={`${className} p-2 shadow-lg border`}
       >
-        {" "}
         <div
-          className="p-3 border-b"
+          className="px-3 py-2 border-b flex items-center gap-2"
           style={{ borderColor: theme.borderColor }}
         >
-          <div className="flex items-center gap-3">
-            {user.picture ? (
-              <Image
-                className="rounded-full w-12 h-12 object-cover"
-                src={user.picture}
-                alt={user.name ?? "User"}
-              />
-            ) : (
-              <UserProfileFallback name={user.name ?? "User"} />
-            )}
-            <div className="flex-1 min-w-0">
-              <p
-                className="font-semibold truncate"
-                style={{ color: theme.primaryText }}
-              >
-                {user.name}
-              </p>
-              <p
-                className="text-sm truncate"
-                style={{ color: theme.secondaryText }}
-              >
-                {user.email}
-              </p>
-              <span
-                className="inline-block px-2 py-1 text-xs rounded-full mt-1"
-                style={{
-                  backgroundColor: theme.borderColor,
-                  color: theme.primaryText,
-                }}
-              >
-                {isAdmin ? "Administrator" : "User"}
-              </span>
-            </div>
+          {user.picture ? (
+            <Image
+              className="rounded-full w-7 h-7 object-cover shrink-0"
+              src={user.picture}
+              alt={user.name ?? "User"}
+            />
+          ) : (
+            <UserProfileFallback name={user.name ?? "User"} />
+          )}
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-medium truncate" style={{ color: theme.primaryText }}>
+              {user.name}
+            </p>
+            <p className="text-[11px] truncate" style={{ color: theme.secondaryText }}>
+              {user.email}
+            </p>
           </div>
         </div>
-        <ul className="p-2 space-y-1">
+
+        <ul className="py-1">
           {menuItems.map((item) => (
-            <motion.li
-              key={item.label}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
+            <li key={item.label}>
               <Link
                 to={item.href}
                 onClick={onClose}
-                className="flex items-center gap-3 p-2 rounded-md transition-colors cursor-pointer"
-                style={{
-                  color: theme.secondaryText,
-                }}
+                className="flex items-center gap-2 px-3 py-1.5 text-xs transition-colors cursor-pointer"
+                style={{ color: theme.secondaryText }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.backgroundColor = theme.backgroundColor;
                   e.currentTarget.style.color = theme.primaryText;
@@ -211,27 +185,31 @@ function UserMenu({
                 }}
               >
                 {item.icon}
-                <span className="font-medium">{item.label}</span>
+                <span>{item.label}</span>
               </Link>
-            </motion.li>
+            </li>
           ))}
         </ul>
-        <div
-          className="p-2 border-t"
-          style={{ borderColor: theme.borderColor }}
-        >
-          <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-            <Button
-              onClick={handleLogout}
-              variant="outline"
-              className="w-full flex items-center gap-3 cursor-pointer border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-            >
-              <LogOut size={18} />
-              <span>Sign Out</span>
-            </Button>
-          </motion.div>
+
+        <div className="border-t" style={{ borderColor: theme.borderColor }}>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-1.5 text-xs transition-colors cursor-pointer"
+            style={{ color: theme.secondaryText }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = theme.backgroundColor;
+              e.currentTarget.style.color = theme.primaryText;
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = theme.secondaryText;
+            }}
+          >
+            <LogOut size={14} />
+            Sign Out
+          </button>
         </div>
-      </Card>
+      </div>
     </motion.div>
   );
 }

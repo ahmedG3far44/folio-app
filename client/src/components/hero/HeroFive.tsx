@@ -2,8 +2,6 @@ import { IBioType, IContactType } from "@/lib/types";
 
 import { useTheme } from "@/contexts/ThemeProvider";
 
-import { Card } from "../ui/card";
-
 import Resume from "../cards/Resume";
 import ShowUserContacts from "../cards/ShowUserContacts";
 import Image from "../ui/image";
@@ -17,51 +15,40 @@ function HeroFive({
 }) {
   const { activeTheme } = useTheme();
   return (
-    <div className="max-w-xl mx-auto text-center space-y-8">
-      {/* Profile Image */}
-      <div className="relative inline-block">
-        <div className="w-[200px] h-[200px] mx-auto rounded-full overflow-hidden border-4 border-gray-200 dark:border-gray-700 shadow-lg">
-          <Image
-            property="true"
-            width={200}
-            height={200}
-            className="w-full h-full object-cover"
-            src={bioInfo?.heroImage}
-            alt={bioInfo?.jobTitle}
-          />
-        </div>
-        <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2">
-          <div
-            className="w-4 h-4 rounded-full border-2 border-white"
-            style={{ backgroundColor: activeTheme.primaryText }}
-          ></div>
-        </div>
+    <div className="max-w-lg mx-auto text-center space-y-8">
+      <div className="w-[180px] h-[180px] mx-auto rounded-full overflow-hidden">
+        <Image
+          property="true"
+          width={180}
+          height={180}
+          className="w-full h-full object-cover"
+          src={bioInfo?.heroImage}
+          alt={bioInfo?.jobTitle}
+        />
       </div>
 
-      {/* Name and Title */}
-      <div>
-        <h2 className="text-3xl lg:text-5xl font-black mb-2">
+      <div className="space-y-2">
+        <h2 className="text-4xl lg:text-5xl font-black leading-tight">
           {bioInfo?.bioName}
         </h2>
-        <h3 className="text-lg lg:text-xl font-semibold opacity-70">
+        <h3
+          className="text-lg lg:text-xl font-semibold"
+          style={{ color: activeTheme.secondaryText }}
+        >
           {bioInfo?.jobTitle}
         </h3>
       </div>
 
-      {/* Bio */}
-      <Card
-        style={{
-          backgroundColor: activeTheme.cardColor,
-          color: activeTheme.secondaryText,
-          border: `1px solid ${activeTheme.borderColor}`,
-        }}
-        className="p-6 text-left"
-      >
-        <p className="text-center leading-relaxed">{bioInfo?.bio}</p>
-      </Card>
+      {bioInfo?.bio && (
+        <div
+          className="text-base leading-relaxed text-center"
+          style={{ color: activeTheme.secondaryText }}
+        >
+          <p>{bioInfo.bio}</p>
+        </div>
+      )}
 
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+      <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
         <ShowUserContacts contacts={contacts} />
         <Resume />
       </div>

@@ -3,7 +3,7 @@ import { Card, CardTitle } from "@/components/ui/card";
 
 import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 
 import {
   EyeOff,
@@ -23,7 +23,7 @@ import ErrorMessage from "@/components/ErrorMessage";
 const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function SignUpPage() {
-  const { login } = useAuth();
+  const { login, isLogged } = useAuth();
   const { defaultTheme } = useTheme();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<File | null>(null);
@@ -36,30 +36,26 @@ function SignUpPage() {
     password: "",
   });
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
     try {
       setPending(true);
-      const formData = new FormData();
       const { name, email, password } = registerUser;
 
-      if (!profile) {
-        throw new Error("Profile picture is required to register!!");
-      }
-      if (!email || !password || !name) {
-        throw new Error(
-          "The email or password field is required, make sure to fill all the fields correctly!!"
-        );
+      if (!name || !email || !password) {
+        throw new Error("Please fill in all fields.");
       }
 
-      if (password.length <= 8)
-        throw new Error(
-          "Your password is less than 8 character, please enter a strong!!"
-        );
+      if (password.length < 8) {
+        throw new Error("Password must be at least 8 characters long.");
+      }
 
-      formData.append("profile", profile!);
+      const formData = new FormData();
+      if (profile) {
+        formData.append("profile", profile);
+      }
       formData.append("name", name);
       formData.append("email", email);
       formData.append("password", password);
@@ -69,28 +65,34 @@ function SignUpPage() {
         body: formData,
       });
 
-      if (!response.ok)
-        throw new Error("connection server error, check your network status!!");
-
       const data = await response.json();
 
-      if (!data) {
-        throw new Error("can't login your email or password is Wrong!!");
+      if (!response.ok) {
+        throw new Error(data.message || "Registration failed. Please try again.");
+      }
+
+      if (!data?.data?.user || !data?.data?.token) {
+        throw new Error("Invalid response from server. Please try again.");
       }
 
       const { user, token } = data.data;
       login({ user, token });
       setError(null);
-      navigate(`/${user.id}`);
+      navigate(user.role === "ADMIN" ? "/dashboard/insights" : "/profile/bio");
       return;
     } catch (err: unknown) {
-      console.error((err as Error)?.message);
-      setError((err as Error)?.message);
+      if (err instanceof TypeError && (err as Error).message.includes("fetch")) {
+        setError("Cannot connect to server. Please check your connection.");
+      } else {
+        setError((err as Error)?.message);
+      }
       return;
     } finally {
       setPending(false);
     }
   };
+
+  if (isLogged) return <Navigate to="/profile/bio" />;
 
   return (
     <div
@@ -127,7 +129,7 @@ function SignUpPage() {
         </CardTitle>
 
         
-        <form className="w-full flex flex-col gap-2" onSubmit={handleLogin}>
+        <form className="w-full flex flex-col gap-2" onSubmit={handleRegister}>
           
           <div className="flex flex-col items-center gap-2">
             {profile ? (
@@ -189,7 +191,7 @@ function SignUpPage() {
                   style={{ color: defaultTheme.secondaryText }}
                   className="text-xs opacity-60"
                 >
-                  Upload profile picture
+                  Upload profile picture (optional)
                 </p>
               </div>
             )}

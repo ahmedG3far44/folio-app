@@ -15,7 +15,7 @@ const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
 function LoginPage() {
   const navigate = useNavigate();
-  const { isLogged, user, login } = useAuth();
+  const { isLogged, login } = useAuth();
   const { defaultTheme } = useTheme();
   const [pending, setPending] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -35,7 +35,7 @@ function LoginPage() {
 
       if (!email || !password)
         throw new Error(
-          "The email & password field is required, make sure you fill it with correct data!!"
+          "Please fill in both email and password fields."
         );
 
       const response = await fetch(`${URL_SERVER}/auth/login`, {
@@ -45,26 +45,35 @@ function LoginPage() {
         },
         body: JSON.stringify(loginUser),
       });
-      if (!response.ok)
-        throw new Error("can't login your email or password is Wrong!!");
-      const data = await response.json();
-      if (!data)
-        throw new Error("can't login your email or password is Wrong!!");
-      const { user, token } = data.data;
 
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Invalid email or password.");
+      }
+
+      if (!data?.data?.user || !data?.data?.token) {
+        throw new Error("Invalid response from server. Please try again.");
+      }
+
+      const { user, token } = data.data;
       login({ user, token });
       setError(null);
-      navigate(`/${user.id}`);
+      navigate(user.role === "ADMIN" ? "/dashboard/insights" : "/profile/bio");
       return;
     } catch (err: unknown) {
-      setError((err as Error).message);
+      if (err instanceof TypeError && (err as Error).message.includes("fetch")) {
+        setError("Cannot connect to server. Please check your connection.");
+      } else {
+        setError((err as Error).message);
+      }
       return;
     } finally {
       setPending(false);
     }
   };
 
-  if (isLogged) return <Navigate to={`/${user.id}`} />;
+  if (isLogged) return <Navigate to="/profile/bio" />;
 
   return (
     <div

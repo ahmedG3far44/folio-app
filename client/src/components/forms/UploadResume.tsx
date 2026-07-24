@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthProvider";
 import { useTheme } from "@/contexts/ThemeProvider";
 
 import { Button } from "../ui/button";
-import { FileCheck2, FileUser, XIcon } from "lucide-react";
+import { FileCheck2, FileUser, X, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import SubmitButton from "../submit-button";
@@ -11,150 +11,117 @@ import UploadHere from "../cards/UploadHere";
 import toast from "react-hot-toast";
 
 const URL_SERVER = import.meta.env.VITE_API_URL as string;
-const BUCKET_DOMAIN = import.meta.env.VITE_BUCKET_DOMAIN as string;
 
 function UploadResume() {
   const { token, user } = useAuth();
   const { activeTheme } = useTheme();
   const [file, setFile] = useState<File | null>(null);
   const [isChangeResume, setIsChangeResume] = useState<boolean>(false);
-  const [uploadState, setUploadState] = useState<{
-    uploading: boolean;
-    success?: string | null;
-    error?: string | null;
-  }>({
-    uploading: false,
-    success: "",
-    error: "",
-  });
+  const [uploading, setUploading] = useState<boolean>(false);
+
   const handleUploadResume = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      setUploadState({
-        error: null,
-        success: null,
-        uploading: true,
-      });
+      setUploading(true);
       const formData = new FormData();
-
       formData.append("resume", file as File);
 
       const response = await fetch(`${URL_SERVER}/resume`, {
         method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
-      if (!response.ok) {
-        throw new Error("uploading resume failed!!");
-      }
-      const data = await response.json();
-      toast.success("uploading resume success");
-      setUploadState({
-        ...uploadState,
-        success: "uploading resume success",
-      });
-      return data;
+      if (!response.ok) throw new Error("Upload failed");
+      await response.json();
+      toast.success("Resume uploaded successfully");
     } catch (err) {
-      setUploadState({ ...uploadState, error: (err as Error).message });
-      return;
+      toast.error((err as Error).message);
     } finally {
       setFile(null);
       setIsChangeResume(false);
-      setUploadState({
-        success: null,
-        error: null,
-        uploading: false,
-      });
+      setUploading(false);
     }
   };
+
   return (
-    <>
-      {user.resume && (
-        <div className="w-full flex flex-col gap-4 justify-center items-center my-4">
+    <div className="space-y-4">
+      {user.resume && !isChangeResume && (
+        <div className="flex items-center gap-4">
           <Link
-            style={{ color: activeTheme.primaryText }}
-            to={`${BUCKET_DOMAIN}/${user.resume}`}
+            to={user.resume}
             target="_blank"
-            className="flex justify-center items-center gap-2 my-4 hover:underline hover:opacity-75 duration-150"
+            className="flex items-center gap-2 text-sm hover:underline hover:opacity-75 duration-150"
+            style={{ color: activeTheme.primaryText }}
           >
-            <FileUser size={20} />
-            <h1>Show Current Resume</h1>
+            <FileUser size={18} />
+            View Current Resume
           </Link>
-          <Button onClick={() => setIsChangeResume(!isChangeResume)}>
-            {isChangeResume ? "Close" : "Change Resume"}
+          <Button
+            variant="outline"
+            size="sm"
+            className="cursor-pointer"
+            onClick={() => setIsChangeResume(true)}
+          >
+            <Upload size={14} />
+            Change
           </Button>
         </div>
       )}
-      {!isChangeResume && (
-        <>
-          <form
-            onSubmit={handleUploadResume}
-            className="w-full flex flex-col gap-8 justify-center items-center"
-          >
-            {file ? (
-              <div
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                className="w-full lg:w-[350px] flex flex-col items-center justify-center gap-2 p-4 border rounded-2xl relative"
-              >
-                <div className="w-fit">
-                  <span>
-                    <FileCheck2 size={30} />
-                  </span>
-                  {!uploadState.uploading && (
-                    <button
-                      onClick={() => setFile(null)}
-                      type="button"
-                      className="bg-red-600 hover:bg-red-700 duration-150 rounded-full p-2 text-white cursor-pointer absolute -top-2 -right-4"
-                    >
-                      <XIcon size={20} />
-                    </button>
-                  )}
-                </div>
-                <div className="flex flex-col justify-start items-center text-center text-sm ">
-                  <h2 className="font-semibold max-w-[260px] overflow-x-hidden">
-                    {file.name.split(".")[0]}
-                  </h2>
-                  <div className="flex flex-row-reverse items-center gap-2">
-                    <h3>{(file.size / 1024 / 1024).toLocaleString()} KB</h3>
-                    <h4>
-                      {file.type.split("/").pop()?.toString().toUpperCase()}
-                    </h4>
-                  </div>
-                </div>
+
+      {(isChangeResume || !user.resume) && (
+        <form onSubmit={handleUploadResume} className="space-y-4">
+          {file ? (
+            <div
+              className="flex flex-col items-center gap-3 p-5 rounded-xl border"
+              style={{
+                backgroundColor: activeTheme.backgroundColor,
+                color: activeTheme.primaryText,
+                borderColor: activeTheme.borderColor,
+              }}
+            >
+              <FileCheck2 size={32} className="opacity-60" />
+              <div className="text-center text-sm">
+                <p className="font-semibold truncate max-w-[260px]">
+                  {file.name.split(".")[0]}
+                </p>
+                <p className="opacity-60">
+                  {(file.size / 1024).toFixed(0)} KB &middot;{" "}
+                  {file.type.split("/").pop()?.toUpperCase()}
+                </p>
               </div>
-            ) : (
-              <UploadHere inputId="resume" />
-            )}
-            <input
-              type="file"
-              readOnly={uploadState.uploading}
-              name="resume"
-              id="resume"
-              className="hidden"
-              accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-              onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                setFile(e.target.files ? e.target.files[0] : null)
-              }
-            />
-            {file && (
-              <SubmitButton
-                className="w-full cursor-pointer"
-                loading={uploadState.uploading}
-                type="submit"
-              >
-                Upload
-              </SubmitButton>
-            )}
-          </form>
-        </>
+              {!uploading && (
+                <button
+                  type="button"
+                  onClick={() => setFile(null)}
+                  className="cursor-pointer bg-red-600 hover:bg-red-700 duration-150 rounded-full p-1.5 text-white"
+                >
+                  <X size={16} />
+                </button>
+              )}
+            </div>
+          ) : (
+            <UploadHere inputId="resume" />
+          )}
+
+          <input
+            type="file"
+            name="resume"
+            id="resume"
+            className="hidden"
+            accept=".pdf,.doc,.docx"
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              setFile(e.target.files ? e.target.files[0] : null)
+            }
+          />
+
+          {file && (
+            <SubmitButton className="w-full" loading={uploading} type="submit">
+              Upload Resume
+            </SubmitButton>
+          )}
+        </form>
       )}
-    </>
+    </div>
   );
 }
 

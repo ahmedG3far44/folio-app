@@ -13,15 +13,15 @@ const router = express.Router();
 router.post("/auth/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const salt = 10;
 
-    if (!email || !password)
-      throw new Error("The email or password is wrong!!");
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Email and password are required.",
+      });
+    }
 
     const user = await prisma.users.findUnique({
-      where: {
-        email,
-      },
+      where: { email },
       select: {
         id: true,
         name: true,
@@ -31,14 +31,29 @@ router.post("/auth/login", async (req, res) => {
         role: true,
         resume: true,
         activeTheme: true,
+        status: true,
       },
     });
 
-    if (!user) throw new Error("this user not found!!");
+    if (!user) {
+      return res.status(401).json({
+        message: "Invalid email or password.",
+      });
+    }
 
     const isPasswordCorrect = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordCorrect) throw new Error("wrong email or password !!");
+    if (!isPasswordCorrect) {
+      return res.status(401).json({
+        message: "Invalid email or password.",
+      });
+    }
+
+    if (user.status === "BLOCKED") {
+      return res.status(403).json({
+        message: "Your account has been blocked. Please contact support.",
+      });
+    }
 
     const payload = {
       id: user.id,
@@ -47,13 +62,18 @@ router.post("/auth/login", async (req, res) => {
       role: user.role,
     };
 
-    const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRE_IN });
+    const token = jwt.sign(payload, env.JWT_SECRET, {
+      expiresIn: env.JWT_EXPIRE_IN,
+    });
 
-    return res
-      .status(200)
-      .json({ data: { user, token }, message: "a user login success" });
+    const { password: _, ...userWithoutPassword } = user;
+
+    return res.status(200).json({
+      data: { user: userWithoutPassword, token },
+      message: "Login successful",
+    });
   } catch (err) {
-    return res.status(500).json({ data: "Error", message: err.message });
+    return res.status(500).json({ message: "Internal server error." });
   }
 });
 
@@ -61,40 +81,45 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    const file = req.file;
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "Name, email, and password are required.",
+      });
+    }
 
-    const salt = 10;
+    if (password.length < 8) {
+      return res.status(400).json({
+        message: "Password must be at least 8 characters long.",
+      });
+    }
 
-    const user = await prisma.users.findUnique({
-      where: {
-        email,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        picture: true,
-        role: true,
-        resume: true,
-        activeTheme: true,
-      },
+    const existingUser = await prisma.users.findUnique({
+      where: { email },
+      select: { id: true },
     });
 
-    if (user) throw new Error("This user already exist!!");
-
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const pictureKey = `${crypto.randomUUID()}`;
-    let pictureUrl;
-
-    try {
-      const result = await uploadImage(file.buffer, {
-        folder: "folio/profiles",
-        publicId: pictureKey,
+    if (existingUser) {
+      return res.status(409).json({
+        message: "An account with this email already exists.",
       });
-      pictureUrl = result.url;
-    } catch (err) {
-      return res.status(500).json({ data: "error", message: err.message });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    let pictureUrl = null;
+    const file = req.file;
+
+    if (file) {
+      try {
+        const pictureKey = `${crypto.randomUUID()}`;
+        const result = await uploadImage(file.buffer, {
+          folder: "folio/profiles",
+          publicId: pictureKey,
+        });
+        pictureUrl = result.url;
+      } catch (err) {
+        return res.status(500).json({ message: "Failed to upload profile picture." });
+      }
     }
 
     const themes = await prisma.theme.findMany();
@@ -103,11 +128,11 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
       await prisma.theme.create({
         data: {
           themeName: "Midnight",
-          backgroundColor: "#0c0a0e",
-          cardColor: "#17131a",
-          primaryText: "#f5f3f7",
-          secondaryText: "#9a94a3",
-          borderColor: "#2a2530",
+          backgroundColor: "#0a0a0a",
+          cardColor: "#171717",
+          primaryText: "#fafafa",
+          secondaryText: "#a3a3a3",
+          borderColor: "#262626",
         },
       });
     }
@@ -141,36 +166,34 @@ router.post("/auth/register", upload.single("profile"), async (req, res) => {
       email,
     };
 
-    const token = jwt.sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRE_IN });
+    const token = jwt.sign(payload, env.JWT_SECRET, {
+      expiresIn: env.JWT_EXPIRE_IN,
+    });
 
     await prisma.bio.create({
       data: {
         bio: "update your bio info...",
         bioName: newUser.name,
         jobTitle: "update your job title...",
-        heroImage: pictureUrl,
+        heroImage: pictureUrl || "",
         usersId: newUser.id,
       },
     });
 
     await prisma.contacts.create({
-      data: {
-        usersId: newUser.id,
-      },
+      data: { usersId: newUser.id },
     });
 
     await prisma.layouts.create({
-      data: {
-        usersId: newUser.id,
-      },
+      data: { usersId: newUser.id },
     });
 
     return res.status(201).json({
       data: { user: newUser, token },
-      message: "a new user was created!",
+      message: "Account created successfully",
     });
   } catch (err) {
-    return res.status(500).json({ data: "Error", message: err.message });
+    return res.status(500).json({ message: "Internal server error." });
   }
 });
 

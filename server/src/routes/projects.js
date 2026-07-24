@@ -8,7 +8,7 @@ import authenticated from "../middlewares/authenticated.js";
 import verifyUploading from "../middlewares/verifyUploading.js";
 
 import { upload } from "../configs/multer.js";
-import { uploadImage, deleteImage } from "../utils/upload.js";
+import { uploadImage, uploadMedia, deleteImage } from "../utils/upload.js";
 import { projectSchema } from "../utils/schemas.js";
 
 const router = express.Router();
@@ -49,18 +49,24 @@ router.post(
       const source = sourceUrl && sourceUrl.trim() ? sourceUrl : null;
 
       let thumbnailUrl;
-      for (const image of images) {
-        const imageKey = crypto.randomUUID();
-        if (image.fieldname === "image") {
-          const result = await uploadImage(image.buffer, {
+      for (const file of images) {
+        const fileKey = crypto.randomUUID();
+        if (file.fieldname === "image") {
+          const processed = await sharp(file.buffer)
+            .resize(800, 450, { fit: "inside", withoutEnlargement: true })
+            .toFormat("webp", { quality: 80 })
+            .toBuffer();
+          const result = await uploadImage(processed, {
             folder: "folio/projects",
-            publicId: imageKey,
+            publicId: fileKey,
           });
           keysArray.push(result.url);
         } else {
-          const result = await uploadImage(image.buffer, {
+          const isVideo = file.mimetype.startsWith("video/");
+          const result = await uploadMedia(file.buffer, {
             folder: "folio/projects",
-            publicId: imageKey,
+            publicId: fileKey,
+            resourceType: isVideo ? "video" : "image",
           });
           thumbnailUrl = result.url;
         }

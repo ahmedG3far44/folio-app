@@ -19,7 +19,7 @@ function ExperienceCard({ exp }: { exp: IExperienceType; className?: string }) {
         backgroundColor: activeTheme.cardColor,
         borderColor: activeTheme.borderColor,
       }}
-      className={` p-4 w-full duration-150 cursor-pointer shadow-sm hover:shadow-2xl
+      className={`p-4 md:p-5 w-full transition-shadow duration-200
        ${
          layouts.expLayout === "1"
            ? child?.default
@@ -31,11 +31,11 @@ function ExperienceCard({ exp }: { exp: IExperienceType; className?: string }) {
            ? child?.wizard
            : layouts.expLayout === "5"
            ? child?.accent
-           : "1"
+           : ""
        }`}
     >
-      <div className="w-full flex justify-start items-center gap-4">
-        <div className="w-12 h-12 rounded-xl  overflow-hidden">
+      <div className="flex flex-wrap items-start gap-3 md:gap-4">
+        <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl overflow-hidden shrink-0">
           <Image
             className="w-full h-full rounded-xl object-cover"
             src={cLogo}
@@ -43,38 +43,39 @@ function ExperienceCard({ exp }: { exp: IExperienceType; className?: string }) {
           />
         </div>
 
-        <div>
-          <h2 className="text-xl font-bold">{cName}</h2>
-          <h2 className="text-sm" style={{ color: activeTheme.secondaryText }}>
+        <div className="min-w-0 flex-1">
+          <h3 className="text-lg md:text-xl font-bold truncate">{cName}</h3>
+          <p className="text-xs md:text-sm" style={{ color: activeTheme.secondaryText }}>
             {position}
-          </h2>
+          </p>
         </div>
+
         <span
           style={{ color: activeTheme.secondaryText }}
-          className="ml-auto flex text-sm font-semibold "
+          className="text-xs md:text-sm font-medium whitespace-nowrap"
         >
           {duration}
         </span>
       </div>
 
-      <div
-        style={{
-          color: activeTheme.secondaryText,
-        }}
-        className="flex flex-col justify-start items-start gap-2 text-sm"
-      >
-        <p
-          className="editor-content"
-          dangerouslySetInnerHTML={{ __html: role }}
-        />
-      </div>
+      {role && (
+        <div
+          style={{ color: activeTheme.secondaryText }}
+          className="mt-3 text-sm leading-relaxed"
+        >
+          <div
+            className="editor-content prose-sm max-w-none"
+            dangerouslySetInnerHTML={{ __html: role }}
+          />
+        </div>
+      )}
 
-      <div className="flex justify-start items-center gap-2 mt-auto">
-        <span>
-          <MapPin size={20} />
-        </span>{" "}
-        <span className="text-sm">{location}</span>
-      </div>
+      {location && (
+        <div className="flex items-center gap-1.5 mt-3 text-xs md:text-sm" style={{ color: activeTheme.secondaryText }}>
+          <MapPin size={14} />
+          <span>{location}</span>
+        </div>
+      )}
     </div>
   );
 }

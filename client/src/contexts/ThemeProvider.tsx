@@ -9,6 +9,7 @@ import {
   useEffect,
   useState,
 } from "react";
+import { useLocation } from "react-router-dom";
 
 import { useAuth } from "./AuthProvider";
 
@@ -26,25 +27,19 @@ interface ThemeContextType {
   loading: boolean;
 }
 
+const DEFAULT_THEME = {
+  id: "1",
+  themeName: "Midnight",
+  backgroundColor: "#0a0a0a",
+  cardColor: "#171717",
+  primaryText: "#fafafa",
+  secondaryText: "#a3a3a3",
+  borderColor: "#262626",
+};
+
 const ThemeContext = createContext<ThemeContextType>({
-  activeTheme: {
-    id: "1",
-    themeName: "Midnight",
-    backgroundColor: "#0c0a0e",
-    cardColor: "#17131a",
-    primaryText: "#f5f3f7",
-    secondaryText: "#9a94a3",
-    borderColor: "#2a2530",
-  },
-  defaultTheme: {
-    id: "2",
-    themeName: "Midnight",
-    backgroundColor: "#0c0a0e",
-    cardColor: "#17131a",
-    primaryText: "#f5f3f7",
-    secondaryText: "#9a94a3",
-    borderColor: "#2a2530",
-  },
+  activeTheme: DEFAULT_THEME,
+  defaultTheme: DEFAULT_THEME,
   themesList: [],
   switchTheme: () => {},
   setThemesList: () => {},
@@ -53,29 +48,17 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
   const { user, token } = useAuth();
-  const [userTheme, setActiveTheme] = useState<IThemeType>({
-    id: "1",
-    themeName: "Midnight",
-    backgroundColor: "#0c0a0e",
-    cardColor: "#17131a",
-    primaryText: "#f5f3f7",
-    secondaryText: "#9a94a3",
-    borderColor: "#2a2530",
-  });
-  const defaultTheme: IThemeType = {
-    id: "2",
-    themeName: "Midnight",
-    backgroundColor: "#0c0a0e",
-    cardColor: "#17131a",
-    primaryText: "#f5f3f7",
-    secondaryText: "#9a94a3",
-    borderColor: "#2a2530",
-  };
+  const [userTheme, setActiveTheme] = useState<IThemeType>({ ...DEFAULT_THEME });
+  const defaultTheme: IThemeType = { ...DEFAULT_THEME, id: "2" };
 
   const [themesList, setThemesList] = useState<IThemeType[] | []>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  
+  const { pathname } = useLocation();
+
+  const shouldFetch = pathname.startsWith("/profile") || pathname.startsWith("/dashboard");
+
   useEffect(() => {
+    if (!shouldFetch || !user) return;
     const fetchThemes = async () => {
       try {
         setLoading(true);
@@ -89,18 +72,13 @@ const ThemeProvider: FC<PropsWithChildren> = ({ children }) => {
           setThemesList(listThemes.data);
         }
       } catch (error) {
-        if (error instanceof Error) {
-          console.log(error.message);
-        } else {
-          console.log(error);
-        }
-        return;
+        toast.error("Can't load themes, please check your connection!!");
       } finally {
         setLoading(false);
       }
     };
     fetchThemes();
-  }, [user, token]);
+  }, [user, token, shouldFetch]);
 
   const switchTheme = async ({
     newActiveThemeId,
@@ -215,7 +193,6 @@ export const getUserActiveTheme = async ({
     const theme: IThemeType = data.data;
     return theme;
   } catch (err) {
-    // toast.error((err as Error).message);
-    return err;
+    return null;
   }
 };

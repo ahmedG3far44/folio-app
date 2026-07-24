@@ -7,15 +7,16 @@ import { useForm } from "react-hook-form";
 import { useUser } from "@/contexts/UserProvider";
 import { useAuth } from "@/contexts/AuthProvider";
 
-import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import SubmitButton from "../submit-button";
 import ErrorMessage from "../ErrorMessage";
 import toast from "react-hot-toast";
 import ContactForm from "./ContactForm";
-import { UserPen } from "lucide-react";
+import { Camera, Pencil, X } from "lucide-react";
 import UploadResume from "./UploadResume";
 import { useTheme } from "@/contexts/ThemeProvider";
+import { Label } from "../ui/label";
+import Image from "../ui/image";
 
 const URL_SERVER = import.meta.env.VITE_API_URL as string;
 
@@ -25,7 +26,37 @@ function BioForm() {
   const [isResumeOpen, setIsResumeOpen] = useState<boolean>(false);
   const { bio } = useUser();
   const { activeTheme } = useTheme();
-  const { token } = useAuth();
+  const { token, user, login } = useAuth();
+  const [pictureFile, setPictureFile] = useState<File | null>(null);
+  const [pictureUploading, setPictureUploading] = useState(false);
+
+  const handlePictureUpload = async () => {
+    if (!pictureFile) return;
+    try {
+      setPictureUploading(true);
+      const formData = new FormData();
+      formData.append("picture", pictureFile);
+
+      const response = await fetch(`${URL_SERVER}/user/profile-picture`, {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error("Failed to update profile picture");
+      const result = await response.json();
+      const updatedUser = result.data;
+
+      login({ user: updatedUser, token });
+      setPictureFile(null);
+      toast.success("Profile picture updated");
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setPictureUploading(false);
+    }
+  };
+
   const {
     register,
     reset,
@@ -35,26 +66,113 @@ function BioForm() {
   } = useForm<z.infer<typeof bioSchema>>({
     resolver: zodResolver(bioSchema),
   });
+
   return (
-    <div
-      style={{ color: activeTheme.primaryText }}
-      className="w-full flex flex-col gap-4"
-    >
-      <div className="w-full p-4">
-        <div className="w-full flex justify-between items-center">
-          <h1>Bio Info</h1>
+    <div className="space-y-8">
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Profile Picture</h2>
+        </div>
+        <div
+          className="rounded-xl border p-5"
+          style={{
+            backgroundColor: activeTheme.cardColor,
+            borderColor: activeTheme.borderColor,
+          }}
+        >
+          <div className="flex items-center gap-5">
+            <div className="relative shrink-0">
+              <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2"
+                style={{ borderColor: activeTheme.borderColor }}>
+                {pictureFile ? (
+                  <img
+                    className="w-full h-full object-cover"
+                    src={URL.createObjectURL(pictureFile)}
+                    alt="Preview"
+                  />
+                ) : (
+                  <Image
+                    className="w-full h-full object-cover"
+                    src={user?.picture || ""}
+                    alt={user?.name || "Profile"}
+                  />
+                )}
+              </div>
+              <label
+                htmlFor="profilePicture"
+                className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-opacity hover:opacity-80 border"
+                style={{
+                  backgroundColor: activeTheme.backgroundColor,
+                  borderColor: activeTheme.borderColor,
+                  color: activeTheme.primaryText,
+                }}
+              >
+                <Camera size={14} />
+              </label>
+              <input
+                id="profilePicture"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={pictureUploading}
+                onChange={(e) => setPictureFile(e.target?.files?.[0] || null)}
+              />
+            </div>
+
+            <div className="space-y-2">
+              <p className="text-sm font-medium" style={{ color: activeTheme.primaryText }}>
+                {user?.name || "Your Name"}
+              </p>
+              <p className="text-xs" style={{ color: activeTheme.secondaryText }}>
+                JPEG, PNG, WEBP — max 5MB
+              </p>
+              <div className="flex items-center gap-2">
+                {pictureFile && (
+                  <>
+                    <Button
+                      type="button"
+                      size="sm"
+                      className="cursor-pointer"
+                      disabled={pictureUploading}
+                      onClick={handlePictureUpload}
+                    >
+                      {pictureUploading ? "Uploading..." : "Save"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="cursor-pointer"
+                      disabled={pictureUploading}
+                      onClick={() => setPictureFile(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Bio Info</h2>
           <Button
+            variant="outline"
+            size="sm"
             className="cursor-pointer"
             onClick={() => setIsBioOpen(!isBioOpen)}
           >
-            {!isBioOpen ? <UserPen size={20} /> : "cancel"}
+            {isBioOpen ? <X size={16} /> : <Pencil size={16} />}
+            {isBioOpen ? "Close" : "Edit"}
           </Button>
         </div>
         {isBioOpen && (
           <form
             onSubmit={handleSubmit(async () => {
               const values = getValues();
-              const { name, jobTitle, summary } = values;
               try {
                 const response = await fetch(`${URL_SERVER}/bio/${bio.id}`, {
                   method: "PUT",
@@ -62,137 +180,135 @@ function BioForm() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                   },
-                  body: JSON.stringify({
-                    name,
-                    jobTitle,
-                    summary,
-                  }),
+                  body: JSON.stringify(values),
                 });
-                if (!response.ok) {
-                  throw new Error("update bio info failed!!");
-                }
+                if (!response.ok) throw new Error("Update failed");
                 const data = await response.json();
-
                 toast.success(data.message);
                 reset();
-                return data.data;
               } catch (err) {
                 toast.error((err as Error).message);
-                return;
               }
             })}
-            className="w-full p-2 flex flex-col justify-start items-center gap-2"
+            className="space-y-4"
           >
-            <Card
+            <div
+              className="space-y-4 p-5 rounded-xl border"
               style={{
                 backgroundColor: activeTheme.cardColor,
-                border: `1px solid ${activeTheme.borderColor}`,
+                borderColor: activeTheme.borderColor,
               }}
-              className="p-4 w-full"
             >
-              <input
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                defaultValue={bio.jobTitle}
-                readOnly={isSubmitting}
-                className="w-full p-2 rounded-md"
-                type="text"
-                id="jobTitle"
-                placeholder="Your Job Title"
-                {...register("jobTitle")}
-              />
-              {errors.jobTitle && (
-                <ErrorMessage
-                  message={errors.jobTitle.message?.toString() as string}
+              <div className="space-y-1.5">
+                <Label htmlFor="name" style={{ color: activeTheme.primaryText }}>
+                  Full Name
+                </Label>
+                <input
+                  {...register("name")}
+                  defaultValue={bio.bioName}
+                  readOnly={isSubmitting}
+                  placeholder="Your name"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
+                  style={{
+                    backgroundColor: activeTheme.backgroundColor,
+                    color: activeTheme.primaryText,
+                    borderColor: activeTheme.borderColor,
+                  }}
                 />
-              )}
-              <input
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                defaultValue={bio.bioName}
-                readOnly={isSubmitting}
-                className="w-full p-2 rounded-md"
-                type="text"
-                id="name"
-                placeholder="Your Name"
-                {...register("name")}
-              />
-              {errors.name && (
-                <ErrorMessage
-                  message={errors.name.message?.toString() as string}
+                {errors.name && (
+                  <ErrorMessage message={errors.name.message?.toString() || ""} />
+                )}
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="jobTitle" style={{ color: activeTheme.primaryText }}>
+                  Job Title
+                </Label>
+                <input
+                  {...register("jobTitle")}
+                  defaultValue={bio.jobTitle}
+                  readOnly={isSubmitting}
+                  placeholder="e.g. Software Engineer"
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px]"
+                  style={{
+                    backgroundColor: activeTheme.backgroundColor,
+                    color: activeTheme.primaryText,
+                    borderColor: activeTheme.borderColor,
+                  }}
                 />
-              )}
-              <textarea
-                style={{
-                  backgroundColor: activeTheme.backgroundColor,
-                  color: activeTheme.primaryText,
-                  borderColor: activeTheme.borderColor,
-                }}
-                defaultValue={bio.bio}
-                readOnly={isSubmitting}
-                className="w-full p-2 rounded-md"
-                id="bio"
-                placeholder="Your Bio"
-                {...register("summary")}
-              />
-              {errors.summary && (
-                <ErrorMessage
-                  message={errors.summary.message?.toString() as string}
+                {errors.jobTitle && (
+                  <ErrorMessage message={errors.jobTitle.message?.toString() || ""} />
+                )}
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="summary" style={{ color: activeTheme.primaryText }}>
+                  Bio Summary
+                </Label>
+                <textarea
+                  {...register("summary")}
+                  defaultValue={bio.bio}
+                  readOnly={isSubmitting}
+                  placeholder="Write a short bio..."
+                  rows={4}
+                  className="w-full rounded-lg border px-3 py-2 text-sm outline-none transition-colors focus-visible:ring-[3px] resize-y"
+                  style={{
+                    backgroundColor: activeTheme.backgroundColor,
+                    color: activeTheme.primaryText,
+                    borderColor: activeTheme.borderColor,
+                  }}
                 />
-              )}
-            </Card>
-            <SubmitButton
-              className="w-full mt-4"
-              loading={isSubmitting}
-              type="submit"
-            >
-              save changes
+                {errors.summary && (
+                  <ErrorMessage message={errors.summary.message?.toString() || ""} />
+                )}
+              </div>
+            </div>
+            <SubmitButton className="w-full" loading={isSubmitting} type="submit">
+              Save Changes
             </SubmitButton>
           </form>
         )}
-      </div>
-      <div className="w-full p-4 flex flex-col justify-start items-center gap-4">
-        <div className="flex justify-between items-center w-full ">
-          <h1>Contacts Info</h1>
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Contacts</h2>
           <Button
+            variant="outline"
+            size="sm"
             className="cursor-pointer"
             onClick={() => setIsContactOpen(!isContactOpen)}
-            type="button"
           >
-            {!isContactOpen ? <UserPen size={20} /> : "cancel"}
+            {isContactOpen ? <X size={16} /> : <Pencil size={16} />}
+            {isContactOpen ? "Close" : "Edit"}
           </Button>
         </div>
         {isContactOpen && <ContactForm />}
-      </div>
-      <div className="w-full p-4 flex flex-col justify-start items-center gap-4">
-        <div className="flex justify-between items-center w-full ">
-          <h1>Resume Info</h1>
+      </section>
+
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold">Resume</h2>
           <Button
+            variant="outline"
+            size="sm"
             className="cursor-pointer"
             onClick={() => setIsResumeOpen(!isResumeOpen)}
-            type="button"
           >
-            {!isResumeOpen ? <UserPen size={20} /> : "cancel"}
+            {isResumeOpen ? <X size={16} /> : <Pencil size={16} />}
+            {isResumeOpen ? "Close" : "Edit"}
           </Button>
         </div>
         {isResumeOpen && (
-          <Card
+          <div
+            className="p-5 rounded-xl border"
             style={{
               backgroundColor: activeTheme.cardColor,
-              border: `1px solid ${activeTheme.borderColor}`,
+              borderColor: activeTheme.borderColor,
             }}
-            className={"w-full p-4"}
           >
             <UploadResume />
-          </Card>
+          </div>
         )}
-      </div>
+      </section>
     </div>
   );
 }

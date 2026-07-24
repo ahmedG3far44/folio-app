@@ -12,27 +12,26 @@ function Footer() {
   const { isLogged, user } = useAuth();
   return (
     <footer
-      className="w-full flex items-center justify-center mt-auto"
+      className="w-full mt-16 md:mt-24"
       style={{
         backgroundColor: activeTheme.cardColor,
         color: activeTheme.primaryText,
+        borderTop: `1px solid ${activeTheme.borderColor}`,
       }}
     >
-      <div className="lg:w-3/4 w-[90%] mx-auto  py-12">
-        <div className="flex justify-between items-start lg:items-center flex-col md:flex-row lg:flex-row">
-          <div className="md:col-span-1 w-full lg:w-1/2">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 md:gap-0">
+          <div className="max-w-sm">
             <Logo />
-            <p className=" text-sm mb-6 mt-4 w-full lg:w-1/2">
-              Showcase your creative work with a professional portfolio. Build,
-              share, and grow your online presence with our easy-to-use
-              platform.
+            <p className="text-sm mt-3 leading-relaxed opacity-70">
+              Showcase your creative work with a professional portfolio. Build, share, and grow your online presence.
             </p>
           </div>
 
-          <div className="flex items-end flex-col justify-center gap-2">
+          <div className="flex flex-col items-start md:items-end gap-3">
             {isLogged ? (
-              <div className="flex items-center gap-2 py-4">
-                <div className="w-10 h-10 rounded-full overflow-hidden">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full overflow-hidden shrink-0">
                   <Image
                     className="object-cover w-full h-full"
                     width={40}
@@ -41,25 +40,23 @@ function Footer() {
                     alt={user.name as string}
                   />
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold">{user.name}</h3>
-                  <h4 className="text-sm">{user.email}</h4>
+                <div className="text-sm">
+                  <p className="font-semibold">{user.name}</p>
+                  <p className="opacity-60">{user.email}</p>
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-start justify-start gap-4">
-                <PrimaryBtn className="w-full text-center" path={"login"}>
-                  login
-                </PrimaryBtn>
-                <SecondaryBtn path={"signup"}>create account</SecondaryBtn>
+              <div className="flex flex-col sm:flex-row gap-3">
+                <PrimaryBtn path="login">Login</PrimaryBtn>
+                <SecondaryBtn path="signup">Create Account</SecondaryBtn>
               </div>
             )}
           </div>
         </div>
-        <div className="flex flex-col md:flex-row justify-between items-start lg:items-center">
-          <div className="text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} Folio. All rights reserved.
-          </div>
+        <div className="mt-8 pt-6 border-t text-sm opacity-50 text-center md:text-left"
+          style={{ borderColor: activeTheme.borderColor }}
+        >
+          &copy; {new Date().getFullYear()} Folio. All rights reserved.
         </div>
       </div>
     </footer>
