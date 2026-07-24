@@ -157,43 +157,47 @@ else
 fi
 
 ############################################################
-# Build
+# Build (TypeScript Projects Only)
 ############################################################
 
-if npm pkg get scripts.build 2>/dev/null | grep -vq "null"; then
-    echo "Building..."
-    npm run build
+IS_TYPESCRIPT=false
+
+# Detect TypeScript project
+if [[ -f "tsconfig.json" ]]; then
+    IS_TYPESCRIPT=true
+elif find src -type f \( -name "*.ts" -o -name "*.tsx" \) 2>/dev/null | grep -q .; then
+    IS_TYPESCRIPT=true
+elif grep -q '"typescript"' package.json 2>/dev/null; then
+    IS_TYPESCRIPT=true
 fi
 
-############################################################
-# Detect Start File
-############################################################
+if [[ "$IS_TYPESCRIPT" == true ]]; then
 
-START_FILE=""
-
-for file in \
-dist/index.js \
-dist/server.js \
-build/index.js \
-build/server.js \
-index.js \
-server.js \
-app.js
-do
-    if [[ -f "$file" ]]; then
-        START_FILE="$file"
-        break
+    if node -e "process.exit(require('./package.json').scripts?.build ? 0 : 1)"; then
+        echo "TypeScript project detected."
+        echo "Running build..."
+        npm run build
+    else
+        echo "TypeScript project detected but no build script found."
+        echo "Skipping build."
     fi
-done
 
-if [[ -z "$START_FILE" ]]; then
-    echo "Unable to detect application entry file."
-    exit 1
+else
+
+    echo "JavaScript project detected."
+    echo "Skipping build."
+
 fi
 
 ############################################################
 # PM2
 ############################################################
+
+# Ensure the project has a start script
+if ! node -e "process.exit(require('./package.json').scripts?.start ? 0 : 1)"; then
+    echo "❌ No 'start' script found in package.json."
+    exit 1
+fi
 
 echo "Configuring PM2..."
 
@@ -203,8 +207,9 @@ if pm2 describe "$APP_NAME" >/dev/null 2>&1; then
 
 else
 
-    pm2 start "$START_FILE" \
-        --name "$APP_NAME"
+    pm2 start npm \
+        --name "$APP_NAME" \
+        -- start
 
 fi
 
