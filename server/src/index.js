@@ -7,9 +7,7 @@ import prisma from "./configs/db.js";
 import cookieParser from "cookie-parser";
 import rootRouter from "./routes/index.js";
 
-
 import { env } from "./configs/env.js";
-
 
 const PORT = env.PORT;
 const allowedOrigins = env.ALLOWED_ORIGINS
@@ -19,7 +17,7 @@ const allowedOrigins = env.ALLOWED_ORIGINS
 const app = express();
 
 const corsOptions = {
-  origin:allowedOrigins,
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -55,7 +53,9 @@ app.use("/api/auth/register", authLimiter);
 
 app.get("/", async (req, res) => {
   return res.send(`
-    <h1>Folio server is running good....</h1> 
+    <h1>Folio Server</h1> 
+    <p>Welcome to the Folio server. This server provides the backend API for the Folio portfolio application.</p>
+    <p>For more information, visit the <a href="
     `);
 });
 
@@ -65,13 +65,13 @@ app.get("/healthz", async (req, res) => {
 
 app.use("/api", rootRouter);
 
-
-
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: "Internal server error." });
 });
 
 app.listen(PORT, () => {
-  console.log(`HTTP Server running on port ${PORT} ==> ${env.NODE_ENV} environment`);
+  console.log(
+    `HTTP Server running on port ${PORT} ==> ${env.NODE_ENV} environment`,
+  );
 });
