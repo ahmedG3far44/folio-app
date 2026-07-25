@@ -5,6 +5,7 @@ import { AuthProvider } from "./contexts/AuthProvider.tsx";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { HelmetProvider } from "react-helmet-async";
+import { Analytics } from "@vercel/analytics/react";
 import ThemeProvider from "./contexts/ThemeProvider.tsx";
 import AdminProvider from "./contexts/AdminProvider.tsx";
 import App from "./App.tsx";
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
               <AdminProvider>
                 <Toaster position="bottom-center" />
                 <App />
+                <Analytics />
               </AdminProvider>
             </UserProvider>
           </ThemeProvider>
