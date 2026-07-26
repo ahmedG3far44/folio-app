@@ -1,11 +1,5 @@
 import { IFeatureType } from "@/lib/types";
-import {
-  memo,
-  useMemo,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import { memo, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { useAuth } from "@/contexts/AuthProvider";
 import { Helmet } from "react-helmet-async";
@@ -36,22 +30,32 @@ const FEATURE_IMAGES = [
   "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
 ];
 
-const FeatureImage = memo(({ src, index }: { src: string; index: number }) => (
-  <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
-    <div className="absolute inset-0 bg-gradient-to-br from-purple-600/40 via-purple-500/15 to-purple-900/60 z-10" />
-    <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/60 via-transparent to-transparent z-10" />
-    <img
-      className="w-full h-full object-cover aspect-video"
-      src={src}
-      alt=""
-      loading={index < 2 ? "eager" : "lazy"}
-    />
-  </div>
-));
+const FeatureImage = memo(({ src, index }: { src: string; index: number }) => {
+  const [loaded, setLoaded] = useState(false);
+  return (
+    <div className="relative rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900">
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-600/30 via-purple-500/10 to-purple-900/40 z-10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/80 via-transparent to-transparent z-10" />
+      {!loaded && (
+        <div className="absolute inset-0 bg-zinc-800 animate-pulse z-0" />
+      )}
+      <img
+        className={`w-full h-full object-cover aspect-video transition-opacity duration-700 ${loaded ? "opacity-100" : "opacity-0"}`}
+        src={src}
+        alt={`Feature illustration ${index + 1}`}
+        loading={index < 2 ? "eager" : "lazy"}
+        onLoad={() => setLoaded(true)}
+      />
+    </div>
+  );
+});
 FeatureImage.displayName = "FeatureImage";
 
 const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
-  <section className="min-h-screen flex items-center px-6 lg:px-12" aria-label="Hero section">
+  <section
+    className="min-h-screen flex items-center px-6 lg:px-12"
+    aria-label="Hero section"
+  >
     <div className="w-full max-w-7xl mx-auto gap-12 lg:gap-20 items-center">
       <div className="space-y-8 z-10 flex flex-col items-center justify-center gap-8">
         <div className="space-y-4 text-center">
@@ -66,7 +70,11 @@ const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{
+              duration: 0.6,
+              delay: 0.1,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
             className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.1] tracking-tight"
           >
             <span className="text-white">Build a portfolio,</span>
@@ -76,7 +84,11 @@ const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+            transition={{
+              duration: 0.6,
+              delay: 0.2,
+              ease: [0.25, 0.1, 0.25, 1],
+            }}
             className="text-base sm:text-lg text-zinc-400 max-w-lg leading-relaxed text-center mx-auto"
           >
             Create a digital profile that reflects your talents and experience.
@@ -95,7 +107,7 @@ const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
             <SecondaryBtn path="signup">Get Started Now</SecondaryBtn>
           )}
           <a
-            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-zinc-700 text-zinc-300 text-sm hover:bg-zinc-800 transition-colors duration-150"
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md border border-zinc-700 text-zinc-300 text-sm hover:bg-zinc-800 hover:text-white transition-colors duration-200"
             href="https://github.com/ahmedG3far44/Presento-Online-Platform"
             target="_blank"
             rel="noopener noreferrer"
@@ -105,18 +117,20 @@ const HeroSection = memo(({ isLogged }: { isLogged: boolean }) => (
           </a>
         </motion.nav>
       </div>
-
     </div>
   </section>
 ));
 HeroSection.displayName = "HeroSection";
 
 const ShowcaseSection = memo(() => (
-  <section className="px-6 lg:px-12 py-24 lg:py-32" aria-label="Platform showcase">
+  <section
+    className="px-6 lg:px-12 py-24 lg:py-32"
+    aria-label="Platform showcase"
+  >
     <div className="w-full max-w-7xl mx-auto space-y-12">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, x: -30 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         className="max-w-xl"
@@ -125,24 +139,30 @@ const ShowcaseSection = memo(() => (
           See it in action
         </h2>
         <p className="mt-4 text-base text-zinc-400 leading-relaxed">
-          From blank canvas to live portfolio in minutes. Customize every section,
-          choose your layout, and publish.
+          From blank canvas to live portfolio in minutes. Customize every
+          section, choose your layout, and publish.
         </p>
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.97 }}
+        whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.6, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
         className="rounded-2xl overflow-hidden border border-zinc-800 shadow-2xl"
       >
-        <Image
+        <video
+          preload="none"
+          autoPlay
+          muted
+          loop
+          playsInline
           className="w-full object-cover"
-          src="./showcase.gif"
-          alt="Folio platform walkthrough showing portfolio creation flow"
           width={1200}
-        />
+          poster="./showcase.gif"
+        >
+          <source src="./preview.mp4" type="video/mp4" />
+        </video>
       </motion.div>
     </div>
   </section>
@@ -150,28 +170,30 @@ const ShowcaseSection = memo(() => (
 ShowcaseSection.displayName = "ShowcaseSection";
 
 const FeatureBlock = memo(
-  ({
-    feature,
-    index,
-  }: {
-    feature: IFeatureType;
-    index: number;
-  }) => {
+  ({ feature, index }: { feature: IFeatureType; index: number }) => {
     const isReversed = index % 2 === 1;
     return (
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 0.5, delay: index * 0.08, ease: [0.25, 0.1, 0.25, 1] }}
-        className={`grid lg:grid-cols-2 gap-8 lg:gap-16 items-center ${
-          isReversed ? "lg:direction-rtl" : ""
-        }`}
+        transition={{
+          duration: 0.5,
+          delay: index * 0.08,
+          ease: [0.25, 0.1, 0.25, 1],
+        }}
+        className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center"
       >
         <div className={isReversed ? "lg:order-2" : ""}>
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 mb-5">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            whileInView={{ scale: 1, opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.3, delay: index * 0.08 + 0.1 }}
+            className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 mb-5"
+          >
             {feature.icon}
-          </div>
+          </motion.div>
           <h3 className="text-2xl font-bold text-white mb-3">
             {feature.title}
           </h3>
@@ -179,14 +201,12 @@ const FeatureBlock = memo(
             {feature.text}
           </p>
         </div>
-        <div
-          className={isReversed ? "lg:order-1" : ""}
-        >
+        <div className={isReversed ? "lg:order-1" : ""}>
           <FeatureImage src={FEATURE_IMAGES[index]} index={index} />
         </div>
       </motion.div>
     );
-  }
+  },
 );
 FeatureBlock.displayName = "FeatureBlock";
 
@@ -201,14 +221,12 @@ const FeaturesSection = memo(
           transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
           className="max-w-xl"
         >
-          <span className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-purple-400 mb-3">
-            Everything you need
-          </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-            Main Features
+            Everything you need
           </h2>
           <p className="mt-4 text-base text-zinc-400 leading-relaxed">
-            Six core capabilities that make building your portfolio feel natural.
+            Six core capabilities that make building your portfolio feel
+            natural.
           </p>
         </motion.div>
 
@@ -223,9 +241,41 @@ const FeaturesSection = memo(
         </div>
       </div>
     </section>
-  )
+  ),
 );
 FeaturesSection.displayName = "FeaturesSection";
+
+const GalleryItem = memo(
+  ({ src, label, className }: { src: string; label: string; className?: string }) => {
+    const [loaded, setLoaded] = useState(false);
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+        className={`rounded-2xl overflow-hidden border border-zinc-800 bg-zinc-900 ${className ?? ""}`}
+      >
+        {!loaded && (
+          <div className="aspect-video bg-zinc-800 animate-pulse" />
+        )}
+        <video
+          preload="none"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className={`w-full h-full object-cover transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0 h-0"}`}
+          aria-label={label}
+          onCanPlay={() => setLoaded(true)}
+        >
+          <source src={src} type="video/mp4" />
+        </video>
+      </motion.div>
+    );
+  },
+);
+GalleryItem.displayName = "GalleryItem";
 
 const VideoGalleryComponent = memo(() => (
   <section
@@ -240,9 +290,6 @@ const VideoGalleryComponent = memo(() => (
         transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
         className="max-w-xl"
       >
-        <span className="inline-block text-xs font-semibold tracking-[0.2em] uppercase text-purple-400 mb-3">
-          Templates
-        </span>
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
           Variant customized portfolio pages
         </h2>
@@ -253,58 +300,24 @@ const VideoGalleryComponent = memo(() => (
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 rounded-2xl overflow-hidden border border-zinc-800">
-          <video
-            preload="none"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            aria-label="Portfolio template layout example 1"
-          >
-            <source src="./video-2.mp4" type="video/mp4" />
-          </video>
-        </div>
-        <div className="rounded-2xl overflow-hidden border border-zinc-800">
-          <video
-            preload="none"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            aria-label="Portfolio template layout example 2"
-          >
-            <source src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4" type="video/mp4" />
-          </video>
-        </div>
-        <div className="rounded-2xl overflow-hidden border border-zinc-800">
-          <video
-            preload="none"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            aria-label="Portfolio template layout example 3"
-          >
-            <source src="https://cdn.dribbble.com/userupload/15153126/file/original-e020287a0dc270092df19c2738aff2c0.mp4" type="video/mp4" />
-          </video>
-        </div>
-        <div className="lg:col-span-2 rounded-2xl overflow-hidden border border-zinc-800">
-          <video
-            preload="none"
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            aria-label="Portfolio template layout example 4"
-          >
-            <source src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4" type="video/mp4" />
-          </video>
-        </div>
+        <GalleryItem
+          src="./video-2.mp4"
+          label="Portfolio template layout example 1"
+          className="lg:col-span-2"
+        />
+        <GalleryItem
+          src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4"
+          label="Portfolio template layout example 2"
+        />
+        <GalleryItem
+          src="https://cdn.dribbble.com/userupload/15153126/file/original-e020287a0dc270092df19c2738aff2c0.mp4"
+          label="Portfolio template layout example 3"
+        />
+        <GalleryItem
+          src="https://cdn.dribbble.com/userupload/42966560/file/original-4272fa71322d0c6c4ea70a926afa441a.mp4"
+          label="Portfolio template layout example 4"
+          className="lg:col-span-2"
+        />
       </div>
     </div>
   </section>
@@ -315,12 +328,18 @@ VideoGalleryComponent.displayName = "VideoGalleryComponent";
 function Footer() {
   const { isLogged, user } = useAuth();
   return (
-    <footer className="w-full border-t border-zinc-800 mt-24">
+    <motion.footer
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5 }}
+      className="w-full border-t border-zinc-800/50 mt-24"
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-12 py-16">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-12">
-          <div className="max-w-sm">
+          <div className="max-w-sm space-y-4">
             <Logo />
-            <p className="text-sm text-zinc-500 mt-4 leading-relaxed">
+            <p className="text-sm text-zinc-500 leading-relaxed">
               Showcase your creative work with a professional portfolio. Build,
               share, and grow your online presence.
             </p>
@@ -329,7 +348,7 @@ function Footer() {
           <div className="flex flex-col items-start gap-4">
             {isLogged ? (
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full overflow-hidden">
+                <div className="w-10 h-10 rounded-full overflow-hidden ring-2 ring-zinc-700">
                   <Image
                     className="object-cover w-full h-full"
                     width={40}
@@ -339,7 +358,9 @@ function Footer() {
                   />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-zinc-300">{user.name}</p>
+                  <p className="text-sm font-medium text-zinc-300">
+                    {user.name}
+                  </p>
                   <p className="text-sm text-zinc-500">{user.email}</p>
                 </div>
               </div>
@@ -351,20 +372,18 @@ function Footer() {
             )}
           </div>
         </div>
-        <div className="mt-12 pt-8 border-t border-zinc-800/50">
+        <div className="mt-12 pt-8 border-t border-zinc-800/30">
           <p className="text-sm text-zinc-600">
             &copy; {new Date().getFullYear()} Folio. All rights reserved.
           </p>
         </div>
       </div>
-    </footer>
+    </motion.footer>
   );
 }
 
 function LandingPage() {
   const { isLogged } = useAuth();
-  const [activeState, setActive] = useState(false);
-
   const featuresCard = useMemo(
     () => [
       {
@@ -398,33 +417,8 @@ function LandingPage() {
         text: "Easily customize and reorder sections like About Me, Work Experience, and Projects.",
       },
     ],
-    []
+    [],
   );
-
-  const handleScroll = useCallback(() => {
-    const scrollY = window.scrollY;
-    const newActiveState = scrollY >= 800 && scrollY <= 1650;
-    if (newActiveState !== activeState) {
-      setActive(newActiveState);
-    }
-  }, [activeState]);
-
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-    const throttledHandleScroll = () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(handleScroll, 16);
-    };
-    window.addEventListener("scroll", throttledHandleScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", throttledHandleScroll);
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-    };
-  }, [handleScroll]);
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -471,10 +465,10 @@ function LandingPage() {
           name="keywords"
           content="portfolio builder, tech portfolio, developer portfolio, online portfolio, portfolio website, project showcase, skills management, professional portfolio, web portfolio, portfolio creator"
         />
-        <link rel="canonical" href="https://yourwebsite.com/" />
+        <link rel="canonical" href="https://folio-app-amber.vercel.app/" />
 
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://yourwebsite.com/" />
+        <meta property="og:url" content="https://folio-app-amber.vercel.app/" />
         <meta
           property="og:title"
           content="Folio - Build Your Professional Tech Portfolio"
@@ -485,13 +479,11 @@ function LandingPage() {
         />
         <meta
           property="og:image"
-          content="https://yourwebsite.com/og-image.jpg"
+          content="https://folio-app-amber.vercel.app/favicon.svg"
         />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
 
         <meta property="twitter:card" content="summary_large_image" />
-        <meta property="twitter:url" content="https://yourwebsite.com/" />
+        <meta property="twitter:url" content="https://folio-app-amber.vercel.app/" />
         <meta
           property="twitter:title"
           content="Folio - Build Your Professional Tech Portfolio"
@@ -502,13 +494,12 @@ function LandingPage() {
         />
         <meta
           property="twitter:image"
-          content="https://yourwebsite.com/twitter-image.jpg"
+          content="https://folio-app-amber.vercel.app/favicon.svg"
         />
 
         <meta name="robots" content="index, follow" />
         <meta name="language" content="English" />
         <meta name="author" content="Ahmed Gaafar" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
@@ -516,8 +507,13 @@ function LandingPage() {
       </Helmet>
 
       <div className="min-h-screen bg-zinc-950 text-white overflow-hidden">
-        <header className="fixed top-0 left-0 right-0 z-40 bg-zinc-950/80 backdrop-blur-sm border-b border-zinc-800/50">
-          <div className="max-w-7xl mx-auto px-6 lg:px-12">
+        <motion.header
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+          className="fixed top-0 left-0 right-0 z-40 bg-zinc-950/80 backdrop-blur-sm border-b border-zinc-800/50 px-6 lg:px-12"
+        >
+          <div className="max-w-7xl mx-auto">
             <div className="flex justify-between items-center h-16">
               <Logo />
               <nav aria-label="User navigation">
@@ -532,7 +528,7 @@ function LandingPage() {
               </nav>
             </div>
           </div>
-        </header>
+        </motion.header>
 
         <main>
           <div className="pt-16">

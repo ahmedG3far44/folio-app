@@ -4,7 +4,7 @@ A web app for tech professionals to **build customized portfolios** showcasing p
 
 ## **Screenshots** 📸 (Preview App):
 <div align="center">
-  <img src="https://github.com/ahmedG3far44/Folio-App/blob/development/showcase(1).gif"  alt="show case gif image" />
+  <video src="https://github.com/ahmedG3far44/Folio-App/blob/development/client/public/preview.mp4" controls width="800" alt="Folio app preview"></video>
 </div>
 
 ---
